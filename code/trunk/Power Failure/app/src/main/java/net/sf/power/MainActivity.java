@@ -3,7 +3,7 @@ package net.sf.power;
 import android.app.Activity;
 import android.os.Bundle;
 
-import net.sf.powerfailure.R;
+import net.sf.power.monitor.R;
 
 public class MainActivity extends Activity {
 
