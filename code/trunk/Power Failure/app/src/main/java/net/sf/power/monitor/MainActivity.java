@@ -1,9 +1,7 @@
-package net.sf.power;
+package net.sf.power.monitor;
 
 import android.app.Activity;
 import android.os.Bundle;
-
-import net.sf.power.monitor.R;
 
 public class MainActivity extends Activity {
 

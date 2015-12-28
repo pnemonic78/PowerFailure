@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.PowerFailure">
         <activity
-            android:name="net.sf.power.MainActivity"
+            android:name="net.sf.power.monitor.MainActivity"
             android:label="@string/title_activity_main">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -19,7 +19,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="net.sf.power.PowerConnectionReceiver">
+        <receiver android:name="net.sf.power.monitor.PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>

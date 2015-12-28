@@ -1,4 +1,4 @@
-package net.sf.power;
+package net.sf.power.monitor;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
