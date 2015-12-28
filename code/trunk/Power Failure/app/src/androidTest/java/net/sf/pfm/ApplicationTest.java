@@ -1,4 +1,4 @@
-package net.sf.powerfailure;
+package net.sf.pfm;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

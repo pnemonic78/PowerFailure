@@ -1,4 +1,4 @@
-package net.sf.powerfailure;
+package net.sf.pfm;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

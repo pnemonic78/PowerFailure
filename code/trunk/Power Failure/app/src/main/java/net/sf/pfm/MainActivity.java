@@ -1,4 +1,4 @@
-package net.sf.powerfailure;
+package net.sf.pfm;
 
 import android.app.Activity;
 import android.os.Bundle;
