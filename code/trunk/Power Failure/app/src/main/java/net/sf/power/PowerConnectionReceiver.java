@@ -1,4 +1,4 @@
-package net.sf.pfm;
+package net.sf.power;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
