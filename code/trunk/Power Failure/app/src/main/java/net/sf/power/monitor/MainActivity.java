@@ -12,11 +12,13 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends Activity implements BatteryListener {
+public class MainActivity extends Activity implements BatteryListener, View.OnClickListener {
 
     private static final String TAG = "MainActivity";
 
@@ -24,7 +26,11 @@ public class MainActivity extends Activity implements BatteryListener {
     private static final int LEVEL_UNPLUGGED = 1;
     private static final int LEVEL_PLUGGED = 2;
 
+    private static final int LEVEL_START = 0;
+    private static final int LEVEL_STOP = 1;
+
     private ImageView pluggedView;
+    private ImageButton playButton;
 
     private Handler handler;
     /**
@@ -39,6 +45,7 @@ public class MainActivity extends Activity implements BatteryListener {
      * Flag indicating whether we have called bind on the service.
      */
     private boolean serviceIsBound;
+    private boolean monitoring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +54,9 @@ public class MainActivity extends Activity implements BatteryListener {
         setContentView(R.layout.activity_main);
         pluggedView = (ImageView) findViewById(R.id.plugged);
         pluggedView.setImageLevel(LEVEL_UNKNOWN);
+        playButton = (ImageButton) findViewById(R.id.play);
+        playButton.setImageLevel(LEVEL_START);
+        playButton.setOnClickListener(this);
 
         handler = new MainHandler(this);
         messenger = new Messenger(handler);
@@ -55,21 +65,24 @@ public class MainActivity extends Activity implements BatteryListener {
     @Override
     protected void onStart() {
         super.onStart();
-        startMonitor();
+        bindService();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        stopMonitor();
+        unbindService();
     }
 
     private void startMonitor() {
-        bindService();
+        monitoring = true;
+        playButton.setImageLevel(LEVEL_STOP);
+
     }
 
     private void stopMonitor() {
-        unbindService();
+        monitoring = false;
+        playButton.setImageLevel(LEVEL_START);
     }
 
     @Override
@@ -81,9 +94,23 @@ public class MainActivity extends Activity implements BatteryListener {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v == playButton) {
+            switch (playButton.getDrawable().getLevel()) {
+                case LEVEL_START:
+                    startMonitor();
+                    break;
+                case LEVEL_STOP:
+                    stopMonitor();
+                    break;
+            }
+        }
+    }
+
     private static class MainHandler extends Handler {
 
-        private static final int MSG_PLUGGED = PowerConnectionService.MSG_PLUGGED;
+        private static final int MSG_STATUS_CHANGED = PowerConnectionService.MSG_STATUS_CHANGED;
 
         private final WeakReference<MainActivity> activity;
 
@@ -99,8 +126,10 @@ public class MainActivity extends Activity implements BatteryListener {
             }
 
             switch (msg.what) {
-                case MSG_PLUGGED:
-                    activity.onBatteryPlugged(msg.arg1);
+                case MSG_STATUS_CHANGED:
+                    if (activity.monitoring) {
+                        activity.onBatteryPlugged(msg.arg1);
+                    }
                 default:
                     super.handleMessage(msg);
             }

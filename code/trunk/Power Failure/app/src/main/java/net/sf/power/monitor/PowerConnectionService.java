@@ -47,7 +47,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     /**
      * Command to the clients that the battery status has been changed.
      */
-    public static final int MSG_PLUGGED = 11;
+    public static final int MSG_STATUS_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
     private static final long ALARM_THRESHOLD = DateUtils.SECOND_IN_MILLIS * 5;
@@ -108,7 +108,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         BatteryUtils.printStatus(context);
         int plugged = BatteryUtils.getPlugged(context);
 
-        Message msg = handler.obtainMessage(MSG_PLUGGED, plugged, 0);
+        Message msg = handler.obtainMessage(MSG_STATUS_CHANGED, plugged, 0);
         msg.sendToTarget();
 
         pollStatus();
@@ -145,11 +145,14 @@ public class PowerConnectionService extends Service implements BatteryListener {
                     break;
                 case MSG_UNREGISTER_CLIENT:
                     service.clients.remove(msg.replyTo);
+                    if (service.clients.isEmpty()) {
+                        service.stopSelf();
+                    }
                     break;
                 case MSG_CHECK_STATUS:
                     service.checkStatus();
                     break;
-                case MSG_PLUGGED:
+                case MSG_STATUS_CHANGED:
                     service.onBatteryPlugged(msg.arg1);
                 default:
                     super.handleMessage(msg);
@@ -176,7 +179,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         Message msg;
         for (int i = clients.size() - 1; i >= 0; i--) {
             try {
-                msg = Message.obtain(null, MSG_PLUGGED, plugged, 0);
+                msg = Message.obtain(null, MSG_STATUS_CHANGED, plugged, 0);
                 clients.get(i).send(msg);
             } catch (RemoteException e) {
                 Log.e(TAG, "Failed to send status update", e);
