@@ -25,6 +25,11 @@
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="net.sf.power.monitor.PowerConnectionService"
+            android:exported="false"
+            android:process=":service"/>
     </application>
 
 </manifest>

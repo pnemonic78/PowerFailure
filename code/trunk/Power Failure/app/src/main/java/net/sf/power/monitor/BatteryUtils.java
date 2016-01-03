@@ -1,0 +1,50 @@
+package net.sf.power.monitor;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.BatteryManager;
+import android.os.Bundle;
+import android.util.Log;
+
+/**
+ * Battery utilities.
+ * Created by moshe.w on 03/01/2016.
+ */
+public class BatteryUtils {
+
+    private static final String TAG = "BatteryUtils";
+
+    /**
+     * Battery is not being charged.
+     */
+    public static final int BATTERY_PLUGGED_NONE = 0;
+
+    private static IntentFilter batteryFilter;
+
+    private BatteryUtils() {
+    }
+
+    public static IntentFilter getBatteryFilter() {
+        if (batteryFilter == null) {
+            batteryFilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        }
+        return batteryFilter;
+    }
+
+    public static Intent getBatteryIntent(Context context) {
+        return context.registerReceiver(null, getBatteryFilter());
+    }
+
+    public static void printStatus(Context context) {
+        printStatus(getBatteryIntent(context));
+    }
+
+    public static void printStatus(Intent intent) {
+        Bundle extras = intent.getExtras();
+        int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, -1);
+        boolean present = extras.getBoolean(BatteryManager.EXTRA_PRESENT, false);
+        int status = extras.getInt(BatteryManager.EXTRA_STATUS, -1);
+        Log.i(TAG, "{status:" + status + ", plugged:" + plugged + ", present:" + present + "}");
+    }
+}
