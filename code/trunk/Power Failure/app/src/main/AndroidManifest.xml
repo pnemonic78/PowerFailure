@@ -29,7 +29,7 @@
         <service
             android:name="net.sf.power.monitor.PowerConnectionService"
             android:exported="false"
-            android:process=":service"/>
+            android:process=":remote"/>
     </application>
 
 </manifest>

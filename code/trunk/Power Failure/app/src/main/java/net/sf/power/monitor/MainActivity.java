@@ -1,19 +1,24 @@
 package net.sf.power.monitor;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
-import android.text.format.DateUtils;
+import android.os.Messenger;
+import android.os.RemoteException;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements BatteryListener {
 
-    private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
+    private static final String TAG = "MainActivity";
 
     private static final int LEVEL_UNPLUGGED = 0;
     private static final int LEVEL_PLUGGED = 1;
@@ -21,6 +26,18 @@ public class MainActivity extends Activity {
     private ImageView pluggedView;
 
     private Handler handler;
+    /**
+     * Target we publish for clients to send messages to IncomingHandler.
+     */
+    private Messenger messenger;
+    /**
+     * Messenger for communicating with service.
+     */
+    private Messenger service;
+    /**
+     * Flag indicating whether we have called bind on the service.
+     */
+    private boolean serviceIsBound;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,53 +47,41 @@ public class MainActivity extends Activity {
         pluggedView = (ImageView) findViewById(R.id.plugged);
 
         handler = new MainHandler(this);
+        messenger = new Messenger(handler);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        startPolling(this);
+        startMonitor();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        stopPolling(this);
+        stopMonitor();
     }
 
-    private void startPolling(Context context) {
-        pollStatus();
-
-        Intent service = new Intent(context, PowerConnectionService.class);
-        context.startService(service);
+    private void startMonitor() {
+        bindService();
     }
 
-    private void stopPolling(Context context) {
-        // Sticky intent doesn't need to unregister.
-        if (handler != null) {
-            handler.removeMessages(MainHandler.CHECK_STATUS);
-        }
-
-        Intent service = new Intent(context, PowerConnectionService.class);
-        context.stopService(service);
+    private void stopMonitor() {
+        unbindService();
     }
 
-    private void checkStatus() {
-        Context context = this;
-        onPlugged(BatteryUtils.isPlugged(context));
-
-        pollStatus();
-    }
-
-    private void pollStatus() {
-        if (handler != null) {
-            handler.sendEmptyMessageDelayed(MainHandler.CHECK_STATUS, POLL_RATE);
+    @Override
+    public void onBatteryPlugged(int plugged) {
+        if (plugged != BATTERY_PLUGGED_NONE) {
+            pluggedView.setImageLevel(LEVEL_PLUGGED);
+        } else {
+            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
         }
     }
 
     private static class MainHandler extends Handler {
 
-        private static final int CHECK_STATUS = 1;
+        private static final int MSG_PLUGGED = PowerConnectionService.MSG_PLUGGED;
 
         private final WeakReference<MainActivity> activity;
 
@@ -92,23 +97,79 @@ public class MainActivity extends Activity {
             }
 
             switch (msg.what) {
-                case CHECK_STATUS:
-                    activity.checkStatus();
-                    break;
+                case MSG_PLUGGED:
+                    activity.onBatteryPlugged(msg.arg1);
+                default:
+                    super.handleMessage(msg);
             }
         }
     }
 
     /**
-     * Notification that the battery is being been charged.
-     *
-     * @param plugged is plugged?
+     * Class for interacting with the main interface of the service.
      */
-    private void onPlugged(boolean plugged) {
-        if (plugged) {
-            pluggedView.setImageLevel(LEVEL_PLUGGED);
-        } else {
-            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
+    private ServiceConnection connection = new ServiceConnection() {
+
+        public void onServiceConnected(ComponentName className, IBinder binder) {
+            // This is called when the connection with the service has been
+            // established, giving us the service object we can use to
+            // interact with the service.  We are communicating with our
+            // service through an IDL interface, so get a client-side
+            // representation of that from the raw service object.
+            service = new Messenger(binder);
+            Log.i(TAG, "Service attached.");
+
+            // We want to monitor the service for as long as we are
+            // connected to it.
+            try {
+                Message msg = Message.obtain(null, PowerConnectionService.MSG_REGISTER_CLIENT);
+                msg.replyTo = messenger;
+                service.send(msg);
+            } catch (RemoteException e) {
+                // In this case the service has crashed before we could even
+                // do anything with it; we can count on soon being
+                // disconnected (and then reconnected if it can be restarted)
+                // so there is no need to do anything here.
+            }
+            Log.i(TAG, "Service connected.");
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            // This is called when the connection with the service has been
+            // unexpectedly disconnected -- that is, its process crashed.
+            service = null;
+            Log.i(TAG, "Service disconnected.");
+        }
+    };
+
+    private void bindService() {
+        // Establish a connection with the service.  We use an explicit
+        // class name because there is no reason to be able to let other
+        // applications replace our component.
+        bindService(new Intent(this, PowerConnectionService.class), connection, Context.BIND_AUTO_CREATE);
+        serviceIsBound = true;
+        Log.i(TAG, "Service binding.");
+    }
+
+    private void unbindService() {
+        if (serviceIsBound) {
+            // If we have received the service, and hence registered with
+            // it, then now is the time to unregister.
+            if (service != null) {
+                try {
+                    Message msg = Message.obtain(null, PowerConnectionService.MSG_UNREGISTER_CLIENT);
+                    msg.replyTo = messenger;
+                    service.send(msg);
+                } catch (RemoteException e) {
+                    // There is nothing special we need to do if the service
+                    // has crashed.
+                }
+            }
+
+            // Detach our existing connection.
+            unbindService(connection);
+            serviceIsBound = false;
+            Log.i(TAG, "Service unbinding.");
         }
     }
 }

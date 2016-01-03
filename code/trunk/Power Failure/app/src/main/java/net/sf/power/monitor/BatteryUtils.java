@@ -46,11 +46,11 @@ public class BatteryUtils {
     }
 
     public static boolean isPlugged(Context context) {
-        return getPlugged(context) != BatteryUtils.BATTERY_PLUGGED_NONE;
+        return getPlugged(context) != BATTERY_PLUGGED_NONE;
     }
 
     public static boolean isPlugged(Intent intent) {
-        return getPlugged(intent) != BatteryUtils.BATTERY_PLUGGED_NONE;
+        return getPlugged(intent) != BATTERY_PLUGGED_NONE;
     }
 
     public static void printStatus(Context context) {
