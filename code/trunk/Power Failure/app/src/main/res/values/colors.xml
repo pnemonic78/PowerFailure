@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <color name="plugged">#00cc00</color>
+    <color name="unplugged">#cc0000</color>
+
 </resources>

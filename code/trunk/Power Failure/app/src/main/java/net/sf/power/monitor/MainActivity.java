@@ -10,7 +10,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -20,7 +20,12 @@ public class MainActivity extends Activity {
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
 
-    private TextView labelView;
+    private static final int BATTER_PLUGGED_NONE = 0;
+
+    private static final int LEVEL_UNPLUGGED = 0;
+    private static final int LEVEL_PLUGGED = 1;
+
+    private ImageView pluggedView;
 
     private static IntentFilter batteryFilter;
     private Handler handler;
@@ -30,7 +35,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        labelView = (TextView) findViewById(R.id.label);
+        pluggedView = (ImageView) findViewById(R.id.plugged);
 
         handler = new MainHandler(this);
     }
@@ -71,7 +76,17 @@ public class MainActivity extends Activity {
 
     private void checkStatus() {
         Context context = this;
-        printStatus(context);
+        Intent intent = getBatteryIntent(context);
+        printStatus(intent);
+
+        Bundle extras = intent.getExtras();
+        int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, BATTER_PLUGGED_NONE);
+        if (plugged == BATTER_PLUGGED_NONE) {
+            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
+        } else {
+            pluggedView.setImageLevel(LEVEL_PLUGGED);
+        }
+
         pollStatus();
     }
 
