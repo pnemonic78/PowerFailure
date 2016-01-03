@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
+import android.os.SystemClock;
 import android.text.format.DateUtils;
 
 import java.lang.ref.WeakReference;
@@ -120,13 +121,13 @@ public class PowerConnectionService extends Service {
      */
     private void onPlugged(boolean plugged) {
         Context context = this;
+        long now = SystemClock.uptimeMillis();
 
         if (plugged) {
-            unpluggedTime = 0L;
+            unpluggedTime = now;
             stopAlarm(context);
         } else {
-            unpluggedTime += POLL_RATE;
-            if (unpluggedTime >= ALARM_THRESHOLD) {
+            if ((now - unpluggedTime) >= ALARM_THRESHOLD) {
                 playAlarm(context);
             } else {
                 stopAlarm(context);
