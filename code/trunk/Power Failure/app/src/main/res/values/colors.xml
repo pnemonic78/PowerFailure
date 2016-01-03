@@ -3,5 +3,6 @@
 
     <color name="plugged">#00cc00</color>
     <color name="unplugged">#cc0000</color>
+    <color name="unknown">#0000cc</color>
 
 </resources>

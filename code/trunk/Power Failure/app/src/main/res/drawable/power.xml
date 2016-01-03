@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <level-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:drawable="@drawable/power_unplugged"
+        android:drawable="@drawable/power_unknown"
         android:maxLevel="0"/>
     <item
-        android:drawable="@drawable/power_plugged"
+        android:drawable="@drawable/power_unplugged"
         android:maxLevel="1"/>
+    <item
+        android:drawable="@drawable/power_plugged"
+        android:maxLevel="2"/>
 </level-list>

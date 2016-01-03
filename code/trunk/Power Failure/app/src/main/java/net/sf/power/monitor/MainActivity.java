@@ -20,8 +20,9 @@ public class MainActivity extends Activity implements BatteryListener {
 
     private static final String TAG = "MainActivity";
 
-    private static final int LEVEL_UNPLUGGED = 0;
-    private static final int LEVEL_PLUGGED = 1;
+    private static final int LEVEL_UNKNOWN = 0;
+    private static final int LEVEL_UNPLUGGED = 1;
+    private static final int LEVEL_PLUGGED = 2;
 
     private ImageView pluggedView;
 
@@ -45,6 +46,7 @@ public class MainActivity extends Activity implements BatteryListener {
 
         setContentView(R.layout.activity_main);
         pluggedView = (ImageView) findViewById(R.id.plugged);
+        pluggedView.setImageLevel(LEVEL_UNKNOWN);
 
         handler = new MainHandler(this);
         messenger = new Messenger(handler);
