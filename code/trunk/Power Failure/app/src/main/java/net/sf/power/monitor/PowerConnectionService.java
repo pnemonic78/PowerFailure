@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.BatteryManager;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -69,12 +67,8 @@ public class PowerConnectionService extends Service {
 
     private void checkStatus() {
         Context context = this;
-        Intent intent = BatteryUtils.getBatteryIntent(context);
-        BatteryUtils.printStatus(intent);
-
-        Bundle extras = intent.getExtras();
-        int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, BatteryUtils.BATTERY_PLUGGED_NONE);
-        onPlugged(plugged != BatteryUtils.BATTERY_PLUGGED_NONE);
+        BatteryUtils.printStatus(context);
+        onPlugged(BatteryUtils.isPlugged(context));
 
         pollStatus();
     }

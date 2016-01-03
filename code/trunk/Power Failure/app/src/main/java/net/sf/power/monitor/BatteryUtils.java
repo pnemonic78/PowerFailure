@@ -36,6 +36,23 @@ public class BatteryUtils {
         return context.registerReceiver(null, getBatteryFilter());
     }
 
+    public static int getPlugged(Context context) {
+        return getPlugged(getBatteryIntent(context));
+    }
+
+    public static int getPlugged(Intent intent) {
+        Bundle extras = intent.getExtras();
+        return extras.getInt(BatteryManager.EXTRA_PLUGGED, BATTERY_PLUGGED_NONE);
+    }
+
+    public static boolean isPlugged(Context context) {
+        return getPlugged(context) != BatteryUtils.BATTERY_PLUGGED_NONE;
+    }
+
+    public static boolean isPlugged(Intent intent) {
+        return getPlugged(intent) != BatteryUtils.BATTERY_PLUGGED_NONE;
+    }
+
     public static void printStatus(Context context) {
         printStatus(getBatteryIntent(context));
     }

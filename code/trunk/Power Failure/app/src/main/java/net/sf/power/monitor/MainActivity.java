@@ -3,7 +3,6 @@ package net.sf.power.monitor;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -64,10 +63,7 @@ public class MainActivity extends Activity {
 
     private void checkStatus() {
         Context context = this;
-        Intent intent = BatteryUtils.getBatteryIntent(context);
-        Bundle extras = intent.getExtras();
-        int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, BatteryUtils.BATTERY_PLUGGED_NONE);
-        onPlugged(plugged != BatteryUtils.BATTERY_PLUGGED_NONE);
+        onPlugged(BatteryUtils.isPlugged(context));
 
         pollStatus();
     }
