@@ -22,6 +22,7 @@ public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
+    private static final long ALARM_THRESHOLD = DateUtils.SECOND_IN_MILLIS * 5;
 
     private static final int BATTER_PLUGGED_NONE = 0;
 
@@ -33,6 +34,7 @@ public class MainActivity extends Activity {
     private static IntentFilter batteryFilter;
     private Handler handler;
     private Ringtone ringtone;
+    private long unpluggedTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +50,16 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        registerReceiver(this);
+        startPolling(this);
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        unregisterReceiver(this);
+        stopPolling(this);
     }
 
-    private void registerReceiver(Context context) {
+    private void startPolling(Context context) {
         IntentFilter filter = batteryFilter;
         if (filter == null) {
             filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
@@ -68,7 +70,7 @@ public class MainActivity extends Activity {
         pollStatus();
     }
 
-    private void unregisterReceiver(Context context) {
+    private void stopPolling(Context context) {
         // Sticky intent doesn't need to unregister.
         if (handler != null) {
             handler.removeMessages(MainHandler.CHECK_STATUS);
@@ -144,10 +146,16 @@ public class MainActivity extends Activity {
 
         if (plugged) {
             pluggedView.setImageLevel(LEVEL_PLUGGED);
+            unpluggedTime = 0L;
             stopAlarm(context);
         } else {
             pluggedView.setImageLevel(LEVEL_UNPLUGGED);
-            playAlarm(context);
+            unpluggedTime += POLL_RATE;
+            if (unpluggedTime >= ALARM_THRESHOLD) {
+                playAlarm(context);
+            } else {
+                stopAlarm(context);
+            }
         }
     }
 
