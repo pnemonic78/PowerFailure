@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.BatteryManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,6 +32,7 @@ public class MainActivity extends Activity {
 
     private static IntentFilter batteryFilter;
     private Handler handler;
+    private Ringtone ringtone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +42,7 @@ public class MainActivity extends Activity {
         pluggedView = (ImageView) findViewById(R.id.plugged);
 
         handler = new MainHandler(this);
+        stopAlarm(this);
     }
 
     @Override
@@ -81,11 +86,7 @@ public class MainActivity extends Activity {
 
         Bundle extras = intent.getExtras();
         int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, BATTER_PLUGGED_NONE);
-        if (plugged == BATTER_PLUGGED_NONE) {
-            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
-        } else {
-            pluggedView.setImageLevel(LEVEL_PLUGGED);
-        }
+        onPlugged(plugged != BATTER_PLUGGED_NONE);
 
         pollStatus();
     }
@@ -120,11 +121,64 @@ public class MainActivity extends Activity {
 
         @Override
         public void handleMessage(Message msg) {
+            MainActivity activity = this.activity.get();
+            if (activity == null) {
+                return;
+            }
+
             switch (msg.what) {
                 case CHECK_STATUS:
-                    activity.get().checkStatus();
+                    activity.checkStatus();
                     break;
             }
+        }
+    }
+
+    /**
+     * Notification that the battery is being been charged.
+     *
+     * @param plugged is plugged?
+     */
+    private void onPlugged(boolean plugged) {
+        Context context = this;
+
+        if (plugged) {
+            pluggedView.setImageLevel(LEVEL_PLUGGED);
+            stopAlarm(context);
+        } else {
+            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
+            playAlarm(context);
+        }
+    }
+
+    private Ringtone getRingtone(Context context) {
+        if (ringtone == null) {
+            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            ringtone = RingtoneManager.getRingtone(context, uri);
+            if (ringtone == null) {
+                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                ringtone = RingtoneManager.getRingtone(context, uri);
+                if (ringtone == null) {
+                    uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+                    ringtone = RingtoneManager.getRingtone(context, uri);
+                }
+            }
+        }
+        return ringtone;
+    }
+
+    private void playAlarm(Context context) {
+        Ringtone ringtone = getRingtone(context);
+        if ((ringtone != null) && !ringtone.isPlaying()) {
+            ringtone.play();
+        }
+    }
+
+
+    private void stopAlarm(Context context) {
+        Ringtone ringtone = getRingtone(context);
+        if ((ringtone != null) && ringtone.isPlaying()) {
+            ringtone.stop();
         }
     }
 }
