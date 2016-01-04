@@ -5,5 +5,7 @@
 
     <string name="start_monitor">Start monitor</string>
     <string name="stop_monitor">Stop monitor</string>
+    <string name="remote_service_started">Monitoring for power failure...</string>
+    <string name="local_service_label">@string/app_name</string>
 
 </resources>

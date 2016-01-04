@@ -11,7 +11,8 @@
         android:theme="@style/Theme.PowerFailure">
         <activity
             android:name="net.sf.power.monitor.MainActivity"
-            android:label="@string/title_activity_main">
+            android:label="@string/title_activity_main"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

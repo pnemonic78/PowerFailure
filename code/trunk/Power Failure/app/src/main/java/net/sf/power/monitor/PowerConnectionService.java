@@ -1,8 +1,12 @@
 package net.sf.power.monitor;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -51,6 +55,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
     private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 5;
+    private static final int ID_NOTIFY = R.string.start_monitor;
 
     private Handler handler;
     /**
@@ -61,7 +66,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
      * Keeps track of all current registered clients.
      */
     private final List<Messenger> clients = new ArrayList<Messenger>();
-
+    private NotificationManager notificationManager;
     private Ringtone ringtone;
     private long unpluggedSince;
     private boolean polling;
@@ -77,8 +82,11 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         handler = new PowerConnectionHandler(this);
         messenger = new Messenger(handler);
+        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         stopAlarm();
+        // Display a notification about us starting.  We put an icon in the status bar.
+        showNotification();
     }
 
     @Override
@@ -86,6 +94,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
         super.onDestroy();
 
         stopPolling();
+        // Cancel the persistent notification.
+        notificationManager.cancel(ID_NOTIFY);
     }
 
     private void startPolling() {
@@ -230,5 +240,40 @@ public class PowerConnectionService extends Service implements BatteryListener {
         stopPolling();
         stopAlarm();
         stopSelf();
+    }
+
+    /**
+     * Show a notification while this service is running.
+     */
+    private void showNotification() {
+        Context context = this;
+
+        // In this sample, we'll use the same text for the ticker and the expanded notification
+        CharSequence text = context.getText(R.string.remote_service_started);
+
+        // The PendingIntent to launch our activity if the user selects this notification
+        PendingIntent contentIntent = createActivityIntent(context);
+
+        // Set the info for the views that show in the notification panel.
+        Notification notification = new Notification.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher)  // the status icon
+                .setTicker(text)  // the status text
+                .setWhen(System.currentTimeMillis())  // the time stamp
+                .setContentTitle(context.getText(R.string.local_service_label))  // the label of the entry
+                .setContentText(text)  // the contents of the entry
+                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                .getNotification();
+
+        // Send the notification.
+        // We use a string id because it is a unique number.  We use it later to cancel.
+        notificationManager.notify(ID_NOTIFY, notification);
+    }
+
+    private PendingIntent createActivityIntent(Context context) {
+        PackageManager pm = context.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(context, ID_NOTIFY, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        return pendingIntent;
     }
 }
