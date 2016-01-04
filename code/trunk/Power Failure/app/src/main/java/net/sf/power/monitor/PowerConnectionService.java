@@ -50,7 +50,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public static final int MSG_STATUS_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
-    private static final long ALARM_THRESHOLD = DateUtils.SECOND_IN_MILLIS * 5;
+    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 5;
 
     private Handler handler;
     /**
@@ -98,9 +98,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private void stopPolling(Context context) {
         // Sticky intent doesn't need to unregister.
-        if (handler != null) {
-            handler.removeMessages(MSG_CHECK_STATUS);
-        }
     }
 
     private void checkStatus() {
@@ -169,7 +166,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
             unpluggedSince = now;
             stopAlarm(context);
         } else {
-            if ((now - unpluggedSince) >= ALARM_THRESHOLD) {
+            if ((now - unpluggedSince) >= ALARM_DELAY) {
                 playAlarm(context);
             } else {
                 stopAlarm(context);

@@ -45,7 +45,6 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
      * Flag indicating whether we have called bind on the service.
      */
     private boolean serviceIsBound;
-    private boolean monitoring;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,29 +59,25 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
 
         handler = new MainHandler(this);
         messenger = new Messenger(handler);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
         bindService();
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onDestroy() {
+        super.onDestroy();
         unbindService();
     }
 
     private void startMonitor() {
-        monitoring = true;
+        pluggedView.setImageLevel(LEVEL_UNKNOWN);
         playButton.setImageLevel(LEVEL_STOP);
-
+        registerClient();
     }
 
     private void stopMonitor() {
-        monitoring = false;
+        pluggedView.setImageLevel(LEVEL_UNKNOWN);
         playButton.setImageLevel(LEVEL_START);
+        unregisterClient();
     }
 
     @Override
@@ -127,9 +122,7 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
 
             switch (msg.what) {
                 case MSG_STATUS_CHANGED:
-                    if (activity.monitoring) {
-                        activity.onBatteryPlugged(msg.arg1);
-                    }
+                    activity.onBatteryPlugged(msg.arg1);
                 default:
                     super.handleMessage(msg);
             }
@@ -148,20 +141,6 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
             // service through an IDL interface, so get a client-side
             // representation of that from the raw service object.
             service = new Messenger(binder);
-            Log.i(TAG, "Service attached.");
-
-            // We want to monitor the service for as long as we are
-            // connected to it.
-            try {
-                Message msg = Message.obtain(null, PowerConnectionService.MSG_REGISTER_CLIENT);
-                msg.replyTo = messenger;
-                service.send(msg);
-            } catch (RemoteException e) {
-                // In this case the service has crashed before we could even
-                // do anything with it; we can count on soon being
-                // disconnected (and then reconnected if it can be restarted)
-                // so there is no need to do anything here.
-            }
             Log.i(TAG, "Service connected.");
         }
 
@@ -186,21 +165,48 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
         if (serviceIsBound) {
             // If we have received the service, and hence registered with
             // it, then now is the time to unregister.
-            if (service != null) {
-                try {
-                    Message msg = Message.obtain(null, PowerConnectionService.MSG_UNREGISTER_CLIENT);
-                    msg.replyTo = messenger;
-                    service.send(msg);
-                } catch (RemoteException e) {
-                    // There is nothing special we need to do if the service
-                    // has crashed.
-                }
-            }
+            unregisterClient();
 
             // Detach our existing connection.
             unbindService(connection);
             serviceIsBound = false;
             Log.i(TAG, "Service unbinding.");
+        }
+    }
+
+    /**
+     * Register this client with the service to receive commands.
+     */
+    public void registerClient() {
+        if (serviceIsBound && (service != null)) {
+            // We want to monitor the service for as long as we are connected to it.
+            try {
+                Message msg = Message.obtain(null, PowerConnectionService.MSG_REGISTER_CLIENT);
+                msg.replyTo = messenger;
+                service.send(msg);
+            } catch (RemoteException e) {
+                // In this case the service has crashed before we could even
+                // do anything with it; we can count on soon being
+                // disconnected (and then reconnected if it can be restarted)
+                // so there is no need to do anything here.
+            }
+            Log.i(TAG, "Registered with service.");
+        }
+    }
+
+    /**
+     * Unregister this client from the service to stop receiving commands.
+     */
+    private void unregisterClient() {
+        if (serviceIsBound && (service != null)) {
+            try {
+                Message msg = Message.obtain(null, PowerConnectionService.MSG_UNREGISTER_CLIENT);
+                msg.replyTo = messenger;
+                service.send(msg);
+            } catch (RemoteException e) {
+                // There is nothing special we need to do if the service has crashed.
+            }
+            Log.i(TAG, "Unregistered from service.");
         }
     }
 }
