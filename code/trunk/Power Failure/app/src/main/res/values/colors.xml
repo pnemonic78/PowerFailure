@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="plugged">#00cc00</color>
-    <color name="unplugged">#cc0000</color>
-    <color name="unknown">#0000cc</color>
+    <color name="transparent">@android:color/transparent</color>
+    <color name="black">@android:color/black</color>
+    <color name="yellow">#ffff00</color>
+    <color name="white">@android:color/white</color>
+
+    <color name="plugged_start">@color/yellow</color>
+    <color name="plugged_end">#008000</color>
+    <color name="unplugged_start">@color/white</color>
+    <color name="unplugged_end">#800000</color>
+    <color name="unknown_start">@color/white</color>
+    <color name="unknown_end">#000080</color>
 
 </resources>

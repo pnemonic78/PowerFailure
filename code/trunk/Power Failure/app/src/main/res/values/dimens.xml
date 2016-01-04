@@ -4,5 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="power_size">250dp</dimen>
+    <item name="power_gradientRadius" format="float" type="dimen">150</item>
 
 </resources>
