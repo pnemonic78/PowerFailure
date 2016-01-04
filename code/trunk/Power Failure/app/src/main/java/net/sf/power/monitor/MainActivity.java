@@ -12,13 +12,13 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageButton;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class MainActivity extends Activity implements BatteryListener, View.OnClickListener {
+public class MainActivity extends Activity implements BatteryListener {
 
     private static final String TAG = "MainActivity";
 
@@ -30,7 +30,8 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
     private static final int LEVEL_STOP = 1;
 
     private ImageView pluggedView;
-    private ImageButton playButton;
+    private MenuItem menuItemStart;
+    private MenuItem menuItemStop;
 
     private Handler handler;
     /**
@@ -53,9 +54,6 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
         setContentView(R.layout.activity_main);
         pluggedView = (ImageView) findViewById(R.id.plugged);
         pluggedView.setImageLevel(LEVEL_UNKNOWN);
-        playButton = (ImageButton) findViewById(R.id.play);
-        playButton.setImageLevel(LEVEL_START);
-        playButton.setOnClickListener(this);
 
         handler = new MainHandler(this);
         messenger = new Messenger(handler);
@@ -70,13 +68,15 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
 
     private void startMonitor() {
         pluggedView.setImageLevel(LEVEL_UNKNOWN);
-        playButton.setImageLevel(LEVEL_STOP);
+        menuItemStart.setVisible(false);
+        menuItemStop.setVisible(true);
         registerClient();
     }
 
     private void stopMonitor() {
         pluggedView.setImageLevel(LEVEL_UNKNOWN);
-        playButton.setImageLevel(LEVEL_START);
+        menuItemStart.setVisible(true);
+        menuItemStop.setVisible(false);
         unregisterClient();
     }
 
@@ -89,23 +89,11 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v == playButton) {
-            switch (playButton.getDrawable().getLevel()) {
-                case LEVEL_START:
-                    startMonitor();
-                    break;
-                case LEVEL_STOP:
-                    stopMonitor();
-                    break;
-            }
-        }
-    }
-
     private static class MainHandler extends Handler {
 
         private static final int MSG_STATUS_CHANGED = PowerConnectionService.MSG_STATUS_CHANGED;
+        private static final int MSG_START_MONITOR = 100;
+        private static final int MSG_STOP_MONITOR = 101;
 
         private final WeakReference<MainActivity> activity;
 
@@ -123,6 +111,13 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
             switch (msg.what) {
                 case MSG_STATUS_CHANGED:
                     activity.onBatteryPlugged(msg.arg1);
+                    break;
+                case MSG_START_MONITOR:
+                    activity.startMonitor();
+                    break;
+                case MSG_STOP_MONITOR:
+                    activity.stopMonitor();
+                    break;
                 default:
                     super.handleMessage(msg);
             }
@@ -208,5 +203,29 @@ public class MainActivity extends Activity implements BatteryListener, View.OnCl
             }
             Log.i(TAG, "Unregistered from service.");
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+
+        menuItemStart = menu.findItem(R.id.start);
+        menuItemStop = menu.findItem(R.id.stop);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.start:
+                handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR);
+                return true;
+            case R.id.stop:
+                handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR);
+                return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -3,4 +3,7 @@
     <string name="app_name">Power Failure Monitor</string>
     <string name="title_activity_main">@string/app_name</string>
 
+    <string name="start_monitor">Start monitor</string>
+    <string name="stop_monitor">Stop monitor</string>
+
 </resources>

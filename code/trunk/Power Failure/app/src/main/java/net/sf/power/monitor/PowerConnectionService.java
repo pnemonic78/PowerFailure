@@ -64,6 +64,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private Ringtone ringtone;
     private long unpluggedSince;
+    private boolean polling;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -74,41 +75,43 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public void onCreate() {
         super.onCreate();
 
-        Context context = this;
         handler = new PowerConnectionHandler(this);
         messenger = new Messenger(handler);
 
-        stopAlarm(context);
-        startPolling(context);
+        stopAlarm();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
 
-        Context context = this;
-        stopPolling(context);
+        stopPolling();
     }
 
-
-    private void startPolling(Context context) {
+    private void startPolling() {
+        Context context = this;
         printStatus(context);
         pollStatus();
+        polling = true;
     }
 
-    private void stopPolling(Context context) {
+    private void stopPolling() {
         // Sticky intent doesn't need to unregister.
+        polling = false;
     }
 
     private void checkStatus() {
         Context context = this;
-        BatteryUtils.printStatus(context);
-        int plugged = BatteryUtils.getPlugged(context);
+        printStatus(context);
 
-        Message msg = handler.obtainMessage(MSG_STATUS_CHANGED, plugged, 0);
-        msg.sendToTarget();
+        if (polling && (handler != null)) {
+            int plugged = BatteryUtils.getPlugged(context);
 
-        pollStatus();
+            Message msg = handler.obtainMessage(MSG_STATUS_CHANGED, plugged, 0);
+            msg.sendToTarget();
+
+            pollStatus();
+        }
     }
 
     private void pollStatus() {
@@ -135,15 +138,19 @@ public class PowerConnectionService extends Service implements BatteryListener {
             if (service == null) {
                 return;
             }
+            Messenger client = msg.replyTo;
 
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
-                    service.clients.add(msg.replyTo);
+                    if (!service.clients.contains(client)) {
+                        service.clients.add(client);
+                        service.startPolling();
+                    }
                     break;
                 case MSG_UNREGISTER_CLIENT:
                     service.clients.remove(msg.replyTo);
                     if (service.clients.isEmpty()) {
-                        service.stopSelf();
+                        service.stop();
                     }
                     break;
                 case MSG_CHECK_STATUS:
@@ -159,17 +166,16 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     @Override
     public void onBatteryPlugged(int plugged) {
-        Context context = this;
         long now = SystemClock.uptimeMillis();
 
         if (plugged != BATTERY_PLUGGED_NONE) {
             unpluggedSince = now;
-            stopAlarm(context);
+            stopAlarm();
         } else {
             if ((now - unpluggedSince) >= ALARM_DELAY) {
-                playAlarm(context);
+                playAlarm();
             } else {
-                stopAlarm(context);
+                stopAlarm();
             }
         }
 
@@ -204,17 +210,25 @@ public class PowerConnectionService extends Service implements BatteryListener {
         return ringtone;
     }
 
-    private void playAlarm(Context context) {
+    private void playAlarm() {
+        Context context = this;
         Ringtone ringtone = getRingtone(context);
         if ((ringtone != null) && !ringtone.isPlaying()) {
             ringtone.play();
         }
     }
 
-    private void stopAlarm(Context context) {
+    private void stopAlarm() {
+        Context context = this;
         Ringtone ringtone = getRingtone(context);
         if ((ringtone != null) && ringtone.isPlaying()) {
             ringtone.stop();
         }
+    }
+
+    private void stop() {
+        stopPolling();
+        stopAlarm();
+        stopSelf();
     }
 }
