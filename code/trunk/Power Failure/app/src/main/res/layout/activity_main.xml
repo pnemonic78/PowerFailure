@@ -12,7 +12,7 @@
 
     <ImageView
         android:id="@+id/plugged"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="@dimen/power_size"
+        android:layout_height="@dimen/power_size"
         android:src="@drawable/power"/>
 </LinearLayout>

@@ -58,6 +58,8 @@ public class MainActivity extends Activity implements BatteryListener {
         handler = new MainHandler(this);
         messenger = new Messenger(handler);
         bindService();
+
+        onBatteryPlugged(BatteryUtils.getPlugged(this));
     }
 
     @Override
@@ -75,6 +77,7 @@ public class MainActivity extends Activity implements BatteryListener {
 
     private void stopMonitor() {
         pluggedView.setImageLevel(LEVEL_UNKNOWN);
+        onBatteryPlugged(BatteryUtils.getPlugged(this));
         menuItemStart.setVisible(true);
         menuItemStop.setVisible(false);
         unregisterClient();
