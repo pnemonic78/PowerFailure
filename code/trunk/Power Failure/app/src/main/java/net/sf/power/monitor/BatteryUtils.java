@@ -16,9 +16,21 @@ public class BatteryUtils {
     private static final String TAG = "BatteryUtils";
 
     /**
-     * Battery is not being charged.
+     * No power source.
      */
     public static final int BATTERY_PLUGGED_NONE = 0;
+    /**
+     * Power source is an AC charger.
+     */
+    public static final int BATTERY_PLUGGED_AC = BatteryManager.BATTERY_PLUGGED_AC;
+    /**
+     * Power source is a USB port.
+     */
+    public static final int BATTERY_PLUGGED_USB = BatteryManager.BATTERY_PLUGGED_USB;
+    /**
+     * Power source is wireless.
+     */
+    public static final int BATTERY_PLUGGED_WIRELESS = BatteryManager.BATTERY_PLUGGED_WIRELESS;
 
     private static IntentFilter batteryFilter;
 

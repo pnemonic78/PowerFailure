@@ -6,6 +6,9 @@ package net.sf.power.monitor;
 public interface BatteryListener {
 
     int BATTERY_PLUGGED_NONE = BatteryUtils.BATTERY_PLUGGED_NONE;
+    int BATTERY_PLUGGED_AC = BatteryUtils.BATTERY_PLUGGED_AC;
+    int BATTERY_PLUGGED_USB = BatteryUtils.BATTERY_PLUGGED_USB;
+    int BATTERY_PLUGGED_WIRELESS = BatteryUtils.BATTERY_PLUGGED_WIRELESS;
 
     /**
      * Notification that the battery is being been charged.

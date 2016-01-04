@@ -2,5 +2,5 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/power_plugged_bg"/>
     <item android:drawable="@drawable/power_plugged_border"/>
-    <item android:drawable="@drawable/plug_connect"/>
+    <item android:drawable="@drawable/plug_wireless"/>
 </layer-list>

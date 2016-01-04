@@ -24,10 +24,9 @@ public class MainActivity extends Activity implements BatteryListener {
 
     private static final int LEVEL_UNKNOWN = 0;
     private static final int LEVEL_UNPLUGGED = 1;
-    private static final int LEVEL_PLUGGED = 2;
-
-    private static final int LEVEL_START = 0;
-    private static final int LEVEL_STOP = 1;
+    private static final int LEVEL_PLUGGED_AC = 2;
+    private static final int LEVEL_PLUGGED_USB = 3;
+    private static final int LEVEL_PLUGGED_WIRELESS = 4;
 
     private ImageView pluggedView;
     private MenuItem menuItemStart;
@@ -85,10 +84,19 @@ public class MainActivity extends Activity implements BatteryListener {
 
     @Override
     public void onBatteryPlugged(int plugged) {
-        if (plugged != BATTERY_PLUGGED_NONE) {
-            pluggedView.setImageLevel(LEVEL_PLUGGED);
-        } else {
-            pluggedView.setImageLevel(LEVEL_UNPLUGGED);
+        switch (plugged) {
+            case BATTERY_PLUGGED_NONE:
+                pluggedView.setImageLevel(LEVEL_UNPLUGGED);
+                break;
+            case BATTERY_PLUGGED_USB:
+                pluggedView.setImageLevel(LEVEL_PLUGGED_USB);
+                break;
+            case BATTERY_PLUGGED_WIRELESS:
+                pluggedView.setImageLevel(LEVEL_PLUGGED_WIRELESS);
+                break;
+            default:
+                pluggedView.setImageLevel(LEVEL_PLUGGED_AC);
+                break;
         }
     }
 

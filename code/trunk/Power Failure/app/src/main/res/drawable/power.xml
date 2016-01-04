@@ -9,4 +9,10 @@
     <item
         android:drawable="@drawable/power_plugged"
         android:maxLevel="2"/>
+    <item
+        android:drawable="@drawable/power_usb"
+        android:maxLevel="3"/>
+    <item
+        android:drawable="@drawable/power_wireless"
+        android:maxLevel="4"/>
 </level-list>
