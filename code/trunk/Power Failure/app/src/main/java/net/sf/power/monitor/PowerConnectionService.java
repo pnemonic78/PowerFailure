@@ -94,8 +94,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
         super.onDestroy();
 
         stopPolling();
-        // Cancel the persistent notification.
-        notificationManager.cancel(ID_NOTIFY);
+        stopAlarm();
+        hideNotification();
     }
 
     private void startPolling() {
@@ -160,7 +160,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
                 case MSG_UNREGISTER_CLIENT:
                     service.clients.remove(msg.replyTo);
                     if (service.clients.isEmpty()) {
-                        service.stop();
+                        service.stopSelf();
                     }
                     break;
                 case MSG_CHECK_STATUS:
@@ -236,12 +236,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
         }
     }
 
-    private void stop() {
-        stopPolling();
-        stopAlarm();
-        stopSelf();
-    }
-
     /**
      * Show a notification while this service is running.
      */
@@ -256,6 +250,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
+                .setOngoing(true)
                 .setSmallIcon(R.mipmap.ic_launcher)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
@@ -275,5 +270,12 @@ public class PowerConnectionService extends Service implements BatteryListener {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, ID_NOTIFY, intent, PendingIntent.FLAG_UPDATE_CURRENT);
         return pendingIntent;
+    }
+
+    /**
+     * Cancel the persistent notification.
+     */
+    private void hideNotification() {
+        notificationManager.cancel(ID_NOTIFY);
     }
 }
