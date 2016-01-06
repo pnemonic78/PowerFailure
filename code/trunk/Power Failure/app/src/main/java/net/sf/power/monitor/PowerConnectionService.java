@@ -7,6 +7,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -54,7 +55,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public static final int MSG_STATUS_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
-    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 5;
+    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 15;
     private static final int ID_NOTIFY = R.string.start_monitor;
 
     private Handler handler;
@@ -86,7 +87,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
-        showNotification();
+        showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
     }
 
     @Override
@@ -103,11 +104,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
         printStatus(context);
         pollStatus();
         polling = true;
+        showNotification(R.string.polling_started, R.mipmap.ic_launcher);
     }
 
     private void stopPolling() {
         // Sticky intent doesn't need to unregister.
         polling = false;
+        showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
     }
 
     private void checkStatus() {
@@ -189,6 +192,24 @@ public class PowerConnectionService extends Service implements BatteryListener {
             }
         }
 
+        switch (plugged) {
+            case BATTERY_PLUGGED_NONE:
+                showNotification(R.string.plugged_unplugged, R.mipmap.ic_launcher);
+                break;
+            case BATTERY_PLUGGED_AC:
+                showNotification(R.string.plugged_ac, R.mipmap.ic_launcher);
+                break;
+            case BATTERY_PLUGGED_USB:
+                showNotification(R.string.plugged_usb, R.mipmap.ic_launcher);
+                break;
+            case BATTERY_PLUGGED_WIRELESS:
+                showNotification(R.string.plugged_wireless, R.mipmap.ic_launcher);
+                break;
+            default:
+                showNotification(R.string.plugged_unknown, R.mipmap.ic_launcher);
+                break;
+        }
+
         Message msg;
         for (int i = clients.size() - 1; i >= 0; i--) {
             try {
@@ -238,29 +259,33 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     /**
      * Show a notification while this service is running.
+     *
+     * @param textId      the text resource id.
+     * @param largeIconId the large icon resource id.
      */
-    private void showNotification() {
+    private void showNotification(int textId, int largeIconId) {
         Context context = this;
+        Resources res = context.getResources();
 
-        // In this sample, we'll use the same text for the ticker and the expanded notification
-        CharSequence text = context.getText(R.string.remote_service_started);
+        CharSequence title = res.getText(R.string.title_service);
+        CharSequence text = res.getText(textId);
 
-        // The PendingIntent to launch our activity if the user selects this notification
+        // The PendingIntent to launch our activity if the user selects this notification.
         PendingIntent contentIntent = createActivityIntent(context);
 
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
                 .setOngoing(true)
-                .setSmallIcon(R.mipmap.ic_launcher)  // the status icon
+                //.setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
+                .setSmallIcon(R.drawable.stat_launcher)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(context.getText(R.string.local_service_label))  // the label of the entry
+                .setContentTitle(title)  // the label of the entry
                 .setContentText(text)  // the contents of the entry
                 .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
                 .getNotification();
 
         // Send the notification.
-        // We use a string id because it is a unique number.  We use it later to cancel.
         notificationManager.notify(ID_NOTIFY, notification);
     }
 
