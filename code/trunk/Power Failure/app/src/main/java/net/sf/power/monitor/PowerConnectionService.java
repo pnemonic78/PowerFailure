@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -105,6 +106,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
+        checkStatus();
     }
 
     @Override
@@ -134,13 +136,14 @@ public class PowerConnectionService extends Service implements BatteryListener {
         Context context = this;
         printStatus(context);
 
-        if (polling && (handler != null)) {
+        if (handler != null) {
             int plugged = BatteryUtils.getPlugged(context);
-
             Message msg = handler.obtainMessage(MSG_STATUS_CHANGED, plugged, 0);
             msg.sendToTarget();
 
-            pollStatus();
+            if (polling) {
+                pollStatus();
+            }
         }
     }
 
@@ -211,19 +214,19 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         switch (plugged) {
             case BATTERY_PLUGGED_NONE:
-                showNotification(R.string.plugged_unplugged, R.mipmap.ic_launcher);
+                showNotification(R.string.plugged_unplugged, R.drawable.stat_plug_disconnect);
                 break;
             case BATTERY_PLUGGED_AC:
-                showNotification(R.string.plugged_ac, R.mipmap.ic_launcher);
+                showNotification(R.string.plugged_ac, R.drawable.stat_plug_ac);
                 break;
             case BATTERY_PLUGGED_USB:
-                showNotification(R.string.plugged_usb, R.mipmap.ic_launcher);
+                showNotification(R.string.plugged_usb, R.drawable.stat_plug_usb);
                 break;
             case BATTERY_PLUGGED_WIRELESS:
-                showNotification(R.string.plugged_wireless, R.mipmap.ic_launcher);
+                showNotification(R.string.plugged_wireless, R.drawable.stat_plug_wireless);
                 break;
             default:
-                showNotification(R.string.plugged_unknown, R.mipmap.ic_launcher);
+                showNotification(R.string.plugged_unknown, R.drawable.stat_plug_ac);
                 break;
         }
 
@@ -293,7 +296,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
                 .setOngoing(true)
-                //.setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
+                .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
                 .setSmallIcon(R.drawable.stat_launcher)  // the status icon
                 .setTicker(text)  // the status text
                 .setWhen(System.currentTimeMillis())  // the time stamp
