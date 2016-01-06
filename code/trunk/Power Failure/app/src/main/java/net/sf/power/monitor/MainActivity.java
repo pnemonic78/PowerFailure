@@ -19,7 +19,6 @@ package net.sf.power.monitor;
 
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -86,18 +85,54 @@ public class MainActivity extends Activity implements BatteryListener {
     }
 
     private void startMonitor() {
-        pluggedView.setImageLevel(LEVEL_UNKNOWN);
-        menuItemStart.setVisible(false);
-        menuItemStop.setVisible(true);
-        registerClient();
+        if (serviceIsBound && (service != null)) {
+            // We want to monitor the service for as long as we are connected to it.
+            try {
+                notifyService(PowerConnectionService.MSG_START_MONITOR);
+
+                pluggedView.setImageLevel(LEVEL_UNKNOWN);
+                menuItemStart.setVisible(false);
+                menuItemStop.setVisible(true);
+            } catch (RemoteException e) {
+                // In this case the service has crashed before we could even
+                // do anything with it; we can count on soon being
+                // disconnected (and then reconnected if it can be restarted)
+                // so there is no need to do anything here.
+            }
+        }
     }
 
     private void stopMonitor() {
-        pluggedView.setImageLevel(LEVEL_UNKNOWN);
-        onBatteryPlugged(BatteryUtils.getPlugged(this));
-        menuItemStart.setVisible(true);
-        menuItemStop.setVisible(false);
-        unregisterClient();
+        try {
+            notifyService(PowerConnectionService.MSG_STOP_MONITOR);
+
+            pluggedView.setImageLevel(LEVEL_UNKNOWN);
+            menuItemStart.setVisible(true);
+            menuItemStop.setVisible(false);
+            onBatteryPlugged(BatteryUtils.getPlugged(this));
+        } catch (RemoteException e) {
+            // In this case the service has crashed before we could even
+            // do anything with it; we can count on soon being
+            // disconnected (and then reconnected if it can be restarted)
+            // so there is no need to do anything here.
+        }
+    }
+
+    private void statusMonitor(final boolean polling) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                pluggedView.setImageLevel(LEVEL_UNKNOWN);
+                if (polling) {
+                    menuItemStart.setVisible(false);
+                    menuItemStop.setVisible(true);
+                } else {
+                    menuItemStart.setVisible(true);
+                    menuItemStop.setVisible(false);
+                }
+                onBatteryPlugged(BatteryUtils.getPlugged(MainActivity.this));
+            }
+        });
     }
 
     @Override
@@ -128,9 +163,10 @@ public class MainActivity extends Activity implements BatteryListener {
 
     private static class MainHandler extends Handler {
 
-        private static final int MSG_STATUS_CHANGED = PowerConnectionService.MSG_STATUS_CHANGED;
-        private static final int MSG_START_MONITOR = 100;
-        private static final int MSG_STOP_MONITOR = 101;
+        private static final int MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED;
+        private static final int MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR;
+        private static final int MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR;
+        private static final int MSG_STATUS_MONITOR = PowerConnectionService.MSG_STATUS_MONITOR;
 
         private final WeakReference<MainActivity> activity;
 
@@ -155,6 +191,9 @@ public class MainActivity extends Activity implements BatteryListener {
                 case MSG_STOP_MONITOR:
                     activity.stopMonitor();
                     break;
+                case MSG_STATUS_MONITOR:
+                    activity.statusMonitor(msg.arg1 != 0);
+                    break;
                 default:
                     super.handleMessage(msg);
             }
@@ -174,6 +213,8 @@ public class MainActivity extends Activity implements BatteryListener {
             // representation of that from the raw service object.
             service = new Messenger(binder);
             Log.i(TAG, "Service connected.");
+
+            registerClient();
         }
 
         public void onServiceDisconnected(ComponentName className) {
@@ -188,7 +229,12 @@ public class MainActivity extends Activity implements BatteryListener {
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        bindService(new Intent(this, PowerConnectionService.class), connection, Context.BIND_AUTO_CREATE);
+        Intent intent = new Intent(this, PowerConnectionService.class);
+
+        //This will keep service running even after activity destroyed.
+        startService(intent);
+
+        bindService(intent, connection, BIND_AUTO_CREATE);
         serviceIsBound = true;
         Log.i(TAG, "Service binding.");
     }
@@ -209,13 +255,11 @@ public class MainActivity extends Activity implements BatteryListener {
     /**
      * Register this client with the service to receive commands.
      */
-    public void registerClient() {
+    private void registerClient() {
         if (serviceIsBound && (service != null)) {
             // We want to monitor the service for as long as we are connected to it.
             try {
-                Message msg = Message.obtain(null, PowerConnectionService.MSG_REGISTER_CLIENT);
-                msg.replyTo = messenger;
-                service.send(msg);
+                notifyService(PowerConnectionService.MSG_REGISTER_CLIENT);
             } catch (RemoteException e) {
                 // In this case the service has crashed before we could even
                 // do anything with it; we can count on soon being
@@ -232,9 +276,7 @@ public class MainActivity extends Activity implements BatteryListener {
     private void unregisterClient() {
         if (serviceIsBound && (service != null)) {
             try {
-                Message msg = Message.obtain(null, PowerConnectionService.MSG_UNREGISTER_CLIENT);
-                msg.replyTo = messenger;
-                service.send(msg);
+                notifyService(PowerConnectionService.MSG_UNREGISTER_CLIENT);
             } catch (RemoteException e) {
                 // There is nothing special we need to do if the service has crashed.
             }
@@ -264,5 +306,11 @@ public class MainActivity extends Activity implements BatteryListener {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void notifyService(int command) throws RemoteException {
+        Message msg = Message.obtain(null, command);
+        msg.replyTo = messenger;
+        service.send(msg);
     }
 }

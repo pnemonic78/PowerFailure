@@ -64,13 +64,25 @@ public class PowerConnectionService extends Service implements BatteryListener {
      */
     public static final int MSG_UNREGISTER_CLIENT = 2;
     /**
-     * Command to check the battery status.
+     * Command to the service to start monitoring.
      */
-    public static final int MSG_CHECK_STATUS = 10;
+    public static final int MSG_START_MONITOR = 3;
+    /**
+     * Command to the service to stop monitoring.
+     */
+    public static final int MSG_STOP_MONITOR = 4;
     /**
      * Command to the clients that the battery status has been changed.
      */
-    public static final int MSG_STATUS_CHANGED = 11;
+    public static final int MSG_STATUS_MONITOR = 5;
+    /**
+     * Command to check the battery status.
+     */
+    public static final int MSG_CHECK_BATTERY = 10;
+    /**
+     * Command to the clients that the battery status has been changed.
+     */
+    public static final int MSG_BATTERY_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
     private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 15;
@@ -111,6 +123,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     @Override
     public void onDestroy() {
+        System.out.println("~!@ onDestroy");
         super.onDestroy();
 
         stopPolling();
@@ -119,17 +132,23 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void startPolling() {
-        Context context = this;
-        printStatus(context);
-        pollStatus();
-        polling = true;
-        showNotification(R.string.polling_started, R.mipmap.ic_launcher);
+        System.out.println("~!@ startPolling " + polling);
+        if (!polling) {
+            Context context = this;
+            printStatus(context);
+            pollStatus();
+            polling = true;
+            showNotification(R.string.polling_started, R.mipmap.ic_launcher);
+        }
     }
 
     private void stopPolling() {
-        // Sticky intent doesn't need to unregister.
+        System.out.println("~!@ stopPolling " + polling);
         polling = false;
         showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
+        if (clients.isEmpty()) {
+            stopSelf();
+        }
     }
 
     private void checkStatus() {
@@ -138,7 +157,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         if (handler != null) {
             int plugged = BatteryUtils.getPlugged(context);
-            Message msg = handler.obtainMessage(MSG_STATUS_CHANGED, plugged, 0);
+            Message msg = handler.obtainMessage(MSG_BATTERY_CHANGED, plugged, 0);
             msg.sendToTarget();
 
             if (polling) {
@@ -149,7 +168,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private void pollStatus() {
         if (handler != null) {
-            handler.sendEmptyMessageDelayed(MSG_CHECK_STATUS, POLL_RATE);
+            handler.sendEmptyMessageDelayed(MSG_CHECK_BATTERY, POLL_RATE);
         }
     }
 
@@ -175,21 +194,21 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
             switch (msg.what) {
                 case MSG_REGISTER_CLIENT:
-                    if (!service.clients.contains(client)) {
-                        service.clients.add(client);
-                        service.startPolling();
-                    }
+                    service.registerClient(client);
                     break;
                 case MSG_UNREGISTER_CLIENT:
-                    service.clients.remove(msg.replyTo);
-                    if (service.clients.isEmpty()) {
-                        service.stopSelf();
-                    }
+                    service.unregisterClient(client);
                     break;
-                case MSG_CHECK_STATUS:
+                case MSG_START_MONITOR:
+                    service.startPolling();
+                    break;
+                case MSG_STOP_MONITOR:
+                    service.stopPolling();
+                    break;
+                case MSG_CHECK_BATTERY:
                     service.checkStatus();
                     break;
-                case MSG_STATUS_CHANGED:
+                case MSG_BATTERY_CHANGED:
                     service.onBatteryPlugged(msg.arg1);
                 default:
                     super.handleMessage(msg);
@@ -230,19 +249,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
                 break;
         }
 
-        Message msg;
-        for (int i = clients.size() - 1; i >= 0; i--) {
-            try {
-                msg = Message.obtain(null, MSG_STATUS_CHANGED, plugged, 0);
-                clients.get(i).send(msg);
-            } catch (RemoteException e) {
-                Log.e(TAG, "Failed to send status update", e);
-                // The client is dead.  Remove it from the list;
-                // we are going through the list from back to front
-                // so this is safe to do inside the loop.
-                clients.remove(i);
-            }
-        }
+        notifyClients(MSG_BATTERY_CHANGED, plugged, 0);
     }
 
     private Ringtone getRingtone(Context context) {
@@ -322,5 +329,38 @@ public class PowerConnectionService extends Service implements BatteryListener {
      */
     private void hideNotification() {
         notificationManager.cancel(ID_NOTIFY);
+    }
+
+    private void registerClient(Messenger client) {
+        System.out.println("~!@ registerClient " + client);
+        if (!clients.contains(client)) {
+            clients.add(client);
+        }
+        notifyClients(MSG_STATUS_MONITOR, polling ? 1 : 0, 0);
+    }
+
+    private void unregisterClient(Messenger client) {
+        System.out.println("~!@ unregisterClient " + client + " " + polling);
+        clients.remove(client);
+        if (clients.isEmpty() && !polling) {
+            stopSelf();
+        }
+    }
+
+    private void notifyClients(int command, int arg1, int arg2) {
+        Message msg;
+        for (int i = clients.size() - 1; i >= 0; i--) {
+            try {
+                msg = Message.obtain(null, command, arg1, arg2);
+                clients.get(i).send(msg);
+            } catch (RemoteException e) {
+                Log.e(TAG, "Failed to send status update", e);
+                // The client is dead.  Remove it from the list;
+                // we are going through the list from back to front
+                // so this is safe to do inside the loop.
+                clients.remove(i);
+            }
+        }
+
     }
 }
