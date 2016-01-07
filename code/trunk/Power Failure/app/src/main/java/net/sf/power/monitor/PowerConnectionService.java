@@ -72,9 +72,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
      */
     public static final int MSG_STOP_MONITOR = 4;
     /**
-     * Command to the clients that the battery status has been changed.
+     * Command to the service to query the monitoring status.
      */
-    public static final int MSG_STATUS_MONITOR = 5;
+    public static final int MSG_GET_STATUS_MONITOR = 5;
+    /**
+     * Command to the clients about the monitoring status.
+     */
+    public static final int MSG_SET_STATUS_MONITOR = 6;
     /**
      * Command to check the battery status.
      */
@@ -123,7 +127,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     @Override
     public void onDestroy() {
-        System.out.println("~!@ onDestroy");
         super.onDestroy();
 
         stopPolling();
@@ -132,7 +135,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void startPolling() {
-        System.out.println("~!@ startPolling " + polling);
         if (!polling) {
             Context context = this;
             printStatus(context);
@@ -143,7 +145,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void stopPolling() {
-        System.out.println("~!@ stopPolling " + polling);
         polling = false;
         showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
         if (clients.isEmpty()) {
@@ -204,6 +205,9 @@ public class PowerConnectionService extends Service implements BatteryListener {
                     break;
                 case MSG_STOP_MONITOR:
                     service.stopPolling();
+                    break;
+                case MSG_GET_STATUS_MONITOR:
+                    service.notifyClients(MSG_SET_STATUS_MONITOR, service.polling ? 1 : 0, 0);
                     break;
                 case MSG_CHECK_BATTERY:
                     service.checkStatus();
@@ -332,15 +336,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void registerClient(Messenger client) {
-        System.out.println("~!@ registerClient " + client);
         if (!clients.contains(client)) {
             clients.add(client);
         }
-        notifyClients(MSG_STATUS_MONITOR, polling ? 1 : 0, 0);
+        notifyClients(MSG_SET_STATUS_MONITOR, polling ? 1 : 0, 0);
     }
 
     private void unregisterClient(Messenger client) {
-        System.out.println("~!@ unregisterClient " + client + " " + polling);
         clients.remove(client);
         if (clients.isEmpty() && !polling) {
             stopSelf();
