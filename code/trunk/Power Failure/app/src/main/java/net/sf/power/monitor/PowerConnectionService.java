@@ -124,7 +124,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
-        checkStatus();
+        checkBatteryStatus();
     }
 
     @Override
@@ -139,8 +139,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private void startPolling() {
         if (!polling) {
             Context context = this;
-            printStatus(context);
-            pollStatus();
+            printBatteryStatus(context);
+            pollBattery();
             polling = true;
             showNotification(R.string.polling_started, R.mipmap.ic_launcher);
         }
@@ -154,9 +154,9 @@ public class PowerConnectionService extends Service implements BatteryListener {
         }
     }
 
-    private void checkStatus() {
+    private void checkBatteryStatus() {
         Context context = this;
-        printStatus(context);
+        printBatteryStatus(context);
 
         if (handler != null) {
             int plugged = BatteryUtils.getPlugged(context);
@@ -164,18 +164,18 @@ public class PowerConnectionService extends Service implements BatteryListener {
             msg.sendToTarget();
 
             if (polling) {
-                pollStatus();
+                pollBattery();
             }
         }
     }
 
-    private void pollStatus() {
+    private void pollBattery() {
         if (handler != null) {
             handler.sendEmptyMessageDelayed(MSG_CHECK_BATTERY, POLL_RATE);
         }
     }
 
-    private void printStatus(Context context) {
+    private void printBatteryStatus(Context context) {
         BatteryUtils.printStatus(context);
     }
 
@@ -212,7 +212,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
                     service.notifyClients(MSG_SET_STATUS_MONITOR, service.polling ? 1 : 0, 0);
                     break;
                 case MSG_CHECK_BATTERY:
-                    service.checkStatus();
+                    service.checkBatteryStatus();
                     break;
                 case MSG_BATTERY_CHANGED:
                     service.onBatteryPlugged(msg.arg1);
@@ -230,7 +230,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
             unpluggedSince = now;
             stopAlarm();
         } else {
-            if ((now - unpluggedSince) >= ALARM_DELAY) {
+            if (polling && ((now - unpluggedSince) >= ALARM_DELAY)) {
                 playAlarm();
             } else {
                 stopAlarm();
