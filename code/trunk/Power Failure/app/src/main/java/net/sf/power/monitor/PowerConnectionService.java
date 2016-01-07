@@ -102,6 +102,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
      */
     private final List<Messenger> clients = new ArrayList<Messenger>();
     private NotificationManager notificationManager;
+    private int notificationTextId;
+    private int notificationIconId;
     private Ringtone ringtone;
     private long unpluggedSince;
     private boolean polling;
@@ -295,6 +297,11 @@ public class PowerConnectionService extends Service implements BatteryListener {
      * @param largeIconId the large icon resource id.
      */
     private void showNotification(int textId, int largeIconId) {
+        // Are we already showing the notification?
+        // Updating with same notification info causes flashing.
+        if ((notificationTextId == textId) && (notificationIconId == largeIconId)) {
+            return;
+        }
         Context context = this;
         Resources res = context.getResources();
 
@@ -307,6 +314,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         // Set the info for the views that show in the notification panel.
         Notification notification = new Notification.Builder(this)
                 .setOngoing(true)
+                .setOnlyAlertOnce(true)
                 .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
                 .setSmallIcon(R.drawable.stat_launcher)  // the status icon
                 .setTicker(text)  // the status text
@@ -318,6 +326,9 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         // Send the notification.
         notificationManager.notify(ID_NOTIFY, notification);
+
+        this.notificationTextId = textId;
+        this.notificationIconId = largeIconId;
     }
 
     private PendingIntent createActivityIntent(Context context) {
