@@ -2,7 +2,7 @@
 <resources>
 
     <color name="transparent">@android:color/transparent</color>
-    <color name="black">@android:color/black</color>
+    <!--color name="black">@android:color/black</color-->
     <color name="yellow">#ffff00</color>
     <color name="white">@android:color/white</color>
 

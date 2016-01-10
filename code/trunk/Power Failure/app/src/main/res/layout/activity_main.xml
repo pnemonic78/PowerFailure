@@ -14,5 +14,6 @@
         android:id="@+id/plugged"
         android:layout_width="@dimen/power_size"
         android:layout_height="@dimen/power_size"
+        android:contentDescription="@string/plugged_unknown"
         android:src="@drawable/power"/>
 </LinearLayout>
