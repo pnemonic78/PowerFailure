@@ -302,6 +302,9 @@ public class PowerConnectionService extends Service implements BatteryListener {
         if ((notificationTextId == textId) && (notificationIconId == largeIconId)) {
             return;
         }
+        this.notificationTextId = textId;
+        this.notificationIconId = largeIconId;
+
         Context context = this;
         Resources res = context.getResources();
 
@@ -326,9 +329,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         // Send the notification.
         notificationManager.notify(ID_NOTIFY, notification);
-
-        this.notificationTextId = textId;
-        this.notificationIconId = largeIconId;
     }
 
     private PendingIntent createActivityIntent(Context context) {
@@ -344,6 +344,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
      */
     private void hideNotification() {
         notificationManager.cancel(ID_NOTIFY);
+        this.notificationTextId = 0;
+        this.notificationIconId = 0;
     }
 
     private void registerClient(Messenger client) {
