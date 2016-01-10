@@ -19,12 +19,12 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="net.sf.power.monitor.PowerConnectionReceiver">
+        <!--receiver android:name="net.sf.power.monitor.PowerConnectionReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
                 <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
             </intent-filter>
-        </receiver>
+        </receiver-->
 
         <service
             android:name="net.sf.power.monitor.PowerConnectionService"
