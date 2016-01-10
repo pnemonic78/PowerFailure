@@ -47,7 +47,7 @@ public class BatteryUtils {
     /**
      * Power source is wireless.
      */
-    public static final int BATTERY_PLUGGED_WIRELESS = BatteryManager.BATTERY_PLUGGED_WIRELESS;
+    public static final int BATTERY_PLUGGED_WIRELESS = 4;//BatteryManager.BATTERY_PLUGGED_WIRELESS;
 
     private static IntentFilter batteryFilter;
 
