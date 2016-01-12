@@ -1,0 +1,5 @@
+<resources>
+
+    <dimen name="power_gradientRadius">50dp</dimen>
+
+</resources>
