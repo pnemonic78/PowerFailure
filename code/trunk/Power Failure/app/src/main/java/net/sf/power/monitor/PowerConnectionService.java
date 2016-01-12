@@ -283,8 +283,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void stopAlarm() {
-        Context context = this;
-        Ringtone ringtone = getRingtone(context);
+        Ringtone ringtone = this.ringtone;
         if ((ringtone != null) && ringtone.isPlaying()) {
             ringtone.stop();
         }
