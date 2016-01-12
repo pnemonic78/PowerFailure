@@ -106,7 +106,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private int notificationIconId;
     private Ringtone ringtone;
     private long unpluggedSince;
-    private boolean polling;
+    private boolean logging;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -123,7 +123,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
-        showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
+        showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher);
         checkBatteryStatus();
     }
 
@@ -131,24 +131,22 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public void onDestroy() {
         super.onDestroy();
 
+        stopLogging();
         stopPolling();
         stopAlarm();
         hideNotification();
     }
 
     private void startPolling() {
-        if (!polling) {
-            Context context = this;
-            printBatteryStatus(context);
+        Context context = this;
+        printBatteryStatus(context);
+        if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
             pollBattery();
-            polling = true;
-            showNotification(R.string.polling_started, R.mipmap.ic_launcher);
         }
     }
 
     private void stopPolling() {
-        polling = false;
-        showNotification(R.string.polling_stopped, R.mipmap.ic_launcher);
+        handler.removeMessages(MSG_CHECK_BATTERY);
         if (clients.isEmpty()) {
             stopSelf();
         }
@@ -163,9 +161,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
             Message msg = handler.obtainMessage(MSG_BATTERY_CHANGED, plugged, 0);
             msg.sendToTarget();
 
-            if (polling) {
-                pollBattery();
-            }
+            pollBattery();
         }
     }
 
@@ -203,13 +199,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
                     service.unregisterClient(client);
                     break;
                 case MSG_START_MONITOR:
-                    service.startPolling();
+                    service.startLogging();
                     break;
                 case MSG_STOP_MONITOR:
-                    service.stopPolling();
+                    service.stopLogging();
                     break;
                 case MSG_GET_STATUS_MONITOR:
-                    service.notifyClients(MSG_SET_STATUS_MONITOR, service.polling ? 1 : 0, 0);
+                    service.notifyClients(MSG_SET_STATUS_MONITOR, service.logging ? 1 : 0, 0);
                     break;
                 case MSG_CHECK_BATTERY:
                     service.checkBatteryStatus();
@@ -230,7 +226,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
             unpluggedSince = now;
             stopAlarm();
         } else {
-            if (polling && ((now - unpluggedSince) >= ALARM_DELAY)) {
+            if (logging && ((now - unpluggedSince) >= ALARM_DELAY)) {
                 playAlarm();
             } else {
                 stopAlarm();
@@ -351,12 +347,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
         if (!clients.contains(client)) {
             clients.add(client);
         }
-        notifyClients(MSG_SET_STATUS_MONITOR, polling ? 1 : 0, 0);
+        notifyClients(MSG_SET_STATUS_MONITOR, logging ? 1 : 0, 0);
+        startPolling();
     }
 
     private void unregisterClient(Messenger client) {
         clients.remove(client);
-        if (clients.isEmpty() && !polling) {
+        if (clients.isEmpty() && !logging) {
             stopSelf();
         }
     }
@@ -375,6 +372,21 @@ public class PowerConnectionService extends Service implements BatteryListener {
                 clients.remove(i);
             }
         }
+    }
 
+    private void startLogging() {
+        if (!logging) {
+            logging = true;
+            //TODO implement me!
+            showNotification(R.string.monitor_started, R.mipmap.ic_launcher);
+        }
+    }
+
+    private void stopLogging() {
+        if (logging) {
+            logging = false;
+            //TODO implement me!
+            showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher);
+        }
     }
 }
