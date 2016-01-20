@@ -4,12 +4,12 @@
     <string name="app_name">Power Failure Monitor</string>
 
     <!-- Activity. -->
-    <string name="title_activity_main">@string/app_name</string>
-    <string name="start_monitor">Start monitor</string>
-    <string name="stop_monitor">Stop monitor</string>
+    <string name="title_activity_main" translatable="false">@string/app_name</string>
+    <string name="start_monitor">Start monitoring</string>
+    <string name="stop_monitor">Stop monitoring</string>
 
     <!-- Service. -->
-    <string name="title_service">@string/app_name</string>
+    <string name="title_service" translatable="false">@string/app_name</string>
     <string name="monitor_started">Monitoring for power failure started.</string>
     <string name="monitor_stopped">Monitoring for power failure stopped.</string>
     <string name="plugged_unknown">Unknown power source.</string>
