@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Application. -->
+    <string name="app_name">"พลังงานการตรวจสอบความล้มเหลว"</string>
+
+    <!-- Activity. -->
+    <string name="title_activity_main">"@ สตริง / APP_NAME"</string>
+    <string name="start_monitor">"เริ่มต้นการตรวจสอบ"</string>
+    <string name="stop_monitor">"หยุดการตรวจสอบ"</string>
+
+    <!-- Service. -->
+    <string name="title_service">"@ สตริง / APP_NAME"</string>
+    <string name="monitor_started">"การตรวจสอบสำหรับการใช้พลังงานความล้มเหลวเริ่มต้น"</string>
+    <string name="monitor_stopped">"การตรวจสอบสำหรับการใช้พลังงานความล้มเหลวหยุด"</string>
+    <string name="plugged_unknown">"แหล่งพลังงานที่ไม่รู้จัก"</string>
+    <string name="plugged_unplugged">"ปลั๊ก - แหล่งพลังงาน"</string>
+    <string name="plugged_ac">"แหล่งพลังงานเป็น AC ชาร์จ"</string>
+    <string name="plugged_usb">"แหล่งพลังงานเป็นพอร์ต USB"</string>
+    <string name="plugged_wireless">"แหล่งพลังงานเป็นแบบไร้สาย"</string>
+
+</resources>

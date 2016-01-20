@@ -1,0 +1,21 @@
+<resources>
+
+    <!-- Application. -->
+    <string name="app_name">"Power Ukwehluleka Monitor"</string>
+
+    <!-- Activity. -->
+    <string name="title_activity_main">"@ string / APP_NAME"</string>
+    <string name="start_monitor">"Qala qapha"</string>
+    <string name="stop_monitor">"Stop qapha"</string>
+
+    <!-- Service. -->
+    <string name="title_service">"@ string / APP_NAME"</string>
+    <string name="monitor_started">"Monitoring for amandla ukwehluleka waqala."</string>
+    <string name="monitor_stopped">"Monitoring for amandla ukwehluleka wayeka."</string>
+    <string name="plugged_unknown">"Wamandla Unknown."</string>
+    <string name="plugged_unplugged">"Unplugged - akukho umthombo amandla."</string>
+    <string name="plugged_ac">"Umthombo Power kuyinto ishaja AC."</string>
+    <string name="plugged_usb">"Umthombo Power yindawo USB."</string>
+    <string name="plugged_wireless">"Umthombo Power kuyinto wireless."</string>
+
+</resources>
