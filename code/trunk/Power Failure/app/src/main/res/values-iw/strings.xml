@@ -1,15 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <!-- Application. -->
     <string name="app_name">"משגיח הפסקת חשמל"</string>
 
     <!-- Activity. -->
-    <string name="title_activity_main">""</string>
     <string name="start_monitor">"התחל השגחה"</string>
     <string name="stop_monitor">"הפסיק השגחה"</string>
 
     <!-- Service. -->
-    <string name="title_service">""</string>
     <string name="monitor_started">"השגחת הפסקת חשמל החלה."</string>
     <string name="monitor_stopped">"השגחת הפסקת חשמל נעצרה."</string>
     <string name="plugged_unknown">"מקור כוח לא ידוע."</string>
