@@ -272,8 +272,8 @@ public class MainActivity extends Activity implements BatteryListener {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
 
-        menuItemStart = menu.findItem(R.id.start);
-        menuItemStop = menu.findItem(R.id.stop);
+        menuItemStart = menu.findItem(R.id.menu_start);
+        menuItemStop = menu.findItem(R.id.menu_stop);
 
         try {
             notifyService(PowerConnectionService.MSG_GET_STATUS_MONITOR);
@@ -290,11 +290,14 @@ public class MainActivity extends Activity implements BatteryListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.start:
+            case R.id.menu_start:
                 handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR);
                 return true;
-            case R.id.stop:
+            case R.id.menu_stop:
                 handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR);
+                return true;
+            case R.id.menu_settings:
+                startActivity(new Intent(this, PreferenceActivity.class));
                 return true;
         }
 
