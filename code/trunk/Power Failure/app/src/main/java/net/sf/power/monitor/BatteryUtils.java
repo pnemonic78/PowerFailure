@@ -26,7 +26,8 @@ import android.util.Log;
 
 /**
  * Battery utilities.
- * Created by moshe.w on 03/01/2016.
+ *
+ * @author Moshe Waisberg
  */
 public class BatteryUtils {
 

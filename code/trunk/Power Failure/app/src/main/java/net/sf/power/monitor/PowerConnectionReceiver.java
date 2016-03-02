@@ -24,7 +24,8 @@ import android.util.Log;
 
 /**
  * Power connection events receiver.
- * Created by moshe.w on 28/12/2015.
+ *
+ * @author Moshe Waisberg
  */
 public class PowerConnectionReceiver extends BroadcastReceiver {
 

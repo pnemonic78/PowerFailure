@@ -18,7 +18,9 @@
 package net.sf.power.monitor;
 
 /**
- * Created by moshe.w on 03/01/2016.
+ * Battery status listener interface.
+ *
+ * @author Moshe Waisberg
  */
 public interface BatteryListener {
 

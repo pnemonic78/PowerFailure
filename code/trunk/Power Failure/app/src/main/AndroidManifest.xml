@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    package="net.sf.power.monitor"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="net.sf.power.monitor">
 
     <application
         android:allowBackup="false"
@@ -14,11 +14,14 @@
             android:label="@string/title_activity_main"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="net.sf.power.monitor.PreferenceActivity"
+            android:parentActivityName="net.sf.power.monitor.MainActivity"/>
 
         <!--receiver android:name="net.sf.power.monitor.PowerConnectionReceiver">
             <intent-filter>
@@ -30,7 +33,7 @@
         <service
             android:name="net.sf.power.monitor.PowerConnectionService"
             android:exported="false"
-            android:process=":remote"/>
+            android:process=":remote" />
     </application>
 
 </manifest>

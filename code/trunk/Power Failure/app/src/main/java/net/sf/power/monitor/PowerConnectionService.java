@@ -44,7 +44,8 @@ import java.util.List;
 
 /**
  * Power connection events service.
- * Created by moshe.w on 03/01/2016.
+ *
+ * @author Moshe Waisberg
  */
 public class PowerConnectionService extends Service implements BatteryListener {
 

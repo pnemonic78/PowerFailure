@@ -34,6 +34,11 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * Main activity.
+ *
+ * @author Moshe Waisberg
+ */
 public class MainActivity extends Activity implements BatteryListener {
 
     private static final String TAG = "MainActivity";
