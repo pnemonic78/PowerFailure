@@ -155,6 +155,7 @@ public class MainActivity extends Activity implements BatteryListener {
         private static final int MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR;
         private static final int MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR;
         private static final int MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR;
+        private static final int MSG_SETTINGS = 1000;
 
         private final WeakReference<MainActivity> activity;
 
@@ -181,6 +182,9 @@ public class MainActivity extends Activity implements BatteryListener {
                     break;
                 case MSG_SET_STATUS_MONITOR:
                     activity.setMonitorStatus(msg.arg1 != 0);
+                    break;
+                case MSG_SETTINGS:
+                    activity.startActivity(new Intent(activity, PreferenceActivity.class));
                     break;
                 default:
                     super.handleMessage(msg);
@@ -297,7 +301,7 @@ public class MainActivity extends Activity implements BatteryListener {
                 handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR);
                 return true;
             case R.id.menu_settings:
-                startActivity(new Intent(this, PreferenceActivity.class));
+                handler.sendEmptyMessage(MainHandler.MSG_SETTINGS);
                 return true;
         }
 
