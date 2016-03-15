@@ -1,4 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
+    <ListPreference
+        android:defaultValue="@string/ringtone_stream_defaultValue"
+        android:entries="@array/ringtone_stream_entries"
+        android:entryValues="@array/ringtone_stream_values"
+        android:icon="@drawable/ic_settings_alarm"
+        android:key="ringtone.stream"
+        android:title="@string/ringtone_stream_title"/>
+    <net.sf.preference.RingtonePreference
+        android:defaultValue="@string/ringtone_tone_defaultValue"
+        android:icon="@drawable/ic_settings_tone"
+        android:key="ringtone.tone"
+        android:ringtoneType="alarm"
+        android:showDefault="true"
+        android:showSilent="true"
+        android:title="@string/ringtone_tone"/>
+    <!--CheckBoxPreference
+        android:defaultValue="@bool/vibrate_defaultValue"
+        android:key="vibrate"
+        android:title="@string/vibrate_title"/-->
 </PreferenceScreen>
