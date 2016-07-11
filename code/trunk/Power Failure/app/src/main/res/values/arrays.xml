@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string-array name="ringtone_stream_values" translatable="false">
-        <item>@string/ringtone_stream_value_alarm</item>
-        <item>@string/ringtone_stream_value_notification</item>
+    <string-array name="ringtone_type_values" translatable="false">
+        <item>@string/ringtone_type_value_alarm</item>
+        <item>@string/ringtone_type_value_notification</item>
     </string-array>
-    <string-array name="ringtone_stream_entries" translatable="false">
+    <string-array name="ringtone_type_entries" translatable="false">
         <item>@string/ringtone_stream_alarm</item>
         <item>@string/ringtone_stream_notification</item>
     </string-array>

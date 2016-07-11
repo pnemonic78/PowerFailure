@@ -17,15 +17,21 @@
  */
 package net.sf.power.monitor.preference;
 
+import android.media.RingtoneManager;
 import android.os.Bundle;
+import android.preference.ListPreference;
+import android.text.TextUtils;
 
 import net.sf.power.monitor.R;
 import net.sf.preference.AbstractPreferenceFragment;
+import net.sf.preference.RingtonePreference;
 
 /**
  * This fragment shows the preferences for the General header.
  */
 public class GeneralPreferenceFragment extends AbstractPreferenceFragment {
+
+    private RingtonePreference reminderRingtonePreference;
 
     @Override
     protected int getPreferencesXml() {
@@ -35,5 +41,21 @@ public class GeneralPreferenceFragment extends AbstractPreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE);
+
+        initList(PowerPreferences.KEY_RINGTONE_TYPE);
+    }
+
+    @Override
+    protected void onListPreferenceChange(ListPreference preference, Object newValue) {
+        super.onListPreferenceChange(preference, newValue);
+
+        String key = preference.getKey();
+        if (PowerPreferences.KEY_RINGTONE_TYPE.equals(key) && (reminderRingtonePreference != null)) {
+            String value = newValue.toString();
+            int ringType = TextUtils.isEmpty(value) ? RingtoneManager.TYPE_ALARM : Integer.parseInt(value);
+            reminderRingtonePreference.setRingtoneType(ringType);
+        }
     }
 }

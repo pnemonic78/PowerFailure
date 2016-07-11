@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="ringtone_stream_value_alarm" translatable="false">4</string>
-    <string name="ringtone_stream_value_notification" translatable="false">5</string>
-    <string name="ringtone_stream_defaultValue" translatable="false">@string/ringtone_stream_value_alarm</string>
+    <string name="ringtone_type_value_alarm" translatable="false">4</string>
+    <string name="ringtone_type_value_notification" translatable="false">2</string>
+    <string name="ringtone_type_defaultValue" translatable="false">@string/ringtone_type_value_alarm</string>
     <string name="ringtone_tone_defaultValue" translatable="false">content://settings/system/alarm_alert</string>
     <string name="ringtone_defaultValue" translatable="false"/>
 

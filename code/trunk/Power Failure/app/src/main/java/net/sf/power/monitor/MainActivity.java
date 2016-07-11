@@ -32,6 +32,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 
+import net.sf.power.monitor.preference.PreferenceActivity;
+
 import java.lang.ref.WeakReference;
 
 /**

@@ -15,12 +15,14 @@
  *   Moshe Waisberg
  *
  */
-package net.sf.power.monitor;
+package net.sf.power.monitor.preference;
 
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
+
+import net.sf.power.monitor.R;
 
 import java.util.List;
 
