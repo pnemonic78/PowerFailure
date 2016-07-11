@@ -2,8 +2,7 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/power_unknown_bg"/>
     <item>
-        <shape
-            android:shape="oval">
+        <shape android:shape="oval">
             <stroke
                 android:width="2dp"
                 android:color="@color/unknown_border"/>

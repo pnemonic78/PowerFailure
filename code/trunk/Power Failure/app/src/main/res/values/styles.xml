@@ -2,7 +2,6 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="Theme.PowerFailure" parent="android:Theme.DeviceDefault">
-    </style>
+    <style name="Theme.PowerFailure" parent="android:Theme.DeviceDefault"></style>
 
 </resources>
