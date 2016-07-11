@@ -369,7 +369,7 @@ public class RingtonePreference extends DialogPreference {
         } else if (position == defaultRingtonePos) {
             ringtone = defaultRingtone;
         } else {
-            ringtone = ringtoneManager.getRingtone(getContext(), getRingtoneUri(position));
+            ringtone = RingtoneManager.getRingtone(getContext(), getRingtoneUri(position));
         }
 
         if (ringtone != null) {

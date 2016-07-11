@@ -28,7 +28,6 @@ import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -37,6 +36,8 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.text.format.DateUtils;
 import android.util.Log;
+
+import net.sf.power.monitor.preference.PowerPreferences;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -108,6 +109,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private Ringtone ringtone;
     private long unpluggedSince;
     private boolean logging;
+    private PowerPreferences settings;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -121,6 +123,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         handler = new PowerConnectionHandler(this);
         messenger = new Messenger(handler);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        settings = new PowerPreferences(this);
 
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
@@ -256,25 +259,14 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private Ringtone getRingtone(Context context) {
-        if (ringtone == null) {
-            Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
-            ringtone = RingtoneManager.getRingtone(context, uri);
-            if (ringtone == null) {
-                uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                ringtone = RingtoneManager.getRingtone(context, uri);
-                if (ringtone == null) {
-                    uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
-                    ringtone = RingtoneManager.getRingtone(context, uri);
-                }
-            }
-        }
-        return ringtone;
+        return RingtoneManager.getRingtone(context, settings.getReminderRingtone());
     }
 
     private void playAlarm() {
         Context context = this;
         Ringtone ringtone = getRingtone(context);
         if ((ringtone != null) && !ringtone.isPlaying()) {
+            this.ringtone = ringtone;
             ringtone.play();
         }
     }
