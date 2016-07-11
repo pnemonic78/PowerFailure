@@ -19,7 +19,6 @@
  */
 package net.sf.preference;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentUris;
@@ -29,7 +28,6 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.preference.Preference;
