@@ -34,6 +34,7 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
 import android.os.SystemClock;
+import android.os.Vibrator;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -91,8 +92,10 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public static final int MSG_BATTERY_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
-    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 15;
+    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 15;//TODO make this a preference
     private static final int ID_NOTIFY = R.string.start_monitor;
+
+    private static final long[] VIBRATE_PATTERN = {DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS};
 
     private Handler handler;
     /**
@@ -110,6 +113,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private long unpluggedSince;
     private boolean logging;
     private PowerPreferences settings;
+    private boolean vibrating;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -229,12 +233,10 @@ public class PowerConnectionService extends Service implements BatteryListener {
         if (plugged != BATTERY_PLUGGED_NONE) {
             unpluggedSince = now;
             stopAlarm();
+        } else if (logging && ((now - unpluggedSince) >= ALARM_DELAY)) {
+            playAlarm();
         } else {
-            if (logging && ((now - unpluggedSince) >= ALARM_DELAY)) {
-                playAlarm();
-            } else {
-                stopAlarm();
-            }
+            stopAlarm();
         }
 
         switch (plugged) {
@@ -264,6 +266,11 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private void playAlarm() {
         Context context = this;
+        playTone(context);
+        vibrate(context, settings.isVibrate());
+    }
+
+    private void playTone(Context context) {
         Ringtone ringtone = getRingtone(context);
         if ((ringtone != null) && !ringtone.isPlaying()) {
             this.ringtone = ringtone;
@@ -272,6 +279,12 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void stopAlarm() {
+        Context context = this;
+        stopTone();
+        vibrate(context, false);
+    }
+
+    private void stopTone() {
         Ringtone ringtone = this.ringtone;
         if ((ringtone != null) && ringtone.isPlaying()) {
             ringtone.stop();
@@ -370,16 +383,35 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private void startLogging() {
         if (!logging) {
             logging = true;
-            //TODO implement me!
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher);
+            //TODO Write logs.
         }
     }
 
     private void stopLogging() {
         if (logging) {
             logging = false;
-            //TODO implement me!
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher);
+            //TODO Write logs.
+        }
+    }
+
+    /**
+     * Vibrate the device.
+     *
+     * @param context the context.
+     * @param vibrate {@code true} to start vibrating - {@code false} to stop.
+     */
+    private void vibrate(Context context, boolean vibrate) {
+        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+        if (vibrate) {
+            if (!vibrating && vibrator.hasVibrator()) {
+                vibrating = true;
+                vibrator.vibrate(VIBRATE_PATTERN, 0);
+            }
+        } else if (vibrating) {
+            vibrating = false;
+            vibrator.cancel();
         }
     }
 }

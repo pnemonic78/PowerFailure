@@ -40,6 +40,10 @@ public class PowerPreferences extends SimplePreferences {
      * Preference name for the reminder ringtone.
      */
     public static final String KEY_RINGTONE_TONE = "ringtone.tone";
+    /**
+     * Preference name for vibration.
+     */
+    public static final String KEY_VIBRATE = "vibrate";
 
     /**
      * Constructs a new settings.
@@ -79,4 +83,12 @@ public class PowerPreferences extends SimplePreferences {
         return TextUtils.isEmpty(path) ? null : Uri.parse(path);
     }
 
+    /**
+     * Get the reminder ringtone type.
+     *
+     * @return the ringtone type. One of {@link RingtoneManager#TYPE_ALARM} or {@link RingtoneManager#TYPE_NOTIFICATION}.
+     */
+    public boolean isVibrate() {
+        return preferences.getBoolean(KEY_VIBRATE, context.getResources().getBoolean(R.bool.vibrate_defaultValue));
+    }
 }

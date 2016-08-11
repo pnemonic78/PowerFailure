@@ -7,4 +7,6 @@
     <string name="ringtone_tone_defaultValue" translatable="false">content://settings/system/alarm_alert</string>
     <string name="ringtone_defaultValue" translatable="false"/>
 
+    <bool name="vibrate_defaultValue" translatable="false">true</bool>
+
 </resources>

@@ -15,8 +15,8 @@
         android:showDefault="true"
         android:showSilent="true"
         android:title="@string/ringtone_tone"/>
-    <!--CheckBoxPreference
+    <CheckBoxPreference
         android:defaultValue="@bool/vibrate_defaultValue"
         android:key="vibrate"
-        android:title="@string/vibrate_title"/-->
+        android:title="@string/vibrate_title"/>
 </PreferenceScreen>
