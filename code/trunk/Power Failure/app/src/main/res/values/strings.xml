@@ -34,4 +34,21 @@
     <!-- Vibration -->
     <string name="vibrate_title">Vibrate</string>
 
+    <!-- Delay -->
+    <string name="delay_title">Delay</string>
+    <string name="delay_summary_zero">@string/delay_summary_other</string>
+    <string name="delay_summary_one">%1$d second</string>
+    <string name="delay_summary_two">@string/delay_summary_other</string>
+    <string name="delay_summary_few">@string/delay_summary_other</string>
+    <string name="delay_summary_many">@string/delay_summary_other</string>
+    <string name="delay_summary_other">%1$d seconds</string>
+    <plurals name="delay_summary" translatable="false">
+        <item quantity="zero">@string/delay_summary_zero</item>
+        <item quantity="one">@string/delay_summary_one</item>
+        <item quantity="two">@string/delay_summary_two</item>
+        <item quantity="few">@string/delay_summary_few</item>
+        <item quantity="many">@string/delay_summary_many</item>
+        <item quantity="other">@string/delay_summary_other</item>
+    </plurals>
+
 </resources>

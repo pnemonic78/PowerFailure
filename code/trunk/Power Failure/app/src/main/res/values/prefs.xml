@@ -9,4 +9,6 @@
 
     <bool name="vibrate_defaultValue" translatable="false">true</bool>
 
+    <integer name="delay_defaultValue">15</integer>
+
 </resources>

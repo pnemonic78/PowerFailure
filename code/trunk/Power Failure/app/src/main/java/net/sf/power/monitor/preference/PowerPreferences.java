@@ -20,6 +20,7 @@ package net.sf.power.monitor.preference;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
 
 import net.sf.media.RingtoneManager;
 import net.sf.power.monitor.R;
@@ -44,6 +45,10 @@ public class PowerPreferences extends SimplePreferences {
      * Preference name for vibration.
      */
     public static final String KEY_VIBRATE = "vibrate";
+    /**
+     * Preference name for delay (seconds).
+     */
+    public static final String KEY_DELAY = "delay";
 
     /**
      * Constructs a new settings.
@@ -55,22 +60,22 @@ public class PowerPreferences extends SimplePreferences {
     }
 
     /**
-     * Get the reminder ringtone type.
+     * Get the ringtone type.
      *
      * @return the ringtone type. One of {@link RingtoneManager#TYPE_ALARM} or {@link RingtoneManager#TYPE_NOTIFICATION}.
      */
-    public int getReminderType() {
+    public int getRingtoneType() {
         return Integer.parseInt(preferences.getString(KEY_RINGTONE_TYPE, context.getString(R.string.ringtone_type_defaultValue)));
     }
 
     /**
-     * Get the reminder ringtone.
+     * Get the ringtone.
      *
      * @return the ringtone.
      * @see RingtoneManager#getDefaultUri(int)
      */
-    public Uri getReminderRingtone() {
-        int type = getReminderType();
+    public Uri getRingtone() {
+        int type = getRingtoneType();
         String path = preferences.getString(KEY_RINGTONE_TONE, RingtoneManager.DEFAULT_PATH);
         if (path == RingtoneManager.DEFAULT_PATH) {
             path = RingtoneManager.getDefaultUri(type).toString();
@@ -84,11 +89,20 @@ public class PowerPreferences extends SimplePreferences {
     }
 
     /**
-     * Get the reminder ringtone type.
+     * Vibrate the device when power disconnected?
      *
-     * @return the ringtone type. One of {@link RingtoneManager#TYPE_ALARM} or {@link RingtoneManager#TYPE_NOTIFICATION}.
+     * @return {@code true} to vibrate.
      */
     public boolean isVibrate() {
         return preferences.getBoolean(KEY_VIBRATE, context.getResources().getBoolean(R.bool.vibrate_defaultValue));
+    }
+
+    /**
+     * Get the time delay after the power is disconnected to when to notify about the disconnection.
+     *
+     * @return the time in milliseconds.
+     */
+    public long getTimeDelay() {
+        return preferences.getInt(KEY_DELAY, context.getResources().getInteger(R.integer.delay_defaultValue)) * DateUtils.SECOND_IN_MILLIS;
     }
 }

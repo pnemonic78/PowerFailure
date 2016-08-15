@@ -25,6 +25,7 @@ import android.text.TextUtils;
 import net.sf.power.monitor.R;
 import net.sf.preference.AbstractPreferenceFragment;
 import net.sf.preference.RingtonePreference;
+import net.sf.preference.SeekBarDialogPreference;
 
 /**
  * This fragment shows the preferences for the General header.
@@ -41,6 +42,10 @@ public class GeneralPreferenceFragment extends AbstractPreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SeekBarDialogPreference seek = (SeekBarDialogPreference) findPreference(PowerPreferences.KEY_DELAY);
+        seek.setSummaryFormat(R.plurals.delay_summary);
+        seek.setOnPreferenceChangeListener(this);
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE);
 

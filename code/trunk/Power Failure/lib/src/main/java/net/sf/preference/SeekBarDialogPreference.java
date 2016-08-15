@@ -41,9 +41,13 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     private boolean progressSet;
     private int summaryFormat;
     private Object[] summaryArgs;
-    /** Seek bar in the dialog. */
+    /**
+     * Seek bar in the dialog.
+     */
     private SeekBar seekBar;
-    /** Summary view in the dialog. */
+    /**
+     * Summary view in the dialog.
+     */
     private TextView summaryView;
 
     public SeekBarDialogPreference(Context context, AttributeSet attrs) {
@@ -89,8 +93,7 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     /**
      * Set the range of the progress bar to {@code 0}...{@code max}.
      *
-     * @param max
-     *         the upper range of this progress bar.
+     * @param max the upper range of this progress bar.
      */
     public void setMax(int max) {
         this.max = max;
@@ -110,8 +113,7 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     /**
      * Saves the progress to the {@link SharedPreferences}.
      *
-     * @param progress
-     *         the progress.
+     * @param progress the progress.
      */
     public void setProgress(int progress) {
         // Always persist/notify the first time; don't assume the field's
@@ -165,9 +167,14 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-        if ((this.seekBar == seekBar) && (summaryFormat != 0) && (summaryView != null)) {
-            summaryArgs[0] = progress;
-            CharSequence summary = resources.getQuantityString(summaryFormat, progress, summaryArgs);
+        if ((this.seekBar == seekBar) && (summaryView != null)) {
+            CharSequence summary;
+            if (summaryFormat != 0) {
+                summaryArgs[0] = progress;
+                summary = resources.getQuantityString(summaryFormat, progress, summaryArgs);
+            } else {
+                summary = Integer.toString(progress);
+            }
             summaryView.setText(summary);
         }
     }
@@ -183,10 +190,8 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     /**
      * Set the summary format.
      *
-     * @param pluralId
-     *         the plural id for quantity.
-     * @param args
-     *         the plural arguments.
+     * @param pluralId the plural id for quantity.
+     * @param args     the plural arguments.
      */
     public void setSummaryFormat(int pluralId, Object... args) {
         summaryFormat = pluralId;

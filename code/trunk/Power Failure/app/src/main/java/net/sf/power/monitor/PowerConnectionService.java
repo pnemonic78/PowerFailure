@@ -92,7 +92,6 @@ public class PowerConnectionService extends Service implements BatteryListener {
     public static final int MSG_BATTERY_CHANGED = 11;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
-    private static final long ALARM_DELAY = DateUtils.SECOND_IN_MILLIS * 15;//TODO make this a preference
     private static final int ID_NOTIFY = R.string.start_monitor;
 
     private static final long[] VIBRATE_PATTERN = {DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS};
@@ -233,7 +232,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         if (plugged != BATTERY_PLUGGED_NONE) {
             unpluggedSince = now;
             stopAlarm();
-        } else if (logging && ((now - unpluggedSince) >= ALARM_DELAY)) {
+        } else if (logging && ((now - unpluggedSince) >= settings.getTimeDelay())) {
             playAlarm();
         } else {
             stopAlarm();
@@ -261,7 +260,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private Ringtone getRingtone(Context context) {
-        return RingtoneManager.getRingtone(context, settings.getReminderRingtone());
+        return RingtoneManager.getRingtone(context, settings.getRingtone());
     }
 
     private void playAlarm() {
