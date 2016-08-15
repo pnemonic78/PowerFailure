@@ -44,7 +44,7 @@ public class PreferenceActivity extends android.preference.PreferenceActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //TODO setTheme(R.style.Theme_Power_Settings);
+        setTheme(R.style.Theme_PowerFailure_Settings);
         super.onCreate(savedInstanceState);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
