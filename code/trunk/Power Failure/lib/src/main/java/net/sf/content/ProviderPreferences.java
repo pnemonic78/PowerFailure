@@ -289,16 +289,18 @@ public class ProviderPreferences implements SharedPreferences, SharedPreferences
 
     @Override
     public boolean commit() {
-        apply();
-        return true;
+        try {
+            resolver.applyBatch(Preferences.getAuthority(context), ops);
+            ops.clear();
+            return true;
+        } catch (RemoteException | OperationApplicationException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     @Override
     public void apply() {
-        try {
-            resolver.applyBatch(Preferences.getAuthority(context), ops);
-        } catch (RemoteException | OperationApplicationException e) {
-            e.printStackTrace();
-        }
+        commit();
     }
 }
