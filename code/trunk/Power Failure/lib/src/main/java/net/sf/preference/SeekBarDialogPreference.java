@@ -156,10 +156,7 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
 
         if (positiveResult) {
             int progress = seekBar.getProgress();
-            if (callChangeListener(progress) && (summaryFormat != 0)) {
-                summaryArgs[0] = progress;
-                updateSummary();
-
+            if (callChangeListener(progress)) {
                 setProgress(progress);
             }
         }
@@ -168,14 +165,8 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if ((this.seekBar == seekBar) && (summaryView != null)) {
-            CharSequence summary;
-            if (summaryFormat != 0) {
-                summaryArgs[0] = progress;
-                summary = resources.getQuantityString(summaryFormat, progress, summaryArgs);
-            } else {
-                summary = Integer.toString(progress);
-            }
-            summaryView.setText(summary);
+            summaryArgs[0] = progress;
+            updateSummary();
         }
     }
 
@@ -207,7 +198,12 @@ public class SeekBarDialogPreference extends DialogPreference implements OnSeekB
     }
 
     private void updateSummary() {
-        CharSequence summary = resources.getQuantityString(summaryFormat, progress, summaryArgs);
+        CharSequence summary;
+        if (summaryFormat != 0) {
+            summary = resources.getQuantityString(summaryFormat, progress, summaryArgs);
+        } else {
+            summary = summaryArgs[0].toString();
+        }
         setSummary(summary);
         if (summaryView != null) {
             summaryView.setText(summary);

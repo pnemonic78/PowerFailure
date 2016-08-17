@@ -9,7 +9,7 @@
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
  *
- * https://sourceforge.net/projects/power-failure/
+ * https://sourceforge.net/projects/power-failure
  *
  * Contributor(s):
  *   Moshe Waisberg

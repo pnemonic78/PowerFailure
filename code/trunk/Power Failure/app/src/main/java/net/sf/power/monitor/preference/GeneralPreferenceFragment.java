@@ -48,8 +48,9 @@ public class GeneralPreferenceFragment extends AbstractPreferenceFragment {
         seek.setOnPreferenceChangeListener(this);
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE);
-
         initList(PowerPreferences.KEY_RINGTONE_TYPE);
+
+        findPreference(PowerPreferences.KEY_VIBRATE).setOnPreferenceChangeListener(this);
     }
 
     @Override

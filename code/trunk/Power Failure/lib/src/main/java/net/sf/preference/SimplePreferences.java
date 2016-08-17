@@ -21,7 +21,8 @@ package net.sf.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import net.sf.content.ProviderPreferences;
 
 /**
  * Application settings.
@@ -36,15 +37,11 @@ public class SimplePreferences {
     /**
      * Constructs a new settings.
      *
-     * @param context
-     *         the context.
+     * @param context the context.
      */
     public SimplePreferences(Context context) {
-        Context app = context.getApplicationContext();
-        if (app != null)
-            context = app;
         this.context = context;
-        this.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        this.preferences = new ProviderPreferences(context);
     }
 
     /**
