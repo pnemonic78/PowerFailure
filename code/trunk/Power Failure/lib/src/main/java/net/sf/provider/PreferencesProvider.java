@@ -60,6 +60,7 @@ public class PreferencesProvider extends ContentProvider {
         delegate = PreferenceManager.getDefaultSharedPreferences(context);
 
         String authority = Preferences.getAuthority(context);
+        uriMatcher.addURI(authority, "", ALL);
         uriMatcher.addURI(authority, "all", ALL);
         uriMatcher.addURI(authority, "all/*", ALL_KEY);
         uriMatcher.addURI(authority, "boolean/*", BOOLEAN);

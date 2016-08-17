@@ -280,7 +280,7 @@ public class ProviderPreferences implements SharedPreferences, SharedPreferences
 
     @Override
     public Editor clear() {
-        Uri uri = contentUri.buildUpon().appendPath(Preferences.ALL).build();
+        Uri uri = contentUri;
         ContentProviderOperation op = ContentProviderOperation.newDelete(uri)
                 .build();
         ops.add(op);
