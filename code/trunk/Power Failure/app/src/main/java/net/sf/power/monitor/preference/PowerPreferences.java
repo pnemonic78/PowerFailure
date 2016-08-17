@@ -9,7 +9,7 @@
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
  *
- * https://sourceforge.net/projects/power-failure/
+ * https://sourceforge.net/projects/power-failure
  *
  * Contributor(s):
  *   Moshe Waisberg
@@ -49,6 +49,11 @@ public class PowerPreferences extends SimplePreferences {
      * Preference name for delay (seconds).
      */
     public static final String KEY_DELAY = "delay";
+
+    /**
+     * Action that the shared preferences have changed.
+     */
+    public static final String ACTION_PREFERENCES_CHANGED = "net.sf.power.monitor.action.PREFERENCES_CHANGED";
 
     /**
      * Constructs a new settings.

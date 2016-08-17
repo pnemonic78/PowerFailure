@@ -9,7 +9,7 @@
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
  *
- * https://sourceforge.net/projects/power-failure/
+ * https://sourceforge.net/projects/power-failure
  *
  * Contributor(s):
  *   Moshe Waisberg
@@ -23,14 +23,13 @@ import android.preference.ListPreference;
 import android.text.TextUtils;
 
 import net.sf.power.monitor.R;
-import net.sf.preference.AbstractPreferenceFragment;
 import net.sf.preference.RingtonePreference;
 import net.sf.preference.SeekBarDialogPreference;
 
 /**
  * This fragment shows the preferences for the General header.
  */
-public class GeneralPreferenceFragment extends AbstractPreferenceFragment {
+public class GeneralPreferenceFragment extends PowerPreferenceFragment {
 
     private RingtonePreference reminderRingtonePreference;
 

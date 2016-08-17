@@ -9,7 +9,7 @@
  *
  * Contributors can be contacted by electronic mail via the project Web pages:
  *
- * https://sourceforge.net/projects/power-failure/
+ * https://sourceforge.net/projects/power-failure
  *
  * Contributor(s):
  *   Moshe Waisberg
@@ -23,12 +23,11 @@ import android.os.Bundle;
 import android.preference.Preference;
 
 import net.sf.power.monitor.R;
-import net.sf.preference.AbstractPreferenceFragment;
 
 /**
  * This fragment shows the preferences for the About header.
  */
-public class AboutPreferenceFragment extends AbstractPreferenceFragment {
+public class AboutPreferenceFragment extends PowerPreferenceFragment {
 
     @Override
     protected int getPreferencesXml() {

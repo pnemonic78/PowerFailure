@@ -21,13 +21,16 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -90,6 +93,10 @@ public class PowerConnectionService extends Service implements BatteryListener {
      * Command to the clients that the battery status has been changed.
      */
     public static final int MSG_BATTERY_CHANGED = 11;
+    /**
+     * Command to the service that the shared preferences have changed.
+     */
+    public static final int MSG_PREFERENCES_CHANGED = 20;
 
     private static final long POLL_RATE = DateUtils.SECOND_IN_MILLIS;
     private static final int ID_NOTIFY = R.string.start_monitor;
@@ -113,6 +120,19 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private boolean logging;
     private PowerPreferences settings;
     private boolean vibrating;
+    private long prefTimeDelay;
+    private Uri prefRingtone;
+    private boolean prefVibrate;
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (PowerPreferences.ACTION_PREFERENCES_CHANGED.equals(action)) {
+                Message.obtain(handler, MSG_PREFERENCES_CHANGED).sendToTarget();
+            }
+        }
+    };
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -128,6 +148,11 @@ public class PowerConnectionService extends Service implements BatteryListener {
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         settings = new PowerPreferences(this);
 
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED);
+        registerReceiver(receiver, filter);
+        onPreferencesChanged();
+
         stopAlarm();
         // Display a notification about us starting.  We put an icon in the status bar.
         showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher);
@@ -142,6 +167,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         stopPolling();
         stopAlarm();
         hideNotification();
+        unregisterReceiver(receiver);
     }
 
     private void startPolling() {
@@ -219,6 +245,10 @@ public class PowerConnectionService extends Service implements BatteryListener {
                     break;
                 case MSG_BATTERY_CHANGED:
                     service.onBatteryPlugged(msg.arg1);
+                    break;
+                case MSG_PREFERENCES_CHANGED:
+                    service.onPreferencesChanged();
+                    break;
                 default:
                     super.handleMessage(msg);
             }
@@ -232,7 +262,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         if (plugged != BATTERY_PLUGGED_NONE) {
             unpluggedSince = now;
             stopAlarm();
-        } else if (logging && ((now - unpluggedSince) >= settings.getTimeDelay())) {
+        } else if (logging && ((now - unpluggedSince) >= prefTimeDelay)) {
             playAlarm();
         } else {
             stopAlarm();
@@ -260,13 +290,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private Ringtone getRingtone(Context context) {
-        return RingtoneManager.getRingtone(context, settings.getRingtone());
+        return RingtoneManager.getRingtone(context, prefRingtone);
     }
 
     private void playAlarm() {
         Context context = this;
         playTone(context);
-        vibrate(context, settings.isVibrate());
+        vibrate(context, prefVibrate);
     }
 
     private void playTone(Context context) {
@@ -412,5 +442,11 @@ public class PowerConnectionService extends Service implements BatteryListener {
             vibrating = false;
             vibrator.cancel();
         }
+    }
+
+    private void onPreferencesChanged() {
+        prefTimeDelay = settings.getTimeDelay();
+        prefRingtone = settings.getRingtone();
+        prefVibrate = settings.isVibrate();
     }
 }
