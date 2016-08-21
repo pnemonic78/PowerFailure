@@ -9,7 +9,6 @@
     <string name="stop_monitor">"Stop monitor"</string>
 
     <!-- Service. -->
-    <string name="title_service">"@string/app_name"</string>
     <string name="monitor_started">"Monitoring for power failure started."</string>
     <string name="monitor_stopped">"Monitoring for power failure stopped."</string>
     <string name="plugged_unknown">"Unknown power source."</string>
