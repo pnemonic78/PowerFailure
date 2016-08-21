@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <net.sf.preference.SeekBarDialogPreference
+    <ListPreference
         android:defaultValue="@integer/delay_defaultValue"
-        android:dialogTitle="@string/delay_title"
+        android:entries="@array/delay_entries"
+        android:entryValues="@array/delay_values"
         android:icon="@drawable/ic_settings_alarm"
         android:key="delay"
-        android:max="60"
-        android:negativeButtonText="@string/cancel"
-        android:positiveButtonText="@string/ok"
         android:title="@string/delay_title"/>
     <ListPreference
         android:defaultValue="@string/ringtone_type_defaultValue"
