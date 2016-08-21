@@ -17,4 +17,40 @@
     <string name="plugged_usb">"แหล่งพลังงานเป็นพอร์ต USB"</string>
     <string name="plugged_wireless">"แหล่งพลังงานเป็นแบบไร้สาย"</string>
 
+    <!-- About -->
+    <string name="version_title">Application version</string>
+
+    <!-- Delay -->
+    <string name="delay_1_second">1 second</string>
+    <string name="delay_2_seconds">2 seconds</string>
+    <string name="delay_3_seconds">3 seconds</string>
+    <string name="delay_4_seconds">4 seconds</string>
+    <string name="delay_5_seconds">5 seconds</string>
+    <string name="delay_10_seconds">10 seconds</string>
+    <string name="delay_15_seconds">15 seconds</string>
+    <string name="delay_30_seconds">30 seconds</string>
+    <string name="delay_1_minute">1 minute</string>
+    <string name="delay_2_minutes">2 minutes</string>
+    <string name="delay_5_minutes">5 minutes</string>
+    <string name="delay_10_minutes">10 minutes</string>
+    <string name="delay_15_minutes">15 minutes</string>
+
+    <!-- Ringtone -->
+    <string name="ringtone_stream_title">Ringtone type</string>
+    <string name="ringtone_tone">Ringtone</string>
+    <string name="alarm_volume_title">Alarm</string>
+    <string name="notification_volume_title">Notification</string>
+
+    <!-- Vibration -->
+    <string name="vibrate_title">Vibrate</string>
+
+    <!-- Delay -->
+    <string name="delay_title">Delay</string>
+    <string name="delay_summary_zero">@string/delay_summary_other</string>
+    <string name="delay_summary_one">%1$d second</string>
+    <string name="delay_summary_two">@string/delay_summary_other</string>
+    <string name="delay_summary_few">@string/delay_summary_other</string>
+    <string name="delay_summary_many">@string/delay_summary_other</string>
+    <string name="delay_summary_other">%1$d seconds</string>
+
 </resources>
