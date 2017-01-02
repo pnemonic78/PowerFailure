@@ -21,6 +21,7 @@ package net.sf.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 import net.sf.content.ProviderPreferences;
 
@@ -37,11 +38,24 @@ public class SimplePreferences {
     /**
      * Constructs a new settings.
      *
-     * @param context the context.
+     * @param context
+     *         the context.
      */
     public SimplePreferences(Context context) {
+        this(context, false);
+    }
+
+    /**
+     * Constructs a new settings.
+     *
+     * @param context
+     *         the context.
+     * @param multiProcess
+     *         is the preferences used for a multi-process application?
+     */
+    public SimplePreferences(Context context, boolean multiProcess) {
         this.context = context;
-        this.preferences = new ProviderPreferences(context);
+        this.preferences = multiProcess ? new ProviderPreferences(context) : PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     /**

@@ -4,7 +4,8 @@
     <application>
         <provider
             android:name="net.sf.provider.PreferencesProvider"
-            android:authorities="${applicationId}.preferences" />
+            android:authorities="${applicationId}.preferences"
+            android:exported="false" />
     </application>
 
 </manifest>

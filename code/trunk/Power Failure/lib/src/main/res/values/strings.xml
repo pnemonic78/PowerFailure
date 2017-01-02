@@ -4,9 +4,11 @@
     <string name="ok" translatable="false">@android:string/ok</string>
     <string name="cancel" translatable="false">@android:string/cancel</string>
     <string name="off">Off</string>
+    <string name="add">Add</string>
 
     <!-- Date -->
     <string name="today">Today</string>
+    <string name="menu_today" translatable="false">@string/today</string>
     <string name="twelve_hour_time_format">h:mm:ss a</string>
     <string name="twenty_four_hour_time_format">HH:mm:ss</string>
     <string name="month_day_year" formatted="false">%B %-e, %Y</string>
