@@ -61,7 +61,7 @@ public class PowerPreferences extends SimplePreferences {
      * @param context the context.
      */
     public PowerPreferences(Context context) {
-        super(context);
+        super(context, true);
     }
 
     /**
