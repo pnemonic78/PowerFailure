@@ -290,7 +290,13 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private Ringtone getRingtone(Context context) {
-        return RingtoneManager.getRingtone(context, prefRingtone);
+        if (prefRingtone == null) {
+            prefRingtone = settings.getRingtone();
+        }
+        if (prefRingtone != null) {
+            return RingtoneManager.getRingtone(context, prefRingtone);
+        }
+        return null;
     }
 
     private void playAlarm() {
