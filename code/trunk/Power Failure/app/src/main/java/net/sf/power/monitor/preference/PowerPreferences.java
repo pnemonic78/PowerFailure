@@ -108,6 +108,6 @@ public class PowerPreferences extends SimplePreferences {
      * @return the time in milliseconds.
      */
     public long getTimeDelay() {
-        return preferences.getInt(KEY_DELAY, context.getResources().getInteger(R.integer.delay_defaultValue)) * DateUtils.SECOND_IN_MILLIS;
+        return Long.parseLong(preferences.getString(KEY_DELAY, context.getResources().getString(R.string.delay_defaultValue))) * DateUtils.SECOND_IN_MILLIS;
     }
 }
