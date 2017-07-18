@@ -1,21 +1,17 @@
 /*
- * Source file of the Halachic Times project.
- * Copyright (c) 2012. All Rights Reserved.
+ * Copyright 2012, Moshe Waisberg
  *
- * The contents of this file are subject to the Mozilla Public License Version
- * 2.0 (the "License"); you may not use this file except in compliance with the
- * License. You may obtain a copy of the License at
- * http://www.mozilla.org/MPL/2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * Contributors can be contacted by electronic mail via the project Web pages:
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * http://sourceforge.net/projects/halachictimes
- *
- * http://halachictimes.sourceforge.net
- *
- * Contributor(s):
- *   Moshe Waisberg
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package net.sf.preference;
 
@@ -83,7 +79,7 @@ public class RingtonePreference extends DialogPreference {
     private boolean showSilent;
     private List<CharSequence> entries;
     private List<Uri> entryValues;
-    private Uri value;
+    private Uri selected;
     private RingtoneManager ringtoneManager;
     private Ringtone ringtoneSample;
 
@@ -137,8 +133,28 @@ public class RingtonePreference extends DialogPreference {
             }
             ringtoneManager.setType(type);
 
+            // Switch to the other default tone?
+            String value = getValue();
+            boolean preserveDefault = false;
+            if (!TextUtils.isEmpty(value)) {
+                Uri valueUri = Uri.parse(value);
+                Uri defaultUri = (defaultRingtoneUri != null) ? defaultRingtoneUri : RingtoneManager.getDefaultUri(ringtoneType);
+                preserveDefault = valueUri.equals(defaultUri);
+            }
+
             defaultRingtoneUri = RingtoneManager.getDefaultUri(type);
             defaultRingtone = RingtoneManager.getRingtone(context, defaultRingtoneUri);
+
+            if (preserveDefault && (defaultRingtoneUri != null)) {
+                value = ringtoneManager.filterInternalMaybe(defaultRingtoneUri);
+                setDefaultValue(value);
+                getEntries(); // Rebuild the entries for change listener.
+                if (callChangeListener(value)) {
+                    this.selected = defaultRingtoneUri;
+                    onSaveRingtone(defaultRingtoneUri);
+                    notifyChanged();
+                }
+            }
         }
         ringtoneType = type;
 
@@ -312,7 +328,7 @@ public class RingtonePreference extends DialogPreference {
         super.onDialogClosed(positiveResult);
 
         if (positiveResult) {
-            Uri uri = value;
+            Uri uri = selected;
             if (callChangeListener(uri != null ? uri.toString() : SILENT_PATH)) {
                 onSaveRingtone(uri);
             }
@@ -332,7 +348,7 @@ public class RingtonePreference extends DialogPreference {
             entryValues = new ArrayList<>();
 
             if (showDefault) {
-                String uriPath = ringtoneManager.filterInternal(defaultRingtoneUri);
+                String uriPath = ringtoneManager.filterInternalMaybe(defaultRingtoneUri);
                 if (uriPath != null) {
                     defaultRingtonePos = entryValues.size();
                     entries.add(ringtoneManager.getDefaultTitle());
@@ -366,7 +382,7 @@ public class RingtonePreference extends DialogPreference {
     }
 
     private void playRingtone(int position, int delay) {
-        value = getRingtoneUri(position);
+        selected = getRingtoneUri(position);
 
         if (ringtoneSample != null) {
             ringtoneSample.stop();
@@ -406,7 +422,7 @@ public class RingtonePreference extends DialogPreference {
      * @return The value of the key.
      */
     public String getValue() {
-        return ringtoneManager.filterInternal(getPersistedString(DEFAULT_PATH));
+        return ringtoneManager.filterInternalMaybe(getPersistedString(DEFAULT_PATH));
     }
 
     /**
@@ -449,7 +465,7 @@ public class RingtonePreference extends DialogPreference {
         final Parcelable superState = super.onSaveInstanceState();
 
         final SavedState myState = new SavedState(superState);
-        myState.value = this.value;
+        myState.value = this.selected;
         return myState;
     }
 
@@ -463,7 +479,7 @@ public class RingtonePreference extends DialogPreference {
 
         SavedState myState = (SavedState) state;
         super.onRestoreInstanceState(myState.getSuperState());
-        this.value = myState.value;
+        this.selected = myState.value;
     }
 
     private static class SavedState extends BaseSavedState {
