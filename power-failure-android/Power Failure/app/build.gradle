@@ -43,8 +43,8 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':android-lib:lib')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation project(':android-lib:lib')
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 }

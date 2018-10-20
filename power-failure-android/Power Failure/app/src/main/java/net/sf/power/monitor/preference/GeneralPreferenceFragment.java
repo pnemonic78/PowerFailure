@@ -49,7 +49,7 @@ public class GeneralPreferenceFragment extends PowerPreferenceFragment {
     }
 
     @Override
-    protected void onListPreferenceChange(ListPreference preference, Object newValue) {
+    protected boolean onListPreferenceChange(ListPreference preference, Object newValue) {
         super.onListPreferenceChange(preference, newValue);
 
         String key = preference.getKey();
@@ -58,5 +58,6 @@ public class GeneralPreferenceFragment extends PowerPreferenceFragment {
             int ringType = TextUtils.isEmpty(value) ? RingtoneManager.TYPE_ALARM : Integer.parseInt(value);
             reminderRingtonePreference.setRingtoneType(ringType);
         }
+        return false;
     }
 }

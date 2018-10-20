@@ -14,7 +14,7 @@
         android:icon="@drawable/ic_settings_tone"
         android:key="ringtone.type"
         android:title="@string/ringtone_stream_title"/>
-    <net.sf.preference.RingtonePreference
+    <com.github.preference.RingtonePreference
         android:defaultValue="@string/ringtone_tone_defaultValue"
         android:icon="@drawable/ic_settings_tone"
         android:key="ringtone.tone"

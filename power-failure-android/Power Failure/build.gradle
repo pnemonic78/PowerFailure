@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.1'
     }
 }
 
@@ -18,7 +18,7 @@ allprojects {
 }
 
 ext {
-    androidBuildSdkVersion = 24
+    androidBuildSdkVersion = 28
     androidBuildMinSdkVersion = 15
-    androidBuildTargetSdkVersion = 24
+    androidBuildTargetSdkVersion = 28
 }
