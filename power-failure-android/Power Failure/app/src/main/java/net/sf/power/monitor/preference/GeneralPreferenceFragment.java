@@ -20,8 +20,9 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.text.TextUtils;
 
+import com.github.preference.RingtonePreference;
+
 import net.sf.power.monitor.R;
-import net.sf.preference.RingtonePreference;
 
 /**
  * This fragment shows the preferences for the General header.

@@ -19,7 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.preference.Preference;
 
-import net.sf.preference.AbstractPreferenceFragment;
+import com.github.preference.AbstractPreferenceFragment;
 
 /**
  * This fragment shows the preferences for a header.

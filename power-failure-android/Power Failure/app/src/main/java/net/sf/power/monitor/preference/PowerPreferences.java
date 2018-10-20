@@ -20,9 +20,10 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 
-import net.sf.media.RingtoneManager;
+import com.github.media.RingtoneManager;
+import com.github.preference.SimplePreferences;
+
 import net.sf.power.monitor.R;
-import net.sf.preference.SimplePreferences;
 
 /**
  * Application settings.
