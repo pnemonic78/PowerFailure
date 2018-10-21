@@ -13,30 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.power.monitor.preference;
+package net.sf.power.monitor.preference
 
-import android.content.Intent;
-import android.preference.Preference;
+import android.content.Intent
+import android.preference.Preference
 
-import com.github.preference.AbstractPreferenceFragment;
+import com.github.preference.AbstractPreferenceFragment
 
 /**
  * This fragment shows the preferences for a header.
  *
  * @author Moshe Waisberg
  */
-public abstract class PowerPreferenceFragment extends AbstractPreferenceFragment {
+abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
 
-    @Override
-    public boolean onPreferenceChange(Preference preference, Object newValue) {
-        boolean result = super.onPreferenceChange(preference, newValue);
+    override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+        val result = super.onPreferenceChange(preference, newValue)
 
         // Notify the service.
-        if (context != null) {
-            Intent intent = new Intent(PowerPreferences.ACTION_PREFERENCES_CHANGED);
-            context.sendBroadcast(intent);
-        }
+        val intent = Intent(PowerPreferences.ACTION_PREFERENCES_CHANGED)
+        context?.sendBroadcast(intent)
 
-        return result;
+        return result
     }
 }
