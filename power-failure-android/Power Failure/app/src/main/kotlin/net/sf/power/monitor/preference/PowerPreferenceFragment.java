@@ -15,8 +15,6 @@
  */
 package net.sf.power.monitor.preference;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.preference.Preference;
 
@@ -28,14 +26,6 @@ import com.github.preference.AbstractPreferenceFragment;
  * @author Moshe Waisberg
  */
 public abstract class PowerPreferenceFragment extends AbstractPreferenceFragment {
-
-    protected Context context;
-
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        this.context = activity;
-    }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
