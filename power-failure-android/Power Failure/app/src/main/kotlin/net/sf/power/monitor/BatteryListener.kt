@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package net.sf.power.monitor;
+package net.sf.power.monitor
 
 /**
  * Battery status listener interface.
  *
  * @author Moshe Waisberg
  */
-public interface BatteryListener {
-
-    int BATTERY_PLUGGED_NONE = BatteryUtils.BATTERY_PLUGGED_NONE;
-    int BATTERY_PLUGGED_AC = BatteryUtils.BATTERY_PLUGGED_AC;
-    int BATTERY_PLUGGED_USB = BatteryUtils.BATTERY_PLUGGED_USB;
-    int BATTERY_PLUGGED_WIRELESS = BatteryUtils.BATTERY_PLUGGED_WIRELESS;
+interface BatteryListener {
 
     /**
      * Notification that the battery is being been charged.
      *
      * @param plugged the type of plugged-in device.
      */
-    void onBatteryPlugged(int plugged);
+    fun onBatteryPlugged(plugged: Int)
+
+    companion object {
+        const val BATTERY_PLUGGED_NONE = BatteryUtils.BATTERY_PLUGGED_NONE
+        const val BATTERY_PLUGGED_AC = BatteryUtils.BATTERY_PLUGGED_AC
+        const val BATTERY_PLUGGED_USB = BatteryUtils.BATTERY_PLUGGED_USB
+        const val BATTERY_PLUGGED_WIRELESS = BatteryUtils.BATTERY_PLUGGED_WIRELESS
+    }
 
 }
