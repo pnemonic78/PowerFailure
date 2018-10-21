@@ -196,7 +196,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
         printBatteryStatus(context);
 
         if (handler != null) {
-            int plugged = BatteryUtils.getPlugged(context);
+            int plugged = BatteryUtils.INSTANCE.getPlugged(context);
             Message msg = handler.obtainMessage(MSG_BATTERY_CHANGED, plugged, 0);
             msg.sendToTarget();
 
@@ -211,7 +211,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void printBatteryStatus(Context context) {
-        BatteryUtils.printStatus(context);
+        BatteryUtils.INSTANCE.printStatus(context);
     }
 
     private static class PowerConnectionHandler extends Handler {
