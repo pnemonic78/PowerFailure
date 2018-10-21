@@ -386,7 +386,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
             .build();
 
         // Send the notification.
-        notificationManager.notify(ID_NOTIFY, notification);
+        startForeground(ID_NOTIFY, notification);
     }
 
     private PendingIntent createActivityIntent(Context context) {

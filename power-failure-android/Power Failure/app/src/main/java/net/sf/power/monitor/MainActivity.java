@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -225,7 +226,11 @@ public class MainActivity extends Activity implements BatteryListener {
         Intent intent = new Intent(this, PowerConnectionService.class);
 
         //This will keep service running even after activity destroyed.
-        startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
 
         bindService(intent, connection, BIND_AUTO_CREATE);
         serviceIsBound = true;
