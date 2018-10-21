@@ -15,6 +15,7 @@
  */
 package net.sf.power.monitor.preference;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.preference.Preference;
@@ -24,16 +25,23 @@ import com.github.preference.AbstractPreferenceFragment;
 /**
  * This fragment shows the preferences for a header.
  *
- * @author moshe.w
+ * @author Moshe Waisberg
  */
 public abstract class PowerPreferenceFragment extends AbstractPreferenceFragment {
+
+    protected Context context;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        this.context = activity;
+    }
 
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
         boolean result = super.onPreferenceChange(preference, newValue);
 
         // Notify the service.
-        Context context = getActivity();
         if (context != null) {
             Intent intent = new Intent(PowerPreferences.ACTION_PREFERENCES_CHANGED);
             context.sendBroadcast(intent);

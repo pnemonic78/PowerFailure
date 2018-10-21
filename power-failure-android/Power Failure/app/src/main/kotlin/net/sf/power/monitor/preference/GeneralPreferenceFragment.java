@@ -26,6 +26,7 @@ import net.sf.power.monitor.R;
 
 /**
  * This fragment shows the preferences for the General header.
+ * @author Moshe Waisberg
  */
 public class GeneralPreferenceFragment extends PowerPreferenceFragment {
 
