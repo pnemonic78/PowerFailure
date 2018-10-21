@@ -29,6 +29,7 @@ import android.graphics.BitmapFactory;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -45,6 +46,8 @@ import net.sf.power.monitor.preference.PowerPreferences;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.app.NotificationCompat;
 
 /**
  * Power connection events service.
@@ -101,6 +104,8 @@ public class PowerConnectionService extends Service implements BatteryListener {
     private static final int ID_NOTIFY = R.string.start_monitor;
 
     private static final long[] VIBRATE_PATTERN = {DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS};
+
+    private static final String CHANNEL_ID = "power";
 
     private Handler handler;
     /**
@@ -356,18 +361,29 @@ public class PowerConnectionService extends Service implements BatteryListener {
         // The PendingIntent to launch our activity if the user selects this notification.
         PendingIntent contentIntent = createActivityIntent(context);
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            android.app.NotificationChannel channel = notificationManager.getNotificationChannel(CHANNEL_ID);
+            if (channel == null) {
+                channel = new android.app.NotificationChannel(
+                    CHANNEL_ID,
+                    getText(R.string.app_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+
         // Set the info for the views that show in the notification panel.
-        Notification notification = new Notification.Builder(this)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true)
-                .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
-                .setSmallIcon(R.drawable.stat_launcher)  // the status icon
-                .setTicker(text)  // the status text
-                .setWhen(System.currentTimeMillis())  // the time stamp
-                .setContentTitle(title)  // the label of the entry
-                .setContentText(text)  // the contents of the entry
-                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-                .getNotification();
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
+            .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
+            .setSmallIcon(R.drawable.stat_launcher)  // the status icon
+            .setTicker(text)  // the status text
+            .setWhen(System.currentTimeMillis())  // the time stamp
+            .setContentTitle(title)  // the label of the entry
+            .setContentText(text)  // the contents of the entry
+            .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+            .build();
 
         // Send the notification.
         notificationManager.notify(ID_NOTIFY, notification);
