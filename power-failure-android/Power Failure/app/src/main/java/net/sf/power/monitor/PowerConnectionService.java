@@ -37,7 +37,8 @@ import android.os.RemoteException;
 import android.os.SystemClock;
 import android.os.Vibrator;
 import android.text.format.DateUtils;
-import android.util.Log;
+
+import com.github.util.LogUtils;
 
 import net.sf.power.monitor.preference.PowerPreferences;
 
@@ -169,7 +170,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void startPolling() {
-        Log.v(TAG, "start polling");
+        LogUtils.v(TAG, "start polling");
         Context context = this;
         printBatteryStatus(context);
         if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
@@ -178,7 +179,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void stopPolling() {
-        Log.v(TAG, "stop polling");
+        LogUtils.v(TAG, "stop polling");
         handler.removeMessages(MSG_CHECK_BATTERY);
         if (clients.isEmpty()) {
             stopSelf();
@@ -302,7 +303,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void playAlarm() {
-        Log.v(TAG, "play alarm");
+        LogUtils.v(TAG, "play alarm");
         Context context = this;
         playTone(context);
         vibrate(context, prefVibrate);
@@ -310,21 +311,21 @@ public class PowerConnectionService extends Service implements BatteryListener {
 
     private void playTone(Context context) {
         Ringtone ringtone = getRingtone(context);
-        Log.v(TAG, "play tone: " + (ringtone != null ? ringtone.getTitle(context) : "(none)"));
+        LogUtils.v(TAG, "play tone: " + (ringtone != null ? ringtone.getTitle(context) : "(none)"));
         if ((ringtone != null) && !ringtone.isPlaying()) {
             ringtone.play();
         }
     }
 
     private void stopAlarm() {
-        Log.v(TAG, "stop alarm");
+        LogUtils.v(TAG, "stop alarm");
         Context context = this;
         stopTone();
         vibrate(context, false);
     }
 
     private void stopTone() {
-        Log.v(TAG, "stop tone");
+        LogUtils.v(TAG, "stop tone");
         Ringtone ringtone = this.ringtone;
         if ((ringtone != null) && ringtone.isPlaying()) {
             ringtone.stop();
@@ -411,7 +412,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
                 msg = Message.obtain(null, command, arg1, arg2);
                 clients.get(i).send(msg);
             } catch (RemoteException e) {
-                Log.e(TAG, "Failed to send status update", e);
+                LogUtils.e(TAG, "Failed to send status update", e);
                 // The client is dead.  Remove it from the list;
                 // we are going through the list from back to front
                 // so this is safe to do inside the loop.
@@ -421,7 +422,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void startLogging() {
-        Log.v(TAG, "start logging");
+        LogUtils.v(TAG, "start logging");
         if (!logging) {
             logging = true;
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher);
@@ -430,7 +431,7 @@ public class PowerConnectionService extends Service implements BatteryListener {
     }
 
     private void stopLogging() {
-        Log.v(TAG, "stop logging");
+        LogUtils.v(TAG, "stop logging");
         if (logging) {
             logging = false;
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher);

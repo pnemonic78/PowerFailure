@@ -25,10 +25,11 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
+
+import com.github.util.LogUtils;
 
 import net.sf.power.monitor.preference.PreferenceActivity;
 
@@ -204,7 +205,7 @@ public class MainActivity extends Activity implements BatteryListener {
             // service through an IDL interface, so get a client-side
             // representation of that from the raw service object.
             service = new Messenger(binder);
-            Log.i(TAG, "Service connected.");
+            LogUtils.i(TAG, "Service connected.");
 
             registerClient();
         }
@@ -213,7 +214,7 @@ public class MainActivity extends Activity implements BatteryListener {
             // This is called when the connection with the service has been
             // unexpectedly disconnected -- that is, its process crashed.
             service = null;
-            Log.i(TAG, "Service disconnected.");
+            LogUtils.i(TAG, "Service disconnected.");
         }
     };
 
@@ -228,7 +229,7 @@ public class MainActivity extends Activity implements BatteryListener {
 
         bindService(intent, connection, BIND_AUTO_CREATE);
         serviceIsBound = true;
-        Log.i(TAG, "Service binding.");
+        LogUtils.i(TAG, "Service binding.");
     }
 
     private void unbindService() {
@@ -240,7 +241,7 @@ public class MainActivity extends Activity implements BatteryListener {
             // Detach our existing connection.
             unbindService(connection);
             serviceIsBound = false;
-            Log.i(TAG, "Service unbinding.");
+            LogUtils.i(TAG, "Service unbinding.");
         }
     }
 
@@ -251,7 +252,7 @@ public class MainActivity extends Activity implements BatteryListener {
         // We want to monitor the service for as long as we are connected to it.
         try {
             notifyService(PowerConnectionService.MSG_REGISTER_CLIENT);
-            Log.i(TAG, "Registered with service.");
+            LogUtils.i(TAG, "Registered with service.");
         } catch (RemoteException e) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
@@ -266,7 +267,7 @@ public class MainActivity extends Activity implements BatteryListener {
     private void unregisterClient() {
         try {
             notifyService(PowerConnectionService.MSG_UNREGISTER_CLIENT);
-            Log.i(TAG, "Unregistered from service.");
+            LogUtils.i(TAG, "Unregistered from service.");
         } catch (RemoteException e) {
             // There is nothing special we need to do if the service has crashed.
         }

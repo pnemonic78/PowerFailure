@@ -18,7 +18,8 @@ package net.sf.power.monitor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+
+import com.github.util.LogUtils;
 
 /**
  * Power connection events receiver.
@@ -31,6 +32,6 @@ public class PowerConnectionReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.i(TAG, intent.toString());
+        LogUtils.i(TAG, intent.toString());
     }
 }

@@ -20,7 +20,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.util.Log;
+
+import com.github.util.LogUtils;
 
 /**
  * Battery utilities.
@@ -90,6 +91,6 @@ public class BatteryUtils {
         int plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, -1);
         boolean present = extras.getBoolean(BatteryManager.EXTRA_PRESENT, false);
         int status = extras.getInt(BatteryManager.EXTRA_STATUS, -1);
-        Log.i(TAG, "{status:" + status + ", plugged:" + plugged + ", present:" + present + "}");
+        LogUtils.i(TAG, "{status:" + status + ", plugged:" + plugged + ", present:" + present + "}");
     }
 }
