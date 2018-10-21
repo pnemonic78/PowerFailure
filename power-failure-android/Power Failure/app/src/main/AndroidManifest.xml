@@ -28,13 +28,6 @@
             android:label="@string/title_activity_settings"
             android:parentActivityName="net.sf.power.monitor.MainActivity" />
 
-        <!--receiver android:name="net.sf.power.monitor.PowerConnectionReceiver">
-            <intent-filter>
-                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"/>
-                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"/>
-            </intent-filter>
-        </receiver-->
-
         <service
             android:name="net.sf.power.monitor.PowerConnectionService"
             android:exported="false"
