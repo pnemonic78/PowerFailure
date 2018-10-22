@@ -16,7 +16,7 @@ android {
         resConfigs "en"
 
         testApplicationId "net.sf.power.monitor.test"
-        testInstrumentationRunner "android.test.InstrumentationTestRunner"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -64,4 +64,5 @@ dependencies {
 
     // Testing
     testImplementation 'junit:junit:4.12'
+    androidTestImplementation "com.android.support.test:runner:$test_version"
 }

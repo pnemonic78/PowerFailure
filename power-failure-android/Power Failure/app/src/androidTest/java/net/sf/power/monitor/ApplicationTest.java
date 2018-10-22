@@ -1,13 +1,26 @@
 package net.sf.power.monitor;
 
-import android.app.Application;
-import android.test.ApplicationTestCase;
+import android.content.Context;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>
+ * Instrumented test, which will execute on an Android device.
+ *
+ * See [testing documentation](http://d.android.com/tools/testing).
  */
-public class ApplicationTest extends ApplicationTestCase<Application> {
-    public ApplicationTest() {
-        super(Application.class);
+@RunWith(AndroidJUnit4.class)
+public class ApplicationTest {
+
+    @Test
+    public void useAppContext() {
+        // Context of the app under test.
+        final Context appContext = InstrumentationRegistry.getTargetContext();
+        assertEquals("net.sf.power.monitor.debug", appContext.getPackageName());
     }
 }
