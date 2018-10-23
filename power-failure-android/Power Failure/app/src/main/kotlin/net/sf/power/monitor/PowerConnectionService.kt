@@ -82,6 +82,10 @@ class PowerConnectionService : Service(), BatteryListener {
          */
         const val MSG_BATTERY_CHANGED = 11
         /**
+         * Command to the clients that the alarm has activated.
+         */
+        const val MSG_ALARM = 12
+        /**
          * Command to the service that the shared preferences have changed.
          */
         const val MSG_PREFERENCES_CHANGED = 20
@@ -221,8 +225,9 @@ class PowerConnectionService : Service(), BatteryListener {
         if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
             unpluggedSince = now
             stopAlarm()
-        } else if (logging && now - unpluggedSince >= prefTimeDelay) {
+        } else if (logging && (now - unpluggedSince >= prefTimeDelay)) {
             playAlarm()
+            notifyClients(MSG_ALARM, plugged, (now / 1000L).toInt())
         } else {
             stopAlarm()
         }

@@ -21,9 +21,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.os.*
+import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.ImageView
+import android.widget.TextView
 import com.github.util.LogUtils
 import net.sf.power.monitor.preference.PreferenceActivity
 import java.lang.ref.WeakReference
@@ -47,6 +50,7 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     private lateinit var pluggedView: ImageView
+    private lateinit var timeView: TextView
     private var menuItemStart: MenuItem? = null
     private var menuItemStop: MenuItem? = null
 
@@ -95,6 +99,7 @@ class MainActivity : Activity(), BatteryListener {
         setContentView(R.layout.activity_main)
         pluggedView = findViewById(R.id.plugged)
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
+        timeView = findViewById(R.id.unplugged_time)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
@@ -174,6 +179,7 @@ class MainActivity : Activity(), BatteryListener {
             internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
             internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
             internal const val MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR
+            internal const val MSG_ALARM = PowerConnectionService.MSG_ALARM
             internal const val MSG_SETTINGS = 1000
         }
 
@@ -187,6 +193,7 @@ class MainActivity : Activity(), BatteryListener {
                 MSG_START_MONITOR -> activity.startMonitor()
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
+                MSG_ALARM -> activity.showUnpluggedTime(msg.arg2)
                 MSG_SETTINGS -> activity.startActivity(Intent(activity, PreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
@@ -291,10 +298,20 @@ class MainActivity : Activity(), BatteryListener {
 
     @Throws(RemoteException::class)
     private fun notifyService(command: Int) {
-        if (serviceIsBound && service != null) {
+        val service = this.service ?: return
+        if (serviceIsBound) {
             val msg = Message.obtain(null, command)
             msg.replyTo = messenger
-            service!!.send(msg)
+            service.send(msg)
         }
+    }
+
+    private fun showUnpluggedTime(seconds: Int) {
+        showUnpluggedTime(seconds * 1000L)
+    }
+
+    private fun showUnpluggedTime(millis: Long) {
+        timeView.text = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        timeView.visibility = View.VISIBLE
     }
 }
