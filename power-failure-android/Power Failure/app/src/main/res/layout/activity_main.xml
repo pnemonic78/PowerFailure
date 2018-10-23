@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/unplugged_time"
+        android:id="@+id/time"
         style="?android:textAppearanceLarge"
         android:background="@drawable/bg_unplugged_time"
         android:layout_height="wrap_content"

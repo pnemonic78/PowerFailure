@@ -18,10 +18,7 @@ package net.sf.power.monitor.preference
 import android.media.RingtoneManager
 import android.os.Bundle
 import android.preference.ListPreference
-import android.text.TextUtils
-
 import com.github.preference.RingtonePreference
-
 import net.sf.power.monitor.R
 
 /**
@@ -39,7 +36,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        initList(PowerPreferences.KEY_DELAY)
+        initList(PowerPreferences.KEY_FAILURE_DELAY)
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
         initList(PowerPreferences.KEY_RINGTONE_TYPE)
@@ -53,7 +50,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         val key = preference.key
         if (PowerPreferences.KEY_RINGTONE_TYPE == key && reminderRingtonePreference != null) {
             val value = newValue.toString()
-            val ringType = if (TextUtils.isEmpty(value)) RingtoneManager.TYPE_ALARM else Integer.parseInt(value)
+            val ringType = if (value.isEmpty()) RingtoneManager.TYPE_ALARM else value.toInt()
             reminderRingtonePreference!!.ringtoneType = ringType
         }
         return false

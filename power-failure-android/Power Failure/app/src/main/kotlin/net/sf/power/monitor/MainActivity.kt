@@ -28,6 +28,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import com.github.util.LogUtils
+import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PreferenceActivity
 import java.lang.ref.WeakReference
 
@@ -68,6 +69,8 @@ class MainActivity : Activity(), BatteryListener {
      */
     private var serviceIsBound: Boolean = false
 
+    private lateinit var settings: PowerPreferences
+
     /**
      * Class for interacting with the main interface of the service.
      */
@@ -99,13 +102,19 @@ class MainActivity : Activity(), BatteryListener {
         setContentView(R.layout.activity_main)
         pluggedView = findViewById(R.id.plugged)
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
-        timeView = findViewById(R.id.unplugged_time)
+        timeView = findViewById(R.id.time)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
         bindService()
 
         onBatteryPlugged(BatteryUtils.getPlugged(this))
+
+        settings = PowerPreferences(this)
+        val time = settings.failureTime
+        if (time > 0L) {
+            showFailureTime(time)
+        }
     }
 
     override fun onDestroy() {
@@ -139,7 +148,7 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     private fun setMonitorStatus(polling: Boolean) {
-        pluggedView!!.setImageLevel(LEVEL_UNKNOWN)
+        pluggedView.setImageLevel(LEVEL_UNKNOWN)
         if (menuItemStart != null) {
             menuItemStart!!.isVisible = !polling
             menuItemStop!!.isVisible = polling
@@ -193,7 +202,7 @@ class MainActivity : Activity(), BatteryListener {
                 MSG_START_MONITOR -> activity.startMonitor()
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
-                MSG_ALARM -> activity.showUnpluggedTime(msg.arg2)
+                MSG_ALARM -> activity.showFailureTime(msg.arg2)
                 MSG_SETTINGS -> activity.startActivity(Intent(activity, PreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
@@ -306,11 +315,11 @@ class MainActivity : Activity(), BatteryListener {
         }
     }
 
-    private fun showUnpluggedTime(seconds: Int) {
-        showUnpluggedTime(seconds * 1000L)
+    private fun showFailureTime(seconds: Int) {
+        showFailureTime(seconds * 1000L)
     }
 
-    private fun showUnpluggedTime(millis: Long) {
+    private fun showFailureTime(millis: Long) {
         timeView.text = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
         timeView.visibility = View.VISIBLE
     }

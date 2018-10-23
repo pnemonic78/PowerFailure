@@ -17,12 +17,9 @@ package net.sf.power.monitor.preference
 
 import android.content.Context
 import android.net.Uri
-import android.text.TextUtils
 import android.text.format.DateUtils
-
 import com.github.media.RingtoneManager
 import com.github.preference.SimplePreferences
-
 import net.sf.power.monitor.R
 
 /**
@@ -49,7 +46,11 @@ class PowerPreferences(context: Context) : SimplePreferences(context, true) {
         /**
          * Preference name for delay (seconds).
          */
-        const val KEY_DELAY = "delay"
+        const val KEY_FAILURE_DELAY = "delay"
+        /**
+         * Preference name for the when was the last significant power failure.
+         */
+        const val KEY_FAILURE_TIME = "failure.time"
 
         /**
          * Action that the shared preferences have changed.
@@ -83,7 +84,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context, true) {
             if (!ringtoneManager.isIncludeExternal) {
                 path = ringtoneManager.filterInternal(path)
             }
-            return if (TextUtils.isEmpty(path)) null else Uri.parse(path)
+            return if (path.isNullOrEmpty()) null else Uri.parse(path)
         }
 
     /**
@@ -95,10 +96,24 @@ class PowerPreferences(context: Context) : SimplePreferences(context, true) {
         get() = preferences.getBoolean(KEY_VIBRATE, context.resources.getBoolean(R.bool.vibrate_defaultValue))
 
     /**
-     * Get the time delay after the power is disconnected to when to notify about the disconnection.
+     * Get the time delay after the power is disconnected to when to notify about the failure.
      *
      * @return the time in milliseconds.
      */
-    val timeDelay: Long
-        get() = java.lang.Long.parseLong(preferences.getString(KEY_DELAY, context.resources.getString(R.string.delay_defaultValue))!!) * DateUtils.SECOND_IN_MILLIS
+    val failureDelay: Long
+        get() = preferences.getString(KEY_FAILURE_DELAY, context.resources.getString(R.string.delay_defaultValue))!!.toLong() * DateUtils.SECOND_IN_MILLIS
+
+    /**
+     * Get the time when the power failed.
+     *
+     * @return the time in milliseconds.
+     */
+    var failureTime: Long = 0L
+        get() = preferences.getLong(KEY_FAILURE_TIME, 0L)
+        set(value) {
+            field = value
+            preferences.edit()
+                .putLong(KEY_FAILURE_TIME, value)
+                .apply()
+        }
 }

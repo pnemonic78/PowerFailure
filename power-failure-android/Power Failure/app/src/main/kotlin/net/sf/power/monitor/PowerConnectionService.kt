@@ -226,8 +226,7 @@ class PowerConnectionService : Service(), BatteryListener {
             unpluggedSince = now
             stopAlarm()
         } else if (logging && (now - unpluggedSince >= prefTimeDelay)) {
-            playAlarm()
-            notifyClients(MSG_ALARM, plugged, (now / 1000L).toInt())
+            handleFailure(plugged, System.currentTimeMillis())
         } else {
             stopAlarm()
         }
@@ -420,8 +419,14 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun onPreferencesChanged() {
-        prefTimeDelay = settings.timeDelay
+        prefTimeDelay = settings.failureDelay
         prefRingtone = null
         prefVibrate = settings.isVibrate
+    }
+
+    private fun handleFailure(plugged: Int, time: Long) {
+        settings.failureTime = time
+        playAlarm()
+        notifyClients(MSG_ALARM, plugged, (time / 1000L).toInt())
     }
 }
