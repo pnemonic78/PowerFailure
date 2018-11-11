@@ -21,7 +21,7 @@ allprojects {
 
 ext {
     androidBuildSdkVersion = 28
-    androidBuildMinSdkVersion = 15
+    androidBuildMinSdkVersion = 16
     androidBuildTargetSdkVersion = 28
 
     test_version = '1.0.2'
