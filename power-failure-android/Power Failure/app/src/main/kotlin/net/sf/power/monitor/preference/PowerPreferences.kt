@@ -27,7 +27,7 @@ import net.sf.power.monitor.R
  *
  * @author Moshe Waisberg
  */
-class PowerPreferences(context: Context) : SimplePreferences(context, true) {
+class PowerPreferences(context: Context) : SimplePreferences(context) {
 
     companion object {
 
