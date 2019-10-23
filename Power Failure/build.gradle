@@ -21,7 +21,7 @@ allprojects {
 
 ext {
     androidBuildSdkVersion = 29
-    androidBuildMinSdkVersion = 17
+    androidBuildMinSdkVersion = 19
     androidBuildTargetSdkVersion = 29
     supportTestVersion = '1.2.0'
 }
