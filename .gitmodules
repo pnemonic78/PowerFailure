@@ -1,4 +1,4 @@
 [submodule "power-failure-android/Power Failure/android-lib"]
-	path = power-failure-android/Power Failure/android-lib
+	path = Power Failure/android-lib
 	url = https://github.com/pnemonic78/android-lib.git
 	branch = master
