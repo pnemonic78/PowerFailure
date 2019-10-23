@@ -16,8 +16,7 @@
 package net.sf.power.monitor.preference
 
 import android.content.Intent
-import android.preference.Preference
-
+import androidx.preference.Preference
 import com.github.preference.AbstractPreferenceFragment
 
 /**
@@ -27,7 +26,7 @@ import com.github.preference.AbstractPreferenceFragment
  */
 abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
 
-    override fun onPreferenceChange(preference: Preference, newValue: Any): Boolean {
+    override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         val result = super.onPreferenceChange(preference, newValue)
 
         // Notify the service.

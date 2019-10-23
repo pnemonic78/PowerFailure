@@ -17,7 +17,7 @@ package net.sf.power.monitor.preference
 
 import android.media.RingtoneManager
 import android.os.Bundle
-import android.preference.ListPreference
+import androidx.preference.ListPreference
 import com.github.preference.RingtonePreference
 import net.sf.power.monitor.R
 
@@ -44,7 +44,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         findPreference(PowerPreferences.KEY_VIBRATE).onPreferenceChangeListener = this
     }
 
-    override fun onListPreferenceChange(preference: ListPreference, newValue: Any): Boolean {
+    override fun onListPreferenceChange(preference: ListPreference, newValue: Any?): Boolean {
         super.onListPreferenceChange(preference, newValue)
 
         val key = preference.key
