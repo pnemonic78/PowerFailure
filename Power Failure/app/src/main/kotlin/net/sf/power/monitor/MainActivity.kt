@@ -27,7 +27,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import com.crashlytics.android.Crashlytics
 import com.github.util.LogTree
+import io.fabric.sdk.android.Fabric
 import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PreferenceActivity
 import timber.log.Timber
@@ -100,6 +102,7 @@ class MainActivity : Activity(), BatteryListener {
         val context: Context = this
 
         Timber.plant(LogTree(BuildConfig.DEBUG))
+        Fabric.with(context, Crashlytics())
 
         setContentView(R.layout.activity_main)
         pluggedView = findViewById(R.id.plugged)
