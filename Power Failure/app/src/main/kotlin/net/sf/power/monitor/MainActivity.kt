@@ -98,6 +98,7 @@ class MainActivity : Activity(), BatteryListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val context: Context = this
 
         setContentView(R.layout.activity_main)
         pluggedView = findViewById(R.id.plugged)
@@ -108,9 +109,9 @@ class MainActivity : Activity(), BatteryListener {
         messenger = Messenger(handler)
         bindService()
 
-        onBatteryPlugged(BatteryUtils.getPlugged(this))
+        onBatteryPlugged(BatteryUtils.getPlugged(context))
 
-        settings = PowerPreferences(this)
+        settings = PowerPreferences(context)
         val time = settings.failureTime
         if (time > 0L) {
             showFailureTime(time)
