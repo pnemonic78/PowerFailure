@@ -214,7 +214,8 @@ class MainActivity : Activity(), BatteryListener {
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        val intent = Intent(this, PowerConnectionService::class.java)
+        val context: Context = this
+        val intent = Intent(context, PowerConnectionService::class.java)
 
         //This will keep service running even after activity destroyed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
