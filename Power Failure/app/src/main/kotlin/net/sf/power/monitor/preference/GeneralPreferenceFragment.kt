@@ -33,8 +33,8 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         return R.xml.general_preferences
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
 
         initList(PowerPreferences.KEY_FAILURE_DELAY)
 
