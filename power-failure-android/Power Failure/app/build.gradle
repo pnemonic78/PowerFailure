@@ -16,7 +16,7 @@ android {
         resConfigs "en"
 
         testApplicationId "net.sf.power.monitor.test"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
@@ -59,10 +59,10 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':android-lib:lib')
 
-    // Kotlin
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     // Testing
     testImplementation 'junit:junit:4.12'
-    androidTestImplementation "com.android.support.test:runner:$test_version"
+    androidTestImplementation "androidx.test:core:$supportTestVersion"
+    androidTestImplementation "androidx.test:rules:$supportTestVersion"
+    androidTestImplementation "androidx.test:runner:$supportTestVersion"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
 }

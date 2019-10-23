@@ -3,8 +3,8 @@
 buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.1'
@@ -14,15 +14,14 @@ buildscript {
 
 allprojects {
     repositories {
-        jcenter()
         google()
+        jcenter()
     }
 }
 
 ext {
-    androidBuildSdkVersion = 28
+    androidBuildSdkVersion = 29
     androidBuildMinSdkVersion = 16
-    androidBuildTargetSdkVersion = 28
-
-    test_version = '1.0.2'
+    androidBuildTargetSdkVersion = 29
+    supportTestVersion = '1.2.0'
 }
