@@ -19,7 +19,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import com.github.util.LogUtils
+import timber.log.Timber
 
 /**
  * Battery utilities.
@@ -90,7 +90,7 @@ object BatteryUtils {
             val plugged = extras.getInt(BatteryManager.EXTRA_PLUGGED, -1)
             val present = extras.getBoolean(BatteryManager.EXTRA_PRESENT, false)
             val status = extras.getInt(BatteryManager.EXTRA_STATUS, -1)
-            LogUtils.i(TAG, "{status:$status, plugged:$plugged, present:$present}")
+            Timber.i("{status:$status, plugged:$plugged, present:$present}")
         }
     }
 }

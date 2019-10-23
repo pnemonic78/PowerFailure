@@ -27,9 +27,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
-import com.github.util.LogUtils
+import com.github.util.LogTree
 import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PreferenceActivity
+import timber.log.Timber
 import java.lang.ref.WeakReference
 
 /**
@@ -83,7 +84,7 @@ class MainActivity : Activity(), BatteryListener {
             // service through an IDL interface, so get a client-side
             // representation of that from the raw service object.
             service = Messenger(binder)
-            LogUtils.i(TAG, "Service connected.")
+            Timber.i("Service connected.")
 
             registerClient()
         }
@@ -92,13 +93,15 @@ class MainActivity : Activity(), BatteryListener {
             // This is called when the connection with the service has been
             // unexpectedly disconnected -- that is, its process crashed.
             service = null
-            LogUtils.i(TAG, "Service disconnected.")
+            Timber.i("Service disconnected.")
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val context: Context = this
+
+        Timber.plant(LogTree(BuildConfig.DEBUG))
 
         setContentView(R.layout.activity_main)
         pluggedView = findViewById(R.id.plugged)
@@ -226,7 +229,7 @@ class MainActivity : Activity(), BatteryListener {
 
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
         serviceIsBound = true
-        LogUtils.i(TAG, "Service binding.")
+        Timber.i("Service binding.")
     }
 
     private fun unbindService() {
@@ -238,7 +241,7 @@ class MainActivity : Activity(), BatteryListener {
             // Detach our existing connection.
             unbindService(connection)
             serviceIsBound = false
-            LogUtils.i(TAG, "Service unbinding.")
+            Timber.i("Service unbinding.")
         }
     }
 
@@ -249,7 +252,7 @@ class MainActivity : Activity(), BatteryListener {
         // We want to monitor the service for as long as we are connected to it.
         try {
             notifyService(PowerConnectionService.MSG_REGISTER_CLIENT)
-            LogUtils.i(TAG, "Registered with service.")
+            Timber.i("Registered with service.")
         } catch (e: RemoteException) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
@@ -264,7 +267,7 @@ class MainActivity : Activity(), BatteryListener {
     private fun unregisterClient() {
         try {
             notifyService(PowerConnectionService.MSG_UNREGISTER_CLIENT)
-            LogUtils.i(TAG, "Unregistered from service.")
+            Timber.i("Unregistered from service.")
         } catch (e: RemoteException) {
             // There is nothing special we need to do if the service has crashed.
         }

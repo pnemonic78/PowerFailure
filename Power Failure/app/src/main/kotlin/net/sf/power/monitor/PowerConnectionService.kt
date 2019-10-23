@@ -29,8 +29,8 @@ import android.net.Uri
 import android.os.*
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
-import com.github.util.LogUtils
 import net.sf.power.monitor.preference.PowerPreferences
+import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -164,7 +164,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun startPolling() {
-        LogUtils.v(TAG, "start polling")
+        Timber.v("start polling")
         printBatteryStatus(context)
         if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
             pollBattery()
@@ -172,7 +172,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun stopPolling() {
-        LogUtils.v(TAG, "stop polling")
+        Timber.v("stop polling")
         handler.removeMessages(MSG_CHECK_BATTERY)
         if (clients.isEmpty()) {
             stopSelf()
@@ -255,27 +255,27 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun playAlarm() {
-        LogUtils.v(TAG, "play alarm")
+        Timber.v("play alarm")
         playTone(context)
         vibrate(context, prefVibrate)
     }
 
     private fun playTone(context: Context) {
         val ringtone = getRingtone(context)
-        LogUtils.v(TAG, "play tone: " + if (ringtone != null) ringtone.getTitle(context) else "(none)")
+        Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
         if (ringtone != null && !ringtone.isPlaying) {
             ringtone.play()
         }
     }
 
     private fun stopAlarm() {
-        LogUtils.v(TAG, "stop alarm")
+        Timber.v("stop alarm")
         stopTone()
         vibrate(context, false)
     }
 
     private fun stopTone() {
-        LogUtils.v(TAG, "stop tone")
+        Timber.v("stop tone")
         val ringtone = this.ringtone
         if (ringtone != null && ringtone.isPlaying) {
             ringtone.stop()
@@ -371,18 +371,17 @@ class PowerConnectionService : Service(), BatteryListener {
                 msg = Message.obtain(null, command, arg1, arg2)
                 clients[i].send(msg)
             } catch (e: RemoteException) {
-                LogUtils.e(TAG, "Failed to send status update", e)
+                Timber.e(e, "Failed to send status update")
                 // The client is dead.  Remove it from the list;
                 // we are going through the list from back to front
                 // so this is safe to do inside the loop.
                 clients.removeAt(i)
             }
-
         }
     }
 
     private fun startLogging() {
-        LogUtils.v(TAG, "start logging")
+        Timber.v("start logging")
         if (!logging) {
             logging = true
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher)
@@ -391,7 +390,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun stopLogging() {
-        LogUtils.v(TAG, "stop logging")
+        Timber.v("stop logging")
         if (logging) {
             logging = false
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
