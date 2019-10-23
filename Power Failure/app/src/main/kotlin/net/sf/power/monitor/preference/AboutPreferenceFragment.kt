@@ -29,8 +29,8 @@ class AboutPreferenceFragment : PowerPreferenceFragment() {
         return R.xml.about_preferences
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        super.onCreatePreferences(savedInstanceState, rootKey)
 
         val version = findPreference("about.version")
         try {

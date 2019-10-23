@@ -15,11 +15,7 @@
  */
 package net.sf.power.monitor.preference
 
-import android.annotation.TargetApi
-import android.os.Build
 import android.os.Bundle
-import android.view.MenuItem
-
 import net.sf.power.monitor.R
 
 /**
@@ -32,29 +28,14 @@ class PreferenceActivity : android.preference.PreferenceActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.Theme_PowerFailure_Settings)
         super.onCreate(savedInstanceState)
-
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-            actionBar!!.setDisplayHomeAsUpEnabled(true)
-        }
     }
 
     override fun onBuildHeaders(target: List<android.preference.PreferenceActivity.Header>) {
         loadHeadersFromResource(R.xml.preference_headers, target)
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     override fun isValidFragment(fragmentName: String): Boolean {
         val packageName: String = javaClass.getPackage()!!.name
         return fragmentName.startsWith(packageName)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN) {
-                finish()
-                return true
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 }
