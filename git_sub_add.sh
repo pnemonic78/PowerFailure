@@ -1,1 +1,1 @@
-git submodule add Power Failure/android-lib
+git submodule add "Power Failure/android-lib"
