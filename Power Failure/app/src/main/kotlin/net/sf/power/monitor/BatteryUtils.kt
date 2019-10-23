@@ -45,7 +45,7 @@ object BatteryUtils {
     /**
      * Power source is wireless.
      */
-    const val BATTERY_PLUGGED_WIRELESS = 4//BatteryManager.BATTERY_PLUGGED_WIRELESS;
+    const val BATTERY_PLUGGED_WIRELESS = BatteryManager.BATTERY_PLUGGED_WIRELESS
 
     private var batteryFilter: IntentFilter? = null
 
