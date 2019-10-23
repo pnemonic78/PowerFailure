@@ -28,8 +28,6 @@ import timber.log.Timber
  */
 object BatteryUtils {
 
-    private const val TAG = "BatteryUtils"
-
     /**
      * No power source.
      */

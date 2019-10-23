@@ -41,8 +41,6 @@ import java.lang.ref.WeakReference
 class MainActivity : Activity(), BatteryListener {
 
     companion object {
-        private const val TAG = "MainActivity"
-
         private const val LEVEL_UNKNOWN = 0
         private const val LEVEL_UNPLUGGED = 1
         private const val LEVEL_PLUGGED_AC = 2

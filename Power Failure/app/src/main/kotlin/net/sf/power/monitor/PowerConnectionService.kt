@@ -43,8 +43,6 @@ class PowerConnectionService : Service(), BatteryListener {
 
     companion object {
 
-        private const val TAG = "PowerConnectionService"
-
         /**
          * Command to the service to register a client, receiving callbacks
          * from the service.  The Message's replyTo field must be a Messenger of
