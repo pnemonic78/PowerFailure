@@ -31,6 +31,7 @@ import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
+import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -260,7 +261,11 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun playTone(context: Context) {
         val ringtone = getRingtone(context)
-        Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
+        try {
+            Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
+        } catch (e: Exception) {
+            Timber.v("play tone: %s", ringtone)
+        }
         if (ringtone != null && !ringtone.isPlaying) {
             ringtone.play()
         }
