@@ -18,6 +18,7 @@ package net.sf.power.monitor.preference
 import android.media.RingtoneManager
 import android.os.Bundle
 import androidx.preference.ListPreference
+import androidx.preference.Preference
 import com.github.preference.RingtonePreference
 import net.sf.power.monitor.R
 
@@ -41,7 +42,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
         initList(PowerPreferences.KEY_RINGTONE_TYPE)
 
-        findPreference(PowerPreferences.KEY_VIBRATE).onPreferenceChangeListener = this
+        findPreference<Preference>(PowerPreferences.KEY_VIBRATE)?.onPreferenceChangeListener = this
     }
 
     override fun onListPreferenceChange(preference: ListPreference, newValue: Any?): Boolean {
