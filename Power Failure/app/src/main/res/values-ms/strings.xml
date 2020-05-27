@@ -18,9 +18,9 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
-    <string name="issue_title">Issues</string>
-    <string name="issue_summary">Report a problem, or request a new feature.</string>
+    <string name="version_title">Versi aplikasi</string>
+    <string name="issue_title">Isu</string>
+    <string name="issue_summary">Laporkan masalah, atau minta ciri baru.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>

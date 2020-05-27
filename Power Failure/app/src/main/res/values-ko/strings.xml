@@ -18,9 +18,9 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
-    <string name="issue_title">Issues</string>
-    <string name="issue_summary">Report a problem, or request a new feature.</string>
+    <string name="version_title">응용 프로그램 버전</string>
+    <string name="issue_title">이슈</string>
+    <string name="issue_summary">문제를보고하거나 새로운 기능을 요청하십시오.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>
