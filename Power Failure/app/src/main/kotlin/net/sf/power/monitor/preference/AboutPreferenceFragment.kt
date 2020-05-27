@@ -41,5 +41,6 @@ class AboutPreferenceFragment : PowerPreferenceFragment() {
         }
 
         validateIntent(version)
+        validateIntent("about.issue")
     }
 }
