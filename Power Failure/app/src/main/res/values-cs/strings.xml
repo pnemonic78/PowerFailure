@@ -18,7 +18,9 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title">Verze aplikace</string>
+    <string name="issue_title">Problémy</string>
+    <string name="issue_summary">Nahlásit problém nebo požádat o novou funkci.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>

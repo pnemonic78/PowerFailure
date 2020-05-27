@@ -18,7 +18,9 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title">Version de l\'application</string>
+    <string name="issue_title">Problèmes</string>
+    <string name="issue_summary">Signaler un problème ou demander une nouvelle fonctionnalité.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>

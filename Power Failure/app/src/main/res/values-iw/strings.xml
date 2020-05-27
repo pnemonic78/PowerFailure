@@ -18,7 +18,9 @@
     <string name="plugged_wireless">מקור כוח הוא אלחוטי.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title">גרסת יישום</string>
+    <string name="issue_title">בעיות</string>
+    <string name="issue_summary">דווח על בעיה או בקש תכונה חדשה.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>
