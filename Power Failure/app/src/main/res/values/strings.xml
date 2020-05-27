@@ -69,4 +69,8 @@
         <item quantity="other">@string/delay_summary_other</item>
     </plurals>
 
+    <!-- Message -->
+    <string name="sms_title">Send SMS</string>
+    <string name="sms_summary" translatable="false">%1$s</string>
+
 </resources>

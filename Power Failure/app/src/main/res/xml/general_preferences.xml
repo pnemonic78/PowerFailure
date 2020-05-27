@@ -6,14 +6,14 @@
         android:entryValues="@array/delay_values"
         android:icon="@drawable/ic_settings_alarm"
         android:key="delay"
-        android:title="@string/delay_title"/>
+        android:title="@string/delay_title" />
     <ListPreference
         android:defaultValue="@string/ringtone_type_defaultValue"
         android:entries="@array/ringtone_type_entries"
         android:entryValues="@array/ringtone_type_values"
         android:icon="@drawable/ic_settings_tone"
         android:key="ringtone.type"
-        android:title="@string/ringtone_stream_title"/>
+        android:title="@string/ringtone_stream_title" />
     <com.github.preference.RingtonePreference
         android:defaultValue="@string/ringtone_tone_defaultValue"
         android:icon="@drawable/ic_settings_tone"
@@ -21,10 +21,15 @@
         android:ringtoneType="alarm"
         android:showDefault="true"
         android:showSilent="true"
-        android:title="@string/ringtone_tone"/>
+        android:title="@string/ringtone_tone" />
     <CheckBoxPreference
         android:defaultValue="@bool/vibrate_defaultValue"
         android:icon="@drawable/ic_settings_vibrate"
         android:key="vibrate"
-        android:title="@string/vibrate_title"/>
+        android:title="@string/vibrate_title" />
+    <net.sf.power.monitor.preference.RecipientPreference
+        android:defaultValue="@string/sms_defaultValue"
+        android:icon="@drawable/ic_settings_sms"
+        android:key="sms"
+        android:title="@string/sms_title" />
 </PreferenceScreen>

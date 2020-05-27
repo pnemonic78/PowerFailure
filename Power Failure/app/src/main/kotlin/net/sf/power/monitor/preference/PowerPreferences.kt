@@ -35,22 +35,31 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
          * Preference name for the reminder type.
          */
         const val KEY_RINGTONE_TYPE = "ringtone.type"
+
         /**
          * Preference name for the reminder ringtone.
          */
         const val KEY_RINGTONE_TONE = "ringtone.tone"
+
         /**
          * Preference name for vibration.
          */
         const val KEY_VIBRATE = "vibrate"
+
         /**
          * Preference name for delay (seconds).
          */
         const val KEY_FAILURE_DELAY = "delay"
+
         /**
          * Preference name for the when was the last significant power failure.
          */
         const val KEY_FAILURE_TIME = "failure.time"
+
+        /**
+         * Preference name for the SMS number.
+         */
+        const val KEY_SMS = "sms"
 
         /**
          * Action that the shared preferences have changed.
@@ -116,4 +125,12 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
                 .putLong(KEY_FAILURE_TIME, value)
                 .apply()
         }
+
+    /**
+     * Get the SMS recipient.
+     *
+     * @return A contact number.
+     */
+    val smsRecipient: String
+        get() = preferences.getString(KEY_SMS, "") ?: ""
 }
