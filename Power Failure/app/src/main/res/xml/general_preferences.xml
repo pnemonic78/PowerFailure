@@ -30,6 +30,6 @@
     <net.sf.power.monitor.preference.RecipientPreference
         android:defaultValue="@string/sms_defaultValue"
         android:icon="@drawable/ic_settings_sms"
-        android:key="sms"
+        android:key="sms.recipient"
         android:title="@string/sms_title" />
 </PreferenceScreen>

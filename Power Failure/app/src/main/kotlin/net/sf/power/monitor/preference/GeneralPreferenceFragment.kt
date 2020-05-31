@@ -46,11 +46,11 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         initList(PowerPreferences.KEY_RINGTONE_TYPE)
 
         findPreference<Preference>(PowerPreferences.KEY_VIBRATE)?.onPreferenceChangeListener = this
-        recipientPreference = initSMS(PowerPreferences.KEY_SMS)
+        recipientPreference = initSMS(PowerPreferences.KEY_SMS_RECIPIENT)
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
-        if (preference == recipientPreference) {
+        if (preference === recipientPreference) {
             updateRecipientSummary(preference, newValue?.toString() ?: "")
         }
         return super.onPreferenceChange(preference, newValue)
@@ -82,14 +82,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == PICK_RECIPIENT) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    recipientPreference?.onActivityResult(data)
-                }
-            }
-        }
+        recipientPreference?.onActivityResult(requestCode, resultCode, data)
     }
 
     companion object {

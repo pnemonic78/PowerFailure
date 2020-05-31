@@ -57,9 +57,9 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
         const val KEY_FAILURE_TIME = "failure.time"
 
         /**
-         * Preference name for the SMS number.
+         * Preference name for the SMS recipient number.
          */
-        const val KEY_SMS = "sms"
+        const val KEY_SMS_RECIPIENT = "sms.recipient"
 
         /**
          * Action that the shared preferences have changed.
@@ -132,5 +132,5 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return A contact number.
      */
     val smsRecipient: String
-        get() = preferences.getString(KEY_SMS, "") ?: ""
+        get() = preferences.getString(KEY_SMS_RECIPIENT, "") ?: ""
 }

@@ -1,5 +1,6 @@
 package net.sf.power.monitor.preference
 
+import android.app.Activity
 import android.app.Fragment
 import android.content.Context
 import android.content.Intent
@@ -7,11 +8,13 @@ import android.content.pm.PackageManager
 import android.provider.ContactsContract
 import android.util.AttributeSet
 import androidx.preference.Preference
+import net.sf.power.monitor.R
 
-class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : Preference(context, attrs, defStyleAttr, defStyleRes) {
+//TODO enable sending with checkbox
+class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : Preference(context, attrs, defStyleAttr) {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, android.R.attr.preferenceStyle, 0)
-    constructor(context: Context) : this(context, null, android.R.attr.preferenceStyle, 0)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.preferenceStyle, 0)
+    constructor(context: Context) : this(context, null, R.attr.preferenceStyle, 0)
 
     private var recipientValue: String? = null
     var recipient: String
@@ -50,7 +53,17 @@ class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: 
         host?.startActivityForResult(intent, requestCode)
     }
 
-    fun onActivityResult(data: Intent) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == this.requestCode) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (data != null) {
+                    chooseBestRecipient(data)
+                }
+            }
+        }
+    }
+
+    private fun chooseBestRecipient(data: Intent) {
         val contactUri = data.data ?: return
         val cursor = context.contentResolver.query(contactUri, PROJECTION, SELECTION, null, null)
             ?: return
