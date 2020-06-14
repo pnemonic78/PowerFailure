@@ -122,7 +122,8 @@ class PowerConnectionService : Service(), BatteryListener {
     private var notificationTextId: Int = 0
     private var notificationIconId: Int = 0
     private var ringtone: Ringtone? = null
-    private var unpluggedSince: Long = 0
+    private var powerSince: Long = 0L
+    private var powerFailureSince: Long = 0L
     private var logging: Boolean = false
     private lateinit var settings: PowerPreferences
     private var vibrating: Boolean = false
@@ -234,10 +235,14 @@ class PowerConnectionService : Service(), BatteryListener {
         val now = SystemClock.uptimeMillis()
 
         if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
-            unpluggedSince = now
+            powerSince = now
+            powerFailureSince = 0L
             stopAlarm()
-        } else if (logging && (now - unpluggedSince >= prefTimeDelay)) {
-            handleFailure(plugged, System.currentTimeMillis())
+        } else if (logging && (now >= powerSince + prefTimeDelay)) {
+            if (powerFailureSince <= 0L) {
+                powerFailureSince = now
+                handleFailure(plugged, System.currentTimeMillis())
+            }
         } else {
             stopAlarm()
         }
