@@ -27,11 +27,11 @@ import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
 import android.os.*
+import android.telephony.SmsManager
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
-import java.lang.Exception
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -50,40 +50,49 @@ class PowerConnectionService : Service(), BatteryListener {
          * the client where callbacks should be sent.
          */
         const val MSG_REGISTER_CLIENT = 1
+
         /**
          * Command to the service to unregister a client, ot stop receiving callbacks
          * from the service.  The Message's replyTo field must be a Messenger of
          * the client as previously given with MSG_REGISTER_CLIENT.
          */
         const val MSG_UNREGISTER_CLIENT = 2
+
         /**
          * Command to the service to start monitoring.
          */
         const val MSG_START_MONITOR = 3
+
         /**
          * Command to the service to stop monitoring.
          */
         const val MSG_STOP_MONITOR = 4
+
         /**
          * Command to the service to query the monitoring status.
          */
         const val MSG_GET_STATUS_MONITOR = 5
+
         /**
          * Command to the clients about the monitoring status.
          */
         const val MSG_SET_STATUS_MONITOR = 6
+
         /**
          * Command to check the battery status.
          */
         const val MSG_CHECK_BATTERY = 10
+
         /**
          * Command to the clients that the battery status has been changed.
          */
         const val MSG_BATTERY_CHANGED = 11
+
         /**
          * Command to the clients that the alarm has activated.
          */
         const val MSG_ALARM = 12
+
         /**
          * Command to the service that the shared preferences have changed.
          */
@@ -99,10 +108,12 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private lateinit var context: Context
     private lateinit var handler: Handler
+
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
     private lateinit var messenger: Messenger
+
     /**
      * Keeps track of all current registered clients.
      */
@@ -118,6 +129,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
     private var prefVibrate: Boolean = false
+    private var prefSmsRecipient: String = ""
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -424,11 +436,24 @@ class PowerConnectionService : Service(), BatteryListener {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
         prefVibrate = settings.isVibrate
+        prefSmsRecipient = settings.smsRecipient
     }
 
-    private fun handleFailure(plugged: Int, time: Long) {
-        settings.failureTime = time
+    private fun handleFailure(plugged: Int, millis: Long) {
+        settings.failureTime = millis
         playAlarm()
-        notifyClients(MSG_ALARM, plugged, (time / 1000L).toInt())
+        notifyClients(MSG_ALARM, plugged, (millis / 1000L).toInt())
+        sendSMS(millis)
+    }
+
+    private fun sendSMS(millis: Long) {
+        val destination = prefSmsRecipient
+        if (destination.isEmpty()) return
+
+        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        val text = getString(R.string.sms_message, dateTime)
+
+        val smsManager = SmsManager.getDefault()
+        smsManager.sendTextMessage(destination, null, text, null, null)
     }
 }

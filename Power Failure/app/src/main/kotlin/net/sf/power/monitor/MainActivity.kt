@@ -320,7 +320,8 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     private fun showFailureTime(millis: Long) {
-        timeView.text = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        timeView.text = getString(R.string.sms_message, dateTime)
         timeView.visibility = View.VISIBLE
     }
 }
