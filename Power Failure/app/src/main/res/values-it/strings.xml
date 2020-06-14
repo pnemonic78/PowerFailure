@@ -55,4 +55,8 @@
     <string name="delay_summary_many">@string/delay_summary_other</string>
     <string name="delay_summary_other">%1$d seconds</string>
 
+    <!-- Message -->
+    <string name="sms_title">Send SMS</string>
+    <string name="sms_recipient_title">SMS Recipient</string>
+
 </resources>
