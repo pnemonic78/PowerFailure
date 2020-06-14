@@ -458,7 +458,7 @@ class PowerConnectionService : Service(), BatteryListener {
         val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
         val text = getString(R.string.sms_message, dateTime)
 
-        val smsManager = SmsManager.getDefault()
+        val smsManager = SmsManager.getDefault() ?: return
         smsManager.sendTextMessage(destination, null, text, null, null)
     }
 }

@@ -73,6 +73,6 @@
     <string name="sms_title">Send SMS</string>
     <string name="sms_recipient_title">SMS Recipient</string>
     <string name="sms_summary" translatable="false">%1$s</string>
-    <string name="sms_message">Power failure detected on %1$s</string>
+    <string name="sms_message">Power failure occurred on %1$s</string>
 
 </resources>
