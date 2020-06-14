@@ -22,14 +22,20 @@
         android:showDefault="true"
         android:showSilent="true"
         android:title="@string/ringtone_tone" />
-    <CheckBoxPreference
+    <SwitchPreference
         android:defaultValue="@bool/vibrate_defaultValue"
         android:icon="@drawable/ic_settings_vibrate"
         android:key="vibrate"
         android:title="@string/vibrate_title" />
-    <net.sf.power.monitor.preference.RecipientPreference
-        android:defaultValue="@string/sms_defaultValue"
+    <SwitchPreference
+        android:defaultValue="@bool/sms_defaultValue"
         android:icon="@drawable/ic_settings_sms"
-        android:key="sms.recipient"
+        android:key="sms.enabled"
         android:title="@string/sms_title" />
+    <net.sf.power.monitor.preference.RecipientPreference
+        android:defaultValue="@string/sms_recipient_defaultValue"
+        android:dependency="sms.enabled"
+        android:icon="@drawable/ic_settings_sms_recipient"
+        android:key="sms.recipient"
+        android:title="@string/sms_recipient_title" />
 </PreferenceScreen>
