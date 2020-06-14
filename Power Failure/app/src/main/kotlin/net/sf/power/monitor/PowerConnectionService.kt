@@ -447,7 +447,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun handleFailure(plugged: Int, millis: Long) {
         settings.failureTime = millis
         playAlarm()
-        notifyClients(MSG_ALARM, plugged, (millis / 1000L).toInt())
+        notifyClients(MSG_ALARM, plugged, (millis / DateUtils.SECOND_IN_MILLIS).toInt())
         sendSMS(millis)
     }
 

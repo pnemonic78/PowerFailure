@@ -300,6 +300,11 @@ class MainActivity : Activity(), BatteryListener {
                 handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
                 return true
             }
+            R.id.menu_force -> {
+                val msg = Message.obtain(handler, MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
+                msg.sendToTarget()
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
