@@ -227,6 +227,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
+                MSG_ALARM -> service.handleFailure(msg.arg1, msg.arg2 * DateUtils.SECOND_IN_MILLIS)
                 else -> super.handleMessage(msg)
             }
         }
@@ -463,6 +464,8 @@ class PowerConnectionService : Service(), BatteryListener {
         val text = getString(R.string.sms_message, dateTime)
 
         val smsManager = SmsManager.getDefault() ?: return
+
+        Timber.i("send SMS to $destination")
         smsManager.sendTextMessage(destination, null, text, null, null)
     }
 }

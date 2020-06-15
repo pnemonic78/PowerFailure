@@ -54,14 +54,17 @@ class MainActivity : Activity(), BatteryListener {
     private var menuItemStop: MenuItem? = null
 
     private lateinit var handler: Handler
+
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
     private lateinit var messenger: Messenger
+
     /**
      * Messenger for communicating with service.
      */
     private var service: Messenger? = null
+
     /**
      * Flag indicating whether we have called bind on the service.
      */
@@ -301,8 +304,7 @@ class MainActivity : Activity(), BatteryListener {
                 return true
             }
             R.id.menu_force -> {
-                val msg = Message.obtain(handler, MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
-                msg.sendToTarget()
+                notifyService(MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
                 return true
             }
         }
@@ -311,10 +313,10 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     @Throws(RemoteException::class)
-    private fun notifyService(command: Int) {
+    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0) {
         val service = this.service ?: return
         if (serviceIsBound) {
-            val msg = Message.obtain(null, command)
+            val msg = Message.obtain(null, command, arg1, arg2)
             msg.replyTo = messenger
             service.send(msg)
         }
