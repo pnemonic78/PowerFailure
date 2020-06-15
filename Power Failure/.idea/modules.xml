@@ -2,10 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Power Failure.iml" filepath="$PROJECT_DIR$/Power Failure.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-lib/android-lib.iml" filepath="$PROJECT_DIR$/android-lib/android-lib.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/android-lib/lib/lib.iml" filepath="$PROJECT_DIR$/android-lib/lib/lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.iml" group="Power_Failure" />
+      <module fileurl="file://$PROJECT_DIR$/android-lib/android-lib.iml" filepath="$PROJECT_DIR$/android-lib/android-lib.iml" group="Power Failure/android-lib" />
+      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" group="Power Failure/app" />
+      <module fileurl="file://$PROJECT_DIR$/android-lib/lib/lib.iml" filepath="$PROJECT_DIR$/android-lib/lib/lib.iml" group="Power Failure/android-lib/lib" />
     </modules>
   </component>
 </project>

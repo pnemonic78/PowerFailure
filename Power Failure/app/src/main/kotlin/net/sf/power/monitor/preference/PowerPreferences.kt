@@ -35,22 +35,36 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
          * Preference name for the reminder type.
          */
         const val KEY_RINGTONE_TYPE = "ringtone.type"
+
         /**
          * Preference name for the reminder ringtone.
          */
         const val KEY_RINGTONE_TONE = "ringtone.tone"
+
         /**
          * Preference name for vibration.
          */
         const val KEY_VIBRATE = "vibrate"
+
         /**
          * Preference name for delay (seconds).
          */
         const val KEY_FAILURE_DELAY = "delay"
+
         /**
          * Preference name for the when was the last significant power failure.
          */
         const val KEY_FAILURE_TIME = "failure.time"
+
+        /**
+         * Preference name for enabling sending an SMS.
+         */
+        const val KEY_SMS_ENABLED = "sms.enabled"
+
+        /**
+         * Preference name for the SMS recipient number.
+         */
+        const val KEY_SMS_RECIPIENT = "sms.recipient"
 
         /**
          * Action that the shared preferences have changed.
@@ -115,5 +129,27 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
             preferences.edit()
                 .putLong(KEY_FAILURE_TIME, value)
                 .apply()
+        }
+
+    /**
+     * Is sending an SMS enabled?
+     *
+     * @return `true` if enabled.
+     */
+    var isSmsEnabled: Boolean
+        get() = preferences.getBoolean(KEY_SMS_ENABLED, false)
+        set(value) {
+            preferences.edit().putBoolean(KEY_SMS_ENABLED, value).apply()
+        }
+
+    /**
+     * Get the SMS recipient.
+     *
+     * @return A contact number.
+     */
+    var smsRecipient: String
+        get() = preferences.getString(KEY_SMS_RECIPIENT, "") ?: ""
+        set(value) {
+            preferences.edit().putString(KEY_SMS_RECIPIENT, value).apply()
         }
 }

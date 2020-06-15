@@ -54,14 +54,17 @@ class MainActivity : Activity(), BatteryListener {
     private var menuItemStop: MenuItem? = null
 
     private lateinit var handler: Handler
+
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
     private lateinit var messenger: Messenger
+
     /**
      * Messenger for communicating with service.
      */
     private var service: Messenger? = null
+
     /**
      * Flag indicating whether we have called bind on the service.
      */
@@ -300,16 +303,20 @@ class MainActivity : Activity(), BatteryListener {
                 handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
                 return true
             }
+            R.id.menu_force -> {
+                notifyService(MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
+                return true
+            }
         }
 
         return super.onOptionsItemSelected(item)
     }
 
     @Throws(RemoteException::class)
-    private fun notifyService(command: Int) {
+    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0) {
         val service = this.service ?: return
         if (serviceIsBound) {
-            val msg = Message.obtain(null, command)
+            val msg = Message.obtain(null, command, arg1, arg2)
             msg.replyTo = messenger
             service.send(msg)
         }
@@ -320,7 +327,8 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     private fun showFailureTime(millis: Long) {
-        timeView.text = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        timeView.text = getString(R.string.sms_message, dateTime)
         timeView.visibility = View.VISIBLE
     }
 }

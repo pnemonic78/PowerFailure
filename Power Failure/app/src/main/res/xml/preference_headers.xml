@@ -4,9 +4,6 @@
     <header
         android:fragment="net.sf.power.monitor.preference.GeneralPreferenceFragment"
         android:title="@string/pref_general_title"/>
-    <!--header
-        android:fragment="net.sf.power.monitor.preference.AppearancePreferenceFragment"
-        android:title="@string/pref_appearance_title"/-->
     <header
         android:fragment="net.sf.power.monitor.preference.AboutPreferenceFragment"
         android:title="@string/pref_about_title"/>

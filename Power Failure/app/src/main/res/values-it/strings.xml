@@ -18,7 +18,9 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title">Versione di applicazione</string>
+    <string name="issue_title">Problemi</string>
+    <string name="issue_summary">Segnala un problema o richiedi una nuova funzionalità.</string>
 
     <!-- Delay -->
     <string name="delay_1_second">1 second</string>
@@ -52,5 +54,10 @@
     <string name="delay_summary_few">@string/delay_summary_other</string>
     <string name="delay_summary_many">@string/delay_summary_other</string>
     <string name="delay_summary_other">%1$d seconds</string>
+
+    <!-- Message -->
+    <string name="sms_title">Send SMS</string>
+    <string name="sms_recipient_title">SMS Recipient</string>
+    <string name="sms_message">Power failure occurred on %1$s</string>
 
 </resources>

@@ -4,6 +4,7 @@
     package="net.sf.power.monitor">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
@@ -12,7 +13,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.PowerFailure"
+        android:theme="@style/Theme.PowerFailure.DayNight"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name="net.sf.power.monitor.MainActivity"
@@ -28,7 +29,8 @@
             android:name="net.sf.power.monitor.preference.PreferenceActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="net.sf.power.monitor.MainActivity" />
+            android:parentActivityName="net.sf.power.monitor.MainActivity"
+            android:theme="@style/Theme.PowerFailure.Settings" />
 
         <service
             android:name="net.sf.power.monitor.PowerConnectionService"

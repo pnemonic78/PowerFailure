@@ -15,6 +15,7 @@
  */
 package net.sf.power.monitor.preference
 
+import android.content.Context
 import android.content.Intent
 import androidx.preference.Preference
 import com.github.preference.AbstractPreferenceFragment
@@ -25,6 +26,13 @@ import com.github.preference.AbstractPreferenceFragment
  * @author Moshe Waisberg
  */
 abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
+
+    protected lateinit var settings: PowerPreferences
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        settings = PowerPreferences(context)
+    }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         val result = super.onPreferenceChange(preference, newValue)

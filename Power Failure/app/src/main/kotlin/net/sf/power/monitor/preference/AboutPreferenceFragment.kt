@@ -17,6 +17,7 @@ package net.sf.power.monitor.preference
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.preference.Preference
 import net.sf.power.monitor.R
 
 /**
@@ -32,13 +33,14 @@ class AboutPreferenceFragment : PowerPreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
 
-        val version = findPreference("about.version")
+        val version = findPreference<Preference>("about.version")
         try {
-            version.summary = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            version?.summary = context.packageManager.getPackageInfo(context.packageName, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
             // Never should happen with our own package!
         }
 
         validateIntent(version)
+        validateIntent("about.issue")
     }
 }
