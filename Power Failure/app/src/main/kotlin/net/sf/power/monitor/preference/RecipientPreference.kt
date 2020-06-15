@@ -10,11 +10,9 @@ import android.util.AttributeSet
 import androidx.preference.Preference
 import net.sf.power.monitor.R
 
-//TODO enable sending with checkbox
-class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : Preference(context, attrs, defStyleAttr) {
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.preferenceStyle, 0)
-    constructor(context: Context) : this(context, null, R.attr.preferenceStyle, 0)
+class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Preference(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.preferenceStyle)
+    constructor(context: Context) : this(context, null)
 
     private var recipientValue: String? = null
     var recipient: String

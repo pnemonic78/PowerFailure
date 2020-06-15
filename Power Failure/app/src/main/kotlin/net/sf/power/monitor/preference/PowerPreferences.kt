@@ -57,6 +57,11 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
         const val KEY_FAILURE_TIME = "failure.time"
 
         /**
+         * Preference name for enabling sending an SMS.
+         */
+        const val KEY_SMS_ENABLED = "sms.enabled"
+
+        /**
          * Preference name for the SMS recipient number.
          */
         const val KEY_SMS_RECIPIENT = "sms.recipient"
@@ -127,10 +132,24 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
         }
 
     /**
+     * Is sending an SMS enabled?
+     *
+     * @return `true` if enabled.
+     */
+    var isSmsEnabled: Boolean
+        get() = preferences.getBoolean(KEY_SMS_ENABLED, false)
+        set(value) {
+            preferences.edit().putBoolean(KEY_SMS_ENABLED, value).apply()
+        }
+
+    /**
      * Get the SMS recipient.
      *
      * @return A contact number.
      */
-    val smsRecipient: String
+    var smsRecipient: String
         get() = preferences.getString(KEY_SMS_RECIPIENT, "") ?: ""
+        set(value) {
+            preferences.edit().putString(KEY_SMS_RECIPIENT, value).apply()
+        }
 }

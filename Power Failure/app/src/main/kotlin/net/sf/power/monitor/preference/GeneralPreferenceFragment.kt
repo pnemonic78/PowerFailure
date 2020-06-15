@@ -15,12 +15,16 @@
  */
 package net.sf.power.monitor.preference
 
-import android.app.Activity
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
+import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
+import androidx.preference.SwitchPreference
 import com.github.preference.RingtonePreference
 import net.sf.power.monitor.R
 
@@ -31,6 +35,7 @@ import net.sf.power.monitor.R
 class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
     private var reminderRingtonePreference: RingtonePreference? = null
+    private var smsPreference: SwitchPreference? = null
     private var recipientPreference: RecipientPreference? = null
 
     override fun getPreferencesXml(): Int {
@@ -45,12 +50,17 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
         initList(PowerPreferences.KEY_RINGTONE_TYPE)
 
-        findPreference<Preference>(PowerPreferences.KEY_VIBRATE)?.onPreferenceChangeListener = this
-        recipientPreference = initSMS(PowerPreferences.KEY_SMS_RECIPIENT)
+        smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
+        smsPreference?.onPreferenceChangeListener = this
+        recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
-        if (preference === recipientPreference) {
+        if (preference === smsPreference) {
+            if (newValue == true) {
+                checkSmsPermission()
+            }
+        } else if (preference === recipientPreference) {
             updateRecipientSummary(preference, newValue?.toString() ?: "")
         }
         return super.onPreferenceChange(preference, newValue)
@@ -68,10 +78,10 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         return false
     }
 
-    private fun initSMS(key: String): RecipientPreference? {
+    private fun initSmsRecipient(key: String): RecipientPreference? {
         val preference = findPreference<RecipientPreference>(key) ?: return null
         preference.onPreferenceChangeListener = this
-        preference.setOnClick(this, PICK_RECIPIENT)
+        preference.setOnClick(this, REQUEST_RECIPIENT)
         updateRecipientSummary(preference, preference.recipient)
         return preference
     }
@@ -85,7 +95,25 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         recipientPreference?.onActivityResult(requestCode, resultCode, data)
     }
 
+    private fun checkSmsPermission() {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(arrayOf(Manifest.permission.SEND_SMS), REQUEST_SMS)
+            }
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (requestCode == REQUEST_SMS) {
+            if (grantResults.isNotEmpty() && (grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
+                smsPreference?.isChecked = false
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
     companion object {
-        private const val PICK_RECIPIENT = 0x73C1
+        private const val REQUEST_SMS = 0x535
+        private const val REQUEST_RECIPIENT = 0x73C1
     }
 }

@@ -130,6 +130,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
     private var prefVibrate: Boolean = false
+    private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
 
     private val receiver = object : BroadcastReceiver() {
@@ -441,6 +442,7 @@ class PowerConnectionService : Service(), BatteryListener {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
         prefVibrate = settings.isVibrate
+        prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient
     }
 
@@ -452,6 +454,8 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun sendSMS(millis: Long) {
+        if (!prefSmsEnabled) return
+
         val destination = prefSmsRecipient
         if (destination.isEmpty()) return
 
