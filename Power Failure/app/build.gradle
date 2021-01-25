@@ -65,12 +65,12 @@ dependencies {
     implementation project(':android-lib:lib')
 
     // Testing
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation "androidx.test:core:$supportTestVersion"
     androidTestImplementation "androidx.test:rules:$supportTestVersion"
     androidTestImplementation "androidx.test:runner:$supportTestVersion"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 
     // Logging
-    implementation 'com.google.firebase:firebase-crashlytics:17.0.1'
+    implementation 'com.google.firebase:firebase-crashlytics:17.3.0'
 }
