@@ -15,6 +15,8 @@ android {
         versionName versionMajor + '.' + versionMinor.toString().padLeft(2, '0')
         resConfigs "en"
 
+        buildConfigField "Boolean", "FEATURE_SMS", "true"
+
         testApplicationId "net.sf.power.monitor.test"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -51,6 +53,18 @@ android {
         }
         test {
             java.srcDirs += 'src/test/kotlin'
+        }
+    }
+
+    flavorDimensions "privacy"
+
+    productFlavors {
+        google {
+            dimension "privacy"
+            buildConfigField "Boolean", "FEATURE_SMS", "false"
+        }
+        regular {
+            dimension "privacy"
         }
     }
 }

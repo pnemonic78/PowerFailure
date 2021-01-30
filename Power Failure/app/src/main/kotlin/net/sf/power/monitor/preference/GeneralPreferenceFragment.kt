@@ -26,6 +26,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.github.preference.RingtonePreference
+import net.sf.power.monitor.BuildConfig
 import net.sf.power.monitor.R
 
 /**
@@ -53,6 +54,10 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
         smsPreference?.onPreferenceChangeListener = this
         recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
+        if (!BuildConfig.FEATURE_SMS) {
+            smsPreference?.isEnabled = false
+            recipientPreference?.isEnabled = false
+        }
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
