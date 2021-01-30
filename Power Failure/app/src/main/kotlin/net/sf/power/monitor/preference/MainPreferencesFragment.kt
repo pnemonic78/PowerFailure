@@ -1,5 +1,5 @@
 /*
- * Copyright 2016, Moshe Waisberg
+ * Copyright 2021, Moshe Waisberg
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,10 @@
  */
 package net.sf.power.monitor.preference
 
-import android.os.Bundle
-import com.github.preference.SettingsActivity
 import net.sf.power.monitor.R
 
-/**
- * Preferences activity.
- *
- * @author Moshe Waisberg
- */
-class PreferenceActivity : SettingsActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.settings_container, MainPreferencesFragment())
-            .commit()
+class MainPreferencesFragment : PowerPreferenceFragment() {
+    override fun getPreferencesXml(): Int {
+        return R.xml.preference_headers
     }
 }

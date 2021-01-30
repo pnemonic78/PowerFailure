@@ -32,6 +32,7 @@ class AboutPreferenceFragment : PowerPreferenceFragment() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
+        val context = requireContext()
 
         val version = findPreference<Preference>("about.version")
         try {
