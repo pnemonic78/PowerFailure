@@ -227,7 +227,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_ALARM -> service.handleFailure(msg.arg1, msg.arg2 * DateUtils.SECOND_IN_MILLIS)
+                MSG_ALARM -> service.handleFailure(msg.arg1, msg.obj as Long)
                 else -> super.handleMessage(msg)
             }
         }
@@ -386,11 +386,11 @@ class PowerConnectionService : Service(), BatteryListener {
         }
     }
 
-    private fun notifyClients(command: Int, arg1: Int, arg2: Int) {
+    private fun notifyClients(command: Int, arg1: Int, arg2: Int, arg3: Any? = null) {
         var msg: Message
         for (i in clients.indices.reversed()) {
             try {
-                msg = Message.obtain(null, command, arg1, arg2)
+                msg = Message.obtain(null, command, arg1, arg2, arg3)
                 clients[i].send(msg)
             } catch (e: RemoteException) {
                 Timber.e(e, "Failed to send status update")
@@ -450,7 +450,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun handleFailure(plugged: Int, millis: Long) {
         settings.failureTime = millis
         playAlarm()
-        notifyClients(MSG_ALARM, plugged, (millis / DateUtils.SECOND_IN_MILLIS).toInt())
+        notifyClients(MSG_ALARM, plugged, 0, millis)
         sendSMS(millis)
     }
 

@@ -204,7 +204,7 @@ class MainActivity : Activity(), BatteryListener {
                 MSG_START_MONITOR -> activity.startMonitor()
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
-                MSG_ALARM -> activity.showFailureTime(msg.arg2)
+                MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
                 MSG_SETTINGS -> activity.startActivity(Intent(activity, PreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
@@ -304,7 +304,7 @@ class MainActivity : Activity(), BatteryListener {
                 return true
             }
             R.id.menu_force -> {
-                notifyService(MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
+                notifyService(MainHandler.MSG_ALARM, 0, 0, System.currentTimeMillis())
                 return true
             }
         }
@@ -313,17 +313,13 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     @Throws(RemoteException::class)
-    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0) {
+    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
         val service = this.service ?: return
         if (serviceIsBound) {
-            val msg = Message.obtain(null, command, arg1, arg2)
+            val msg = Message.obtain(null, command, arg1, arg2, arg3)
             msg.replyTo = messenger
             service.send(msg)
         }
-    }
-
-    private fun showFailureTime(seconds: Int) {
-        showFailureTime(seconds * 1000L)
     }
 
     private fun showFailureTime(millis: Long) {
