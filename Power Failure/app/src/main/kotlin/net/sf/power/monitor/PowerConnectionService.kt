@@ -23,6 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
@@ -37,6 +39,9 @@ import java.util.*
 
 /**
  * Power connection events service.
+ *
+ * `adb shell dumpsys battery unplug`
+ * `adb shell dumpsys battery reset`
  *
  * @author Moshe Waisberg
  */
@@ -267,7 +272,21 @@ class PowerConnectionService : Service(), BatteryListener {
             this.ringtone = null
         }
         if ((ringtone == null) && (prefRingtone != null)) {
-            this.ringtone = RingtoneManager.getRingtone(context, prefRingtone)
+            val ringtone = RingtoneManager.getRingtone(context, prefRingtone)
+            if (ringtone != null) {
+                val audioStreamType = AudioManager.STREAM_ALARM
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val audioAttributes = AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setLegacyStreamType(audioStreamType)
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .build()
+                    ringtone.audioAttributes = audioAttributes
+                } else {
+                    ringtone.streamType = audioStreamType
+                }
+            }
+            this.ringtone = ringtone
         }
         return ringtone
     }
