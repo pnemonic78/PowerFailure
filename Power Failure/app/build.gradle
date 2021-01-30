@@ -35,8 +35,8 @@ android {
         }
 
         release {
-            //minifyEnabled true
-            //shrinkResources true
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
@@ -60,9 +60,9 @@ dependencies {
     implementation project(':android-lib:lib')
 
     // Testing
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation "androidx.test:core:$supportTestVersion"
-    androidTestImplementation "androidx.test:rules:$supportTestVersion"
-    androidTestImplementation "androidx.test:runner:$supportTestVersion"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation 'junit:junit:4.13'
+    androidTestImplementation "androidx.test:core:$androidTestVersion"
+    androidTestImplementation "androidx.test:rules:$androidTestVersion"
+    androidTestImplementation "androidx.test:runner:$androidTestVersion"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }
