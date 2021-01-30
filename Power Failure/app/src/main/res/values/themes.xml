@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.PowerFailure.Dark" parent="Theme.Base.Dark" />
-
-    <style name="Theme.PowerFailure.Light" parent="Theme.Base.Light" />
-
-    <style name="Theme.PowerFailure.DayNight" parent="Theme.Base.DayNight" />
+    <style name="Theme.PowerFailure.DayNight" parent="Theme.AppCompat.DayNight" />
 
     <style name="Theme.PowerFailure.Settings" parent="Theme.AppCompat.Settings" />
 

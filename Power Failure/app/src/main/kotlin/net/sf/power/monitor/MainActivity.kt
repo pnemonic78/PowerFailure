@@ -15,7 +15,6 @@
  */
 package net.sf.power.monitor
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -27,6 +26,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PreferenceActivity
 import timber.log.Timber
@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference
  *
  * @author Moshe Waisberg
  */
-class MainActivity : Activity(), BatteryListener {
+class MainActivity : AppCompatActivity(), BatteryListener {
 
     companion object {
         private const val LEVEL_UNKNOWN = 0
