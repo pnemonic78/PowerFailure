@@ -15,22 +15,15 @@
  */
 package net.sf.power.monitor.preference
 
-import android.os.Bundle
-import com.github.preference.SettingsActivity
-import net.sf.power.monitor.R
+import androidx.preference.PreferenceFragmentCompat
+import com.github.preference.PreferenceActivity
 
 /**
  * Preferences activity.
  *
  * @author Moshe Waisberg
  */
-class PreferenceActivity : SettingsActivity() {
+class PowerPreferenceActivity : PreferenceActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportFragmentManager
-            .beginTransaction()
-            .replace(R.id.settings_container, MainPreferencesFragment())
-            .commit()
-    }
+    override fun createMainFragment(): PreferenceFragmentCompat = MainPreferencesFragment()
 }

@@ -28,7 +28,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import net.sf.power.monitor.preference.PowerPreferences
-import net.sf.power.monitor.preference.PreferenceActivity
+import net.sf.power.monitor.preference.PowerPreferenceActivity
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -205,7 +205,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
                 MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
-                MSG_SETTINGS -> activity.startActivity(Intent(activity, PreferenceActivity::class.java))
+                MSG_SETTINGS -> activity.startActivity(Intent(activity, PowerPreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
         }
