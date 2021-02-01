@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.Ringtone
@@ -109,6 +110,8 @@ class PowerConnectionService : Service(), BatteryListener {
         private val VIBRATE_PATTERN = longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
 
         private const val CHANNEL_ID = "power"
+
+        private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
     }
 
     private lateinit var context: Context
@@ -285,6 +288,7 @@ class PowerConnectionService : Service(), BatteryListener {
                         .build()
                     ringtone.audioAttributes = audioAttributes
                 } else {
+                    @Suppress("DEPRECATION")
                     ringtone.streamType = audioStreamType
                 }
             }
@@ -375,6 +379,7 @@ class PowerConnectionService : Service(), BatteryListener {
             .setContentTitle(title)  // the label of the entry
             .setContentText(text)  // the contents of the entry
             .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+            .setLights(Color.RED, secondMs, secondMs)
             .build()
 
         // Send the notification.
