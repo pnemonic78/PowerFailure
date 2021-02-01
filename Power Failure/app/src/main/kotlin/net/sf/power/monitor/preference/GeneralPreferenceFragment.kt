@@ -16,6 +16,7 @@
 package net.sf.power.monitor.preference
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.RingtoneManager
@@ -26,6 +27,7 @@ import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.github.preference.RingtonePreference
+import net.sf.power.monitor.BuildConfig
 import net.sf.power.monitor.R
 
 /**
@@ -53,12 +55,16 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
         smsPreference?.onPreferenceChangeListener = this
         recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
+        if (!BuildConfig.FEATURE_SMS) {
+            smsPreference?.isEnabled = false
+            recipientPreference?.isEnabled = false
+        }
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         if (preference === smsPreference) {
             if (newValue == true) {
-                checkSmsPermission()
+                checkSmsPermission(preference.context)
             }
         } else if (preference === recipientPreference) {
             updateRecipientSummary(preference, newValue?.toString() ?: "")
@@ -95,9 +101,9 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         recipientPreference?.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun checkSmsPermission() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    private fun checkSmsPermission(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(arrayOf(Manifest.permission.SEND_SMS), REQUEST_SMS)
             }
         }

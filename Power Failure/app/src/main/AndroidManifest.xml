@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="net.sf.power.monitor.preference.PreferenceActivity"
+            android:name="net.sf.power.monitor.preference.PowerPreferenceActivity"
             android:exported="false"
             android:label="@string/title_activity_settings"
             android:parentActivityName="net.sf.power.monitor.MainActivity"

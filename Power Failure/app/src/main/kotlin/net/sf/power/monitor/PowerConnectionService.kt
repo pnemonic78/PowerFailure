@@ -23,6 +23,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.media.AudioAttributes
+import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
@@ -37,6 +39,9 @@ import java.util.*
 
 /**
  * Power connection events service.
+ *
+ * `adb shell dumpsys battery unplug`
+ * `adb shell dumpsys battery reset`
  *
  * @author Moshe Waisberg
  */
@@ -129,6 +134,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var vibrating: Boolean = false
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
+    private var prefRingtoneType: Int = RingtoneManager.TYPE_ALARM
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
@@ -227,7 +233,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_ALARM -> service.handleFailure(msg.arg1, msg.arg2 * DateUtils.SECOND_IN_MILLIS)
+                MSG_ALARM -> service.handleFailure(msg.arg1, msg.obj as Long)
                 else -> super.handleMessage(msg)
             }
         }
@@ -261,13 +267,28 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun getRingtone(context: Context): Ringtone? {
-        if (prefRingtone == null) {
-            stopTone()
-            prefRingtone = settings.ringtone
-            this.ringtone = null
-        }
+        var ringtone = this.ringtone
+        prefRingtone = settings.ringtone
         if ((ringtone == null) && (prefRingtone != null)) {
-            this.ringtone = RingtoneManager.getRingtone(context, prefRingtone)
+            ringtone = RingtoneManager.getRingtone(context, prefRingtone)
+            if (ringtone != null) {
+                val audioStreamType = if (prefRingtoneType == RingtoneManager.TYPE_ALARM) {
+                    AudioManager.STREAM_ALARM
+                } else {
+                    AudioManager.STREAM_NOTIFICATION
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    val audioAttributes = AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setLegacyStreamType(audioStreamType)
+                        .setUsage(AudioAttributes.USAGE_ALARM)
+                        .build()
+                    ringtone.audioAttributes = audioAttributes
+                } else {
+                    ringtone.streamType = audioStreamType
+                }
+            }
+            this.ringtone = ringtone
         }
         return ringtone
     }
@@ -279,6 +300,11 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun playTone(context: Context) {
+        // Has the tone uri changed?
+        if (prefRingtone == null) {
+            stopTone()
+            this.ringtone = null
+        }
         val ringtone = getRingtone(context)
         try {
             Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
@@ -386,11 +412,11 @@ class PowerConnectionService : Service(), BatteryListener {
         }
     }
 
-    private fun notifyClients(command: Int, arg1: Int, arg2: Int) {
+    private fun notifyClients(command: Int, arg1: Int, arg2: Int, arg3: Any? = null) {
         var msg: Message
         for (i in clients.indices.reversed()) {
             try {
-                msg = Message.obtain(null, command, arg1, arg2)
+                msg = Message.obtain(null, command, arg1, arg2, arg3)
                 clients[i].send(msg)
             } catch (e: RemoteException) {
                 Timber.e(e, "Failed to send status update")
@@ -442,6 +468,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun onPreferencesChanged() {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
+        prefRingtoneType = settings.ringtoneType
         prefVibrate = settings.isVibrate
         prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient
@@ -450,7 +477,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun handleFailure(plugged: Int, millis: Long) {
         settings.failureTime = millis
         playAlarm()
-        notifyClients(MSG_ALARM, plugged, (millis / DateUtils.SECOND_IN_MILLIS).toInt())
+        notifyClients(MSG_ALARM, plugged, 0, millis)
         sendSMS(millis)
     }
 

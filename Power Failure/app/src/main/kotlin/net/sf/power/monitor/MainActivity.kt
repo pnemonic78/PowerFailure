@@ -15,7 +15,6 @@
  */
 package net.sf.power.monitor
 
-import android.app.Activity
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -27,8 +26,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import net.sf.power.monitor.preference.PowerPreferences
-import net.sf.power.monitor.preference.PreferenceActivity
+import net.sf.power.monitor.preference.PowerPreferenceActivity
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference
  *
  * @author Moshe Waisberg
  */
-class MainActivity : Activity(), BatteryListener {
+class MainActivity : AppCompatActivity(), BatteryListener {
 
     companion object {
         private const val LEVEL_UNKNOWN = 0
@@ -204,8 +204,8 @@ class MainActivity : Activity(), BatteryListener {
                 MSG_START_MONITOR -> activity.startMonitor()
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
-                MSG_ALARM -> activity.showFailureTime(msg.arg2)
-                MSG_SETTINGS -> activity.startActivity(Intent(activity, PreferenceActivity::class.java))
+                MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
+                MSG_SETTINGS -> activity.startActivity(Intent(activity, PowerPreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
         }
@@ -274,6 +274,11 @@ class MainActivity : Activity(), BatteryListener {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
 
+        val menuItemForce = menu.findItem(R.id.menu_force)
+        if (BuildConfig.DEBUG) {
+            menuItemForce.isEnabled = true
+            menuItemForce.isVisible = true
+        }
         menuItemStart = menu.findItem(R.id.menu_start)
         menuItemStop = menu.findItem(R.id.menu_stop)
 
@@ -304,7 +309,7 @@ class MainActivity : Activity(), BatteryListener {
                 return true
             }
             R.id.menu_force -> {
-                notifyService(MainHandler.MSG_ALARM, 0, (System.currentTimeMillis() / DateUtils.SECOND_IN_MILLIS).toInt())
+                notifyService(MainHandler.MSG_ALARM, 0, 0, System.currentTimeMillis())
                 return true
             }
         }
@@ -313,17 +318,13 @@ class MainActivity : Activity(), BatteryListener {
     }
 
     @Throws(RemoteException::class)
-    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0) {
+    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
         val service = this.service ?: return
         if (serviceIsBound) {
-            val msg = Message.obtain(null, command, arg1, arg2)
+            val msg = Message.obtain(null, command, arg1, arg2, arg3)
             msg.replyTo = messenger
             service.send(msg)
         }
-    }
-
-    private fun showFailureTime(seconds: Int) {
-        showFailureTime(seconds * 1000L)
     }
 
     private fun showFailureTime(millis: Long) {

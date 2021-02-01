@@ -15,21 +15,15 @@
  */
 package net.sf.power.monitor.preference
 
-import net.sf.power.monitor.R
+import androidx.preference.PreferenceFragmentCompat
+import com.github.preference.PreferenceActivity
 
 /**
  * Preferences activity.
  *
  * @author Moshe Waisberg
  */
-class PreferenceActivity : android.preference.PreferenceActivity() {
+class PowerPreferenceActivity : PreferenceActivity() {
 
-    override fun onBuildHeaders(target: List<Header>) {
-        loadHeadersFromResource(R.xml.preference_headers, target)
-    }
-
-    override fun isValidFragment(fragmentName: String): Boolean {
-        val packageName: String = javaClass.getPackage()!!.name
-        return fragmentName.startsWith(packageName)
-    }
+    override fun createMainFragment(): PreferenceFragmentCompat = MainPreferencesFragment()
 }

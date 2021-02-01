@@ -1,12 +1,12 @@
 package net.sf.power.monitor.preference
 
 import android.app.Activity
-import android.app.Fragment
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.provider.ContactsContract
 import android.util.AttributeSet
+import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import net.sf.power.monitor.R
 
