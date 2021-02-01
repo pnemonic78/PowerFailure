@@ -1,8 +1,10 @@
 package net.sf.power.monitor;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +22,7 @@ public class ApplicationTest {
     @Test
     public void useAppContext() {
         // Context of the app under test.
-        final Context appContext = InstrumentationRegistry.getTargetContext();
+        final Context appContext = ApplicationProvider.getApplicationContext();
         assertEquals("net.sf.power.monitor.debug", appContext.getPackageName());
     }
 }
