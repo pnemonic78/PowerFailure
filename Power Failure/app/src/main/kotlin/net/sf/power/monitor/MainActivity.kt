@@ -274,6 +274,11 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
 
+        val menuItemForce = menu.findItem(R.id.menu_force)
+        if (BuildConfig.DEBUG) {
+            menuItemForce.isEnabled = true
+            menuItemForce.isVisible = true
+        }
         menuItemStart = menu.findItem(R.id.menu_start)
         menuItemStop = menu.findItem(R.id.menu_stop)
 
