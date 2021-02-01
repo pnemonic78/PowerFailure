@@ -134,6 +134,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var vibrating: Boolean = false
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
+    private var prefRingtoneType: Int = RingtoneManager.TYPE_ALARM
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
@@ -266,15 +267,16 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun getRingtone(context: Context): Ringtone? {
-        if (prefRingtone == null) {
-            stopTone()
-            prefRingtone = settings.ringtone
-            this.ringtone = null
-        }
+        var ringtone = this.ringtone
+        prefRingtone = settings.ringtone
         if ((ringtone == null) && (prefRingtone != null)) {
-            val ringtone = RingtoneManager.getRingtone(context, prefRingtone)
+            ringtone = RingtoneManager.getRingtone(context, prefRingtone)
             if (ringtone != null) {
-                val audioStreamType = AudioManager.STREAM_ALARM
+                val audioStreamType = if (prefRingtoneType == RingtoneManager.TYPE_ALARM) {
+                    AudioManager.STREAM_ALARM
+                } else {
+                    AudioManager.STREAM_NOTIFICATION
+                }
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val audioAttributes = AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -298,6 +300,11 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun playTone(context: Context) {
+        // Has the tone uri changed?
+        if (prefRingtone == null) {
+            stopTone()
+            this.ringtone = null
+        }
         val ringtone = getRingtone(context)
         try {
             Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
@@ -461,6 +468,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun onPreferencesChanged() {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
+        prefRingtoneType = settings.ringtoneType
         prefVibrate = settings.isVibrate
         prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient
