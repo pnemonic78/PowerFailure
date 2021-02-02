@@ -155,7 +155,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             menuItemStart!!.isVisible = !polling
             menuItemStop!!.isVisible = polling
         }
-        onBatteryPlugged(BatteryUtils.getPlugged(this@MainActivity))
+        onBatteryPlugged(BatteryUtils.getPlugged(this))
     }
 
     override fun onBatteryPlugged(plugged: Int) {
