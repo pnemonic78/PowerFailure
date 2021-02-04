@@ -22,6 +22,7 @@ import android.content.pm.PackageManager
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.preference.ListPreference
 import androidx.preference.Preference
@@ -34,6 +35,7 @@ import net.sf.power.monitor.R
  * This fragment shows the preferences for the General header.
  * @author Moshe Waisberg
  */
+@Keep
 class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
     private var reminderRingtonePreference: RingtonePreference? = null

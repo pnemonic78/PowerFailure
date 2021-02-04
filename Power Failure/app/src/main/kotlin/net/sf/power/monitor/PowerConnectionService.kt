@@ -23,6 +23,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.Ringtone
@@ -109,6 +110,8 @@ class PowerConnectionService : Service(), BatteryListener {
         private val VIBRATE_PATTERN = longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
 
         private const val CHANNEL_ID = "power"
+
+        private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
     }
 
     private lateinit var context: Context
@@ -129,9 +132,9 @@ class PowerConnectionService : Service(), BatteryListener {
     private var ringtone: Ringtone? = null
     private var powerSince: Long = 0L
     private var powerFailureSince: Long = 0L
-    private var logging: Boolean = false
+    private var isLogging: Boolean = false
     private lateinit var settings: PowerPreferences
-    private var vibrating: Boolean = false
+    private var isVibrating: Boolean = false
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
     private var prefRingtoneType: Int = RingtoneManager.TYPE_ALARM
@@ -229,7 +232,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_UNREGISTER_CLIENT -> service.unregisterClient(client)
                 MSG_START_MONITOR -> service.startLogging()
                 MSG_STOP_MONITOR -> service.stopLogging()
-                MSG_GET_STATUS_MONITOR -> service.notifyClients(MSG_SET_STATUS_MONITOR, if (service.logging) 1 else 0, 0)
+                MSG_GET_STATUS_MONITOR -> service.notifyClients(MSG_SET_STATUS_MONITOR, if (service.isLogging) 1 else 0)
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
@@ -246,7 +249,7 @@ class PowerConnectionService : Service(), BatteryListener {
             powerSince = now
             powerFailureSince = 0L
             stopAlarm()
-        } else if (logging && (now >= powerSince + prefTimeDelay)) {
+        } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
             if (powerFailureSince <= 0L) {
                 powerFailureSince = now
                 handleFailure(plugged, System.currentTimeMillis())
@@ -263,7 +266,7 @@ class PowerConnectionService : Service(), BatteryListener {
             else -> showNotification(R.string.plugged_unknown, R.drawable.stat_plug_ac)
         }
 
-        notifyClients(MSG_BATTERY_CHANGED, plugged, 0)
+        notifyClients(MSG_BATTERY_CHANGED, plugged)
     }
 
     private fun getRingtone(context: Context): Ringtone? {
@@ -285,6 +288,7 @@ class PowerConnectionService : Service(), BatteryListener {
                         .build()
                     ringtone.audioAttributes = audioAttributes
                 } else {
+                    @Suppress("DEPRECATION")
                     ringtone.streamType = audioStreamType
                 }
             }
@@ -375,6 +379,7 @@ class PowerConnectionService : Service(), BatteryListener {
             .setContentTitle(title)  // the label of the entry
             .setContentText(text)  // the contents of the entry
             .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+            .setLights(Color.RED, secondMs, secondMs)
             .build()
 
         // Send the notification.
@@ -401,18 +406,18 @@ class PowerConnectionService : Service(), BatteryListener {
         if (!clients.contains(client)) {
             clients.add(client)
         }
-        notifyClients(MSG_SET_STATUS_MONITOR, if (logging) 1 else 0, 0)
+        notifyClients(MSG_SET_STATUS_MONITOR, if (isLogging) 1 else 0)
         startPolling()
     }
 
     private fun unregisterClient(client: Messenger) {
         clients.remove(client)
-        if (clients.isEmpty() && !logging) {
+        if (clients.isEmpty() && !isLogging) {
             stopSelf()
         }
     }
 
-    private fun notifyClients(command: Int, arg1: Int, arg2: Int, arg3: Any? = null) {
+    private fun notifyClients(command: Int, arg1: Int, arg2: Int = 0, arg3: Any? = null) {
         var msg: Message
         for (i in clients.indices.reversed()) {
             try {
@@ -430,8 +435,8 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun startLogging() {
         Timber.v("start logging")
-        if (!logging) {
-            logging = true
+        if (!isLogging) {
+            isLogging = true
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher)
             //TODO Write logs.
         }
@@ -439,8 +444,8 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun stopLogging() {
         Timber.v("stop logging")
-        if (logging) {
-            logging = false
+        if (isLogging) {
+            isLogging = false
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
             //TODO Write logs.
         }
@@ -455,12 +460,12 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun vibrate(context: Context, vibrate: Boolean) {
         val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (vibrate) {
-            if (!vibrating && vibrator.hasVibrator()) {
-                vibrating = true
+            if (!isVibrating && vibrator.hasVibrator()) {
+                isVibrating = true
                 vibrator.vibrate(VIBRATE_PATTERN, 0)
             }
-        } else if (vibrating) {
-            vibrating = false
+        } else if (isVibrating) {
+            isVibrating = false
             vibrator.cancel()
         }
     }
