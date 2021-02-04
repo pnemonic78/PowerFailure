@@ -17,6 +17,7 @@ package net.sf.power.monitor.preference
 
 import android.content.pm.PackageManager
 import android.os.Bundle
+import androidx.annotation.Keep
 import androidx.preference.Preference
 import net.sf.power.monitor.R
 
@@ -24,6 +25,7 @@ import net.sf.power.monitor.R
  * This fragment shows the preferences for the About header.
  * @author Moshe Waisberg
  */
+@Keep
 class AboutPreferenceFragment : PowerPreferenceFragment() {
 
     override fun getPreferencesXml(): Int {
