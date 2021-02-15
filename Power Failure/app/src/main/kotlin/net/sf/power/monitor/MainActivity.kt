@@ -108,7 +108,6 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
-        bindService()
 
         onBatteryPlugged(BatteryUtils.getPlugged(context))
 
@@ -119,8 +118,13 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStart() {
+        super.onStart()
+        bindService()
+    }
+
+    override fun onStop() {
+        super.onStop()
         unbindService()
     }
 
