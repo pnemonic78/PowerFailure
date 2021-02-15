@@ -19,6 +19,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
+import android.graphics.drawable.Drawable
 import android.os.*
 import android.text.format.DateUtils
 import android.view.Menu
@@ -27,8 +28,8 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PowerPreferenceActivity
+import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
@@ -48,6 +49,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         private const val LEVEL_PLUGGED_UNKNOWN = LEVEL_PLUGGED_AC
     }
 
+    private lateinit var mainBackground: Drawable
     private lateinit var pluggedView: ImageView
     private lateinit var timeView: TextView
     private var menuItemStart: MenuItem? = null
@@ -102,6 +104,9 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         val context: Context = this
 
         setContentView(R.layout.activity_main)
+        val mainView = findViewById<View>(R.id.main)
+        mainBackground = mainView.background
+        mainBackground.level = LEVEL_UNKNOWN
         pluggedView = findViewById(R.id.plugged)
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
         timeView = findViewById(R.id.time)
@@ -154,6 +159,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun setMonitorStatus(polling: Boolean) {
+        mainBackground.level = LEVEL_UNKNOWN
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
         if (menuItemStart != null) {
             menuItemStart!!.isVisible = !polling
@@ -165,22 +171,27 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     override fun onBatteryPlugged(plugged: Int) {
         when (plugged) {
             BatteryListener.BATTERY_PLUGGED_NONE -> {
+                mainBackground.level = LEVEL_UNPLUGGED
                 pluggedView.setImageLevel(LEVEL_UNPLUGGED)
                 pluggedView.contentDescription = getText(R.string.plugged_unplugged)
             }
             BatteryListener.BATTERY_PLUGGED_AC -> {
+                mainBackground.level = LEVEL_PLUGGED_AC
                 pluggedView.setImageLevel(LEVEL_PLUGGED_AC)
                 pluggedView.contentDescription = getText(R.string.plugged_ac)
             }
             BatteryListener.BATTERY_PLUGGED_USB -> {
+                mainBackground.level = LEVEL_PLUGGED_USB
                 pluggedView.setImageLevel(LEVEL_PLUGGED_USB)
                 pluggedView.contentDescription = getText(R.string.plugged_usb)
             }
             BatteryListener.BATTERY_PLUGGED_WIRELESS -> {
+                mainBackground.level = LEVEL_PLUGGED_WIRELESS
                 pluggedView.setImageLevel(LEVEL_PLUGGED_WIRELESS)
                 pluggedView.contentDescription = getText(R.string.plugged_wireless)
             }
             else -> {
+                mainBackground.level = LEVEL_PLUGGED_UNKNOWN
                 pluggedView.setImageLevel(LEVEL_PLUGGED_UNKNOWN)
                 pluggedView.contentDescription = getText(R.string.plugged_unknown)
             }

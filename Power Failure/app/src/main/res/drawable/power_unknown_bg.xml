@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="oval">
+    android:shape="rectangle">
     <gradient
         android:endColor="@color/unknown_end"
-        android:gradientRadius="@dimen/power_gradientRadius"
+        android:gradientRadius="@dimen/power_main_gradientRadius"
         android:startColor="@color/unknown_start"
         android:type="radial"/>
 </shape>
