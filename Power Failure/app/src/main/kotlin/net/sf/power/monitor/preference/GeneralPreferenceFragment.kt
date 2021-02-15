@@ -60,6 +60,9 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         if (!BuildConfig.FEATURE_SMS) {
             smsPreference?.isEnabled = false
             recipientPreference?.isEnabled = false
+
+            smsPreference?.isVisible = false
+            recipientPreference?.isVisible = false
         }
     }
 

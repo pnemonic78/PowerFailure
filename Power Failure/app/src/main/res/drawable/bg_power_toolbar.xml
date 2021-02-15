@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<level-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:drawable="@drawable/power_unknown_toolbar"
+        android:maxLevel="0" />
+    <item
+        android:drawable="@drawable/power_unplugged_toolbar"
+        android:maxLevel="1" />
+    <item
+        android:drawable="@drawable/power_plugged_toolbar"
+        android:maxLevel="2" />
+    <item
+        android:drawable="@drawable/power_plugged_toolbar"
+        android:maxLevel="3" />
+    <item
+        android:drawable="@drawable/power_plugged_toolbar"
+        android:maxLevel="4" />
+</level-list>
