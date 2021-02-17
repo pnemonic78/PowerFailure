@@ -43,6 +43,7 @@ class DelayPreference(context: Context, attrs: AttributeSet? = null, defStyleAtt
         min = 1
         max = 99
         dialogLayoutResource = R.layout.preference_dialog_delay
+        summaryProvider = SummaryProvider<DelayPreference> { format() }
     }
 
     override fun getPersistedInt(defaultReturnValue: Int): Int {
@@ -58,17 +59,12 @@ class DelayPreference(context: Context, attrs: AttributeSet? = null, defStyleAtt
         return (value <= 0) || super.shouldDisableDependents()
     }
 
-    override fun notifyChanged() {
-        super.notifyChanged()
-        summary = format()
-    }
-
     /**
      * Format the delay as per user's locale.
      *
      * @return the formatted delay.
      */
-    fun format(): String {
+    private fun format(): String {
         val elapsedSeconds = value.toLong()
         return DateUtils.formatElapsedTime(elapsedSeconds)
     }
