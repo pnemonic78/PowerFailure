@@ -115,7 +115,11 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return the time in milliseconds.
      */
     val failureDelay: Long
-        get() = preferences.getString(KEY_FAILURE_DELAY, context.resources.getString(R.string.delay_defaultValue))!!.toLong() * DateUtils.SECOND_IN_MILLIS
+        get() = try {
+            preferences.getInt(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue)).toLong() * DateUtils.SECOND_IN_MILLIS
+        } catch (e: ClassCastException) {
+            preferences.getString(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue).toString())!!.toLong() * DateUtils.SECOND_IN_MILLIS
+        }
 
     /**
      * Get the time when the power failed.

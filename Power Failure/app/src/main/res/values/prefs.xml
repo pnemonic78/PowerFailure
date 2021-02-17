@@ -6,11 +6,11 @@
     <string name="ringtone_type_defaultValue" translatable="false">@string/ringtone_type_value_alarm</string>
     <string name="ringtone_tone_defaultValue" translatable="false">content://settings/system/alarm_alert</string>
 
-    <bool name="vibrate_defaultValue">true</bool>
+    <bool name="vibrate_defaultValue" translatable="false">true</bool>
 
-    <string name="delay_defaultValue">15</string>
+    <integer name="delay_defaultValue" translatable="false">15</integer>
 
-    <bool name="sms_defaultValue" translatable="false"></bool>
-    <string name="sms_recipient_defaultValue" translatable="false"/>
+    <bool name="sms_defaultValue" translatable="false" />
+    <string name="sms_recipient_defaultValue" translatable="false" />
 
 </resources>

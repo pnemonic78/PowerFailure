@@ -24,6 +24,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.DialogFragment
 import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
@@ -121,6 +122,23 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onDisplayPreferenceDialog(preference: Preference) {
+        val fragmentManager = requireFragmentManager()
+        // check if dialog is already showing
+        if (fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
+            return
+        }
+
+        val f: DialogFragment
+        if (preference is DelayPreference) {
+            f = DelayPreferenceDialog.newInstance(preference.getKey())
+            f.setTargetFragment(this, 0)
+            f.show(fragmentManager, DIALOG_FRAGMENT_TAG)
+        } else {
+            super.onDisplayPreferenceDialog(preference)
+        }
     }
 
     companion object {
