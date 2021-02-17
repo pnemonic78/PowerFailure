@@ -22,10 +22,6 @@
     <string name="issue_title">Problémák</string>
     <string name="issue_summary">Probléma bejelentése vagy új szolgáltatás kérése.</string>
 
-    <!-- Delay -->
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
-
     <!-- Ringtone -->
     <string name="ringtone_stream_title">Ringtone type</string>
     <string name="ringtone_tone">Ringtone</string>
@@ -37,12 +33,8 @@
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_seconds">seconds</string>
+    <string name="delay_minutes">minutes</string>
 
     <!-- Message -->
     <string name="sms_title">Send SMS</string>
