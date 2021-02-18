@@ -29,7 +29,7 @@
     <string name="notification_volume_title" msgid="328053763590888609">"Isaziso"</string>
 
     <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
+    <string name="keywords_vibrate_for_calls" msgid="1019870409730074899">"Ukudlidliza"</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
