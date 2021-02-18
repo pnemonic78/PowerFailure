@@ -2,34 +2,27 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Kragonderbreking Monitor</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Begin monitering</string>
+    <string name="stop_monitor">Hou op om te monitor</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Monitering vir kragonderbreking het begin.</string>
+    <string name="monitor_stopped">Die monitering vir kragonderbreking is gestaak.</string>
+    <string name="plugged_unknown">Onbekende kragbron.</string>
+    <string name="plugged_unplugged">Ontkoppel - geen kragbron nie.</string>
+    <string name="plugged_ac">Kragbron is \'n wisselstroomlaaier.</string>
+    <string name="plugged_usb">Kragbron is \'n USB-poort.</string>
+    <string name="plugged_wireless">Kragbron is draadloos.</string>
 
     <!-- About -->
-    <string name="version_title">Toepassingsweergawe</string>
     <string name="issue_title">Kwessies</string>
     <string name="issue_summary">Rapporteer \'n probleem of versoek \'n nuwe funksie.</string>
 
     <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title" msgid="706302621191735343">"Wekker"</string>
-    <string name="notification_volume_title" msgid="328053763590888609">"Kennisgewing"</string>
-
-    <!-- Vibration -->
-    <string name="keywords_vibrate_for_calls" msgid="1019870409730074899">"Vibrasie"</string>
+    <string name="ringtone_stream_title">Luitoon tipe</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>

@@ -18,18 +18,12 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Versiunea aplicație</string>
     <string name="issue_title">Probleme</string>
     <string name="issue_summary">Raportați o problemă sau solicitați o nouă funcție.</string>
 
     <!-- Ringtone -->
     <string name="ringtone_stream_title">Ringtone type</string>
     <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title" msgid="2285597478377758706">"Alarmă"</string>
-    <string name="notification_volume_title" msgid="2012640760341080408">"Notificare"</string>
-
-    <!-- Vibration -->
-    <string name="keywords_vibrate_for_calls" msgid="1019870409730074899">"Vibrație"</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>

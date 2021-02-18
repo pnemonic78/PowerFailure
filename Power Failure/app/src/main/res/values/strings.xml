@@ -20,7 +20,7 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title" translatable="false">@string/preferences_build_version</string>
     <string name="support_url" translatable="false">http://pnemonic78.github.io/PowerFailure</string>
     <string name="issue_title">Issues</string>
     <string name="issue_summary">Report a problem, or request a new feature.</string>
@@ -28,14 +28,11 @@
 
     <!-- Ringtone -->
     <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
+    <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
     <string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
     <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
-    <string name="keywords_vibrate_for_calls">Vibration</string>
     <string name="vibrate_title" translatable="false">@string/keywords_vibrate_for_calls</string>
 
     <!-- Delay -->

@@ -18,18 +18,12 @@
     <string name="plugged_wireless">Power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Phiên bản ứng dụng</string>
     <string name="issue_title">Các vấn đề</string>
     <string name="issue_summary">Báo cáo sự cố hoặc yêu cầu một tính năng mới.</string>
 
     <!-- Ringtone -->
     <string name="ringtone_stream_title">Ringtone type</string>
     <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title" msgid="706302621191735343">"Báo thức"</string>
-    <string name="notification_volume_title" msgid="328053763590888609">"Thông báo"</string>
-
-    <!-- Vibration -->
-    <string name="keywords_vibrate_for_calls" msgid="1019870409730074899">"Rung"</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
