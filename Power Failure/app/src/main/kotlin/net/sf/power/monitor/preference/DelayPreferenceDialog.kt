@@ -18,13 +18,12 @@ package net.sf.power.monitor.preference
 import android.os.Bundle
 import android.view.View
 import android.widget.NumberPicker
-import android.widget.Spinner
 import com.github.preference.PreferenceDialog
 import net.sf.power.monitor.R
 
 class DelayPreferenceDialog : PreferenceDialog() {
     private var picker: NumberPicker? = null
-    private var units: Spinner? = null
+    private var units: NumberPicker? = null
 
     override fun onBindDialogView(view: View) {
         super.onBindDialogView(view)
@@ -45,22 +44,28 @@ class DelayPreferenceDialog : PreferenceDialog() {
 
         picker = view.findViewById(android.R.id.edit)
         checkNotNull(picker) { "Dialog view must contain a NumberPicker with id 'edit'" }
-        picker?.apply {
+        picker!!.apply {
             minValue = preference.min
             maxValue = pickerMax
             value = pickerValue
         }
 
         units = view.findViewById(R.id.units)
-        checkNotNull(units) { "Dialog view must contain a Spinner with id 'units'" }
-        units!!.setSelection(unitsPosition)
+        checkNotNull(units) { "Dialog view must contain a NumberPicker with id 'units'" }
+        val unitsEntries = view.context.resources.getStringArray(R.array.delay_units_entries)
+        units!!.apply {
+            setFormatter { unitsEntries[it] }
+            minValue = 0
+            maxValue = unitsEntries.lastIndex
+            value = unitsPosition
+        }
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
         if (positiveResult) {
             picker!!.clearFocus()
             val number = picker!!.value
-            val unitsPosition = units!!.selectedItemPosition
+            val unitsPosition = units!!.value
             val unitsMultiplier = if (unitsPosition == POSITION_MINUTES) {
                 MULTIPLIER_MINUTES
             } else {
