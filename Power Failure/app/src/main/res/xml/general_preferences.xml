@@ -5,13 +5,6 @@
         android:icon="@drawable/ic_settings_alarm"
         android:key="delay"
         android:title="@string/delay_title" />
-    <ListPreference
-        android:defaultValue="@string/ringtone_type_defaultValue"
-        android:entries="@array/ringtone_type_entries"
-        android:entryValues="@array/ringtone_type_values"
-        android:icon="@drawable/ic_settings_tone"
-        android:key="ringtone.type"
-        android:title="@string/ringtone_stream_title" />
     <com.github.preference.RingtonePreference
         android:defaultValue="@string/ringtone_tone_defaultValue"
         android:icon="@drawable/ic_settings_tone"

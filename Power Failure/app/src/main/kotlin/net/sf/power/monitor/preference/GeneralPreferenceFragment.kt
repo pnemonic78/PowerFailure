@@ -53,7 +53,6 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         initList(PowerPreferences.KEY_FAILURE_DELAY)
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
-        initList(PowerPreferences.KEY_RINGTONE_TYPE)
 
         smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
         smsPreference?.onPreferenceChangeListener = this
@@ -76,18 +75,6 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
             updateRecipientSummary(preference, newValue?.toString() ?: "")
         }
         return super.onPreferenceChange(preference, newValue)
-    }
-
-    override fun onListPreferenceChange(preference: ListPreference, newValue: Any?): Boolean {
-        super.onListPreferenceChange(preference, newValue)
-
-        val key = preference.key
-        if (PowerPreferences.KEY_RINGTONE_TYPE == key && reminderRingtonePreference != null) {
-            val value = newValue.toString()
-            val ringType = if (value.isEmpty()) RingtoneManager.TYPE_ALARM else value.toInt()
-            reminderRingtonePreference!!.ringtoneType = ringType
-        }
-        return false
     }
 
     private fun initSmsRecipient(key: String): RecipientPreference? {

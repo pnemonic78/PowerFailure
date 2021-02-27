@@ -32,11 +32,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     companion object {
 
         /**
-         * Preference name for the reminder type.
-         */
-        const val KEY_RINGTONE_TYPE = "ringtone.type"
-
-        /**
          * Preference name for the reminder ringtone.
          */
         const val KEY_RINGTONE_TONE = "ringtone.tone"
@@ -73,14 +68,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     }
 
     /**
-     * Get the ringtone type.
-     *
-     * @return the ringtone type. One of [RingtoneManager.TYPE_ALARM] or [RingtoneManager.TYPE_NOTIFICATION].
-     */
-    val ringtoneType: Int
-        get() = Integer.parseInt(preferences.getString(KEY_RINGTONE_TYPE, context.getString(R.string.ringtone_type_defaultValue))!!)
-
-    /**
      * Get the ringtone.
      *
      * @return the ringtone.
@@ -88,7 +75,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      */
     val ringtone: Uri?
         get() {
-            val type = ringtoneType
+            val type = RingtoneManager.TYPE_ALARM
             var path = preferences.getString(KEY_RINGTONE_TONE, RingtoneManager.DEFAULT_PATH)
             if (path == RingtoneManager.DEFAULT_PATH) {
                 path = RingtoneManager.getDefaultUri(type).toString()

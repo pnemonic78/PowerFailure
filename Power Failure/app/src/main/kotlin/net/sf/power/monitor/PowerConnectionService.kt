@@ -137,7 +137,6 @@ class PowerConnectionService : Service(), BatteryListener {
     private var isVibrating: Boolean = false
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
-    private var prefRingtoneType: Int = RingtoneManager.TYPE_ALARM
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
@@ -275,11 +274,7 @@ class PowerConnectionService : Service(), BatteryListener {
         if ((ringtone == null) && (prefRingtone != null)) {
             ringtone = RingtoneManager.getRingtone(context, prefRingtone)
             if (ringtone != null) {
-                val audioStreamType = if (prefRingtoneType == RingtoneManager.TYPE_ALARM) {
-                    AudioManager.STREAM_ALARM
-                } else {
-                    AudioManager.STREAM_NOTIFICATION
-                }
+                val audioStreamType = AudioManager.STREAM_ALARM
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val audioAttributes = AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -473,7 +468,6 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun onPreferencesChanged() {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
-        prefRingtoneType = settings.ringtoneType
         prefVibrate = settings.isVibrate
         prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient

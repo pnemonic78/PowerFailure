@@ -6,13 +6,4 @@
         <item>@string/delay_minutes</item>
     </string-array>
 
-    <string-array name="ringtone_type_values" translatable="false">
-        <item>@string/ringtone_type_value_alarm</item>
-        <item>@string/ringtone_type_value_notification</item>
-    </string-array>
-    <string-array name="ringtone_type_entries" translatable="false">
-        <item>@string/ringtone_stream_alarm</item>
-        <item>@string/ringtone_stream_notification</item>
-    </string-array>
-
 </resources>
