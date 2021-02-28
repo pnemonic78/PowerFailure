@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">电源故障监视器</string>
+    <string name="app_name">停电监控器</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">开始监控</string>
+    <string name="stop_monitor">停止监控</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">开始监视电源故障。</string>
+    <string name="monitor_stopped">电源故障监视已停止。</string>
+    <string name="plugged_unknown">未知的电源。</string>
+    <string name="plugged_unplugged">拔下-没有电源。</string>
+    <string name="plugged_ac">电源是交流充电器。</string>
+    <string name="plugged_usb">电源是USB端口。</string>
+    <string name="plugged_wireless">电源是无线的。</string>
 
     <!-- About -->
     <string name="issue_title">问题</string>
     <string name="issue_summary">报告问题或请求新功能。</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">延误</string>
+    <string name="delay_seconds">秒</string>
+    <string name="delay_minutes">分钟</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">发简讯</string>
+    <string name="sms_recipient_title">短信接收人</string>
+    <string name="sms_message">%1$s日发生电源故障</string>
 
 </resources>

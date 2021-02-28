@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application. -->
+    <string name="app_name">Toitekatkestuse Jälgija</string>
+
+    <!-- Activity. -->
+    <string name="start_monitor">Alustage jälgimist</string>
+    <string name="stop_monitor">Lõpeta jälgimine</string>
+
+    <!-- Service. -->
+    <string name="monitor_started">Alustati elektrikatkestuste seiret.</string>
+    <string name="monitor_stopped">Elektritõrke seire on peatatud.</string>
+    <string name="plugged_unknown">Tundmatu elektriallikas.</string>
+    <string name="plugged_unplugged">Pistikupesast välja lülitatud - elektrit ei ole.</string>
+    <string name="plugged_ac">Elektriline toiteallikas on vahelduvvoolu laadija.</string>
+    <string name="plugged_usb">Elektriline toiteallikas on USB-port.</string>
+    <string name="plugged_wireless">Elektriline toiteallikas on traadita.</string>
+
+    <!-- About -->
+    <string name="issue_title">Küsimused</string>
+    <string name="issue_summary">Teatage probleemist või taotlege uut funktsiooni.</string>
+
+    <!-- Delay -->
+    <string name="delay_title">Hilinemine</string>
+    <string name="delay_seconds">sekundit</string>
+    <string name="delay_minutes">minutit</string>
+
+    <!-- Message -->
+    <string name="sms_title">Saada SMS</string>
+    <string name="sms_recipient_title">SMS-i saaja</string>
+    <string name="sms_message">Elektritõrge tekkis kuupäeval %1$s</string>
+
+</resources>

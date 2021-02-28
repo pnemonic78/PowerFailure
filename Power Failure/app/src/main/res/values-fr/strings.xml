@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Moniteur panne courant</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Commencer la surveillance</string>
+    <string name="stop_monitor">Arrêter la surveillance</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Surveillance des pannes de courant électrique a commencé.</string>
+    <string name="monitor_stopped">Surveillance des pannes de courant électrique s\'est arrêtée.</string>
+    <string name="plugged_unknown">Source d\'alimentation électrique inconnue.</string>
+    <string name="plugged_unplugged">Débranché - pas de source d\'alimentation électrique.</string>
+    <string name="plugged_ac">Source d\'alimentation électrique est un chargeur CA.</string>
+    <string name="plugged_usb">Source d\'alimentation électrique est un port USB.</string>
+    <string name="plugged_wireless">Source d\'alimentation électrique est sans fil.</string>
 
     <!-- About -->
     <string name="issue_title">Problèmes</string>
     <string name="issue_summary">Signaler un problème ou demander une nouvelle fonctionnalité.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
+    <string name="delay_title">Délai</string>
+    <string name="delay_seconds">secondes</string>
     <string name="delay_minutes">minutes</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Envoyer un SMS</string>
+    <string name="sms_recipient_title">Destinataire du SMS</string>
+    <string name="sms_message">Une panne de courant électrique s\'est produite à la %1$s</string>
 
 </resources>

@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">停電モニター</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">監視を開始します</string>
+    <string name="stop_monitor">監視を停止します</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">停電の監視を開始しました。</string>
+    <string name="monitor_stopped">停電の監視を停止しました。</string>
+    <string name="plugged_unknown">不明な電源。</string>
+    <string name="plugged_unplugged">プラグが抜かれています-電源がありません。</string>
+    <string name="plugged_ac">電源はAC充電器です。</string>
+    <string name="plugged_usb">電源はUSBポートです。</string>
+    <string name="plugged_wireless">電源は無線です。</string>
 
     <!-- About -->
     <string name="issue_title">問題</string>
     <string name="issue_summary">問題を報告するか、新しい機能をリクエストしてください。</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">遅延</string>
+    <string name="delay_seconds">秒</string>
+    <string name="delay_minutes">分</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">SMSを送信</string>
+    <string name="sms_recipient_title">SMS受信者</string>
+    <string name="sms_message">%1$s日目に停電が発生しました</string>
 
 </resources>

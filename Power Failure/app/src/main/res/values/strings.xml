@@ -11,13 +11,13 @@
 
     <!-- Service. -->
     <string name="title_service" translatable="false">@string/app_name</string>
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Monitoring for electrical power failure started.</string>
+    <string name="monitor_stopped">Monitoring for electrical power failure stopped.</string>
+    <string name="plugged_unknown">Unknown electrical power source.</string>
+    <string name="plugged_unplugged">Unplugged - no electrical power source.</string>
+    <string name="plugged_ac">Electrical power source is an AC charger.</string>
+    <string name="plugged_usb">Electrical power source is a USB port.</string>
+    <string name="plugged_wireless">Electrical power source is wireless.</string>
 
     <!-- About -->
     <string name="version_title" translatable="false">@string/preferences_build_version</string>
@@ -27,7 +27,6 @@
     <string name="issue_url" translatable="false">mailto:pnemonic@gmail.com?subject=Power Failure</string>
 
     <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
     <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
     <string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
     <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
@@ -42,8 +41,8 @@
 
     <!-- Message -->
     <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
     <string name="sms_summary" translatable="false">%1$s</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_message">Electrical power failure occurred on %1$s</string>
+    <string name="sms_recipient_title">SMS Recipient</string>
 
 </resources>

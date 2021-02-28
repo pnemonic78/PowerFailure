@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Monitor Kegagalan Daya</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Mulailah memantau</string>
+    <string name="stop_monitor">Hentikan pemantauan</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Pemantauan untuk kegagalan daya listrik dimulai.</string>
+    <string name="monitor_stopped">Pemantauan kegagalan daya listrik dihentikan.</string>
+    <string name="plugged_unknown">Sumber daya listrik tidak diketahui.</string>
+    <string name="plugged_unplugged">Cabut - tidak ada sumber daya listrik.</string>
+    <string name="plugged_ac">Sumber tenaga listrik adalah pengisi daya AC.</string>
+    <string name="plugged_usb">Sumber tenaga listrik adalah port USB.</string>
+    <string name="plugged_wireless">Sumber daya listrik adalah nirkabel.</string>
 
     <!-- About -->
     <string name="issue_title">Masalah</string>
     <string name="issue_summary">Laporkan masalah, atau minta fitur baru.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Keterlambatan</string>
+    <string name="delay_seconds">detik</string>
+    <string name="delay_minutes">menit</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Kirim SMS</string>
+    <string name="sms_recipient_title">Penerima SMS</string>
+    <string name="sms_message">Listrik mati terjadi pada tanggal %1$s</string>
 
 </resources>

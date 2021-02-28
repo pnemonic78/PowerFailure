@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Áramkimaradás-figyelő</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Indítsa el a megfigyelést</string>
+    <string name="stop_monitor">Állítsa le a megfigyelést</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Megkezdődött az áramkimaradás ellenőrzése.</string>
+    <string name="monitor_stopped">Az elektromos áramkimaradás ellenőrzése leállt.</string>
+    <string name="plugged_unknown">Ismeretlen elektromos áramforrás.</string>
+    <string name="plugged_unplugged">Áramtalanítva - nincs elektromos áramforrás.</string>
+    <string name="plugged_ac">Az elektromos áramforrás egy AC töltő.</string>
+    <string name="plugged_usb">Az elektromos áramforrás egy USB port.</string>
+    <string name="plugged_wireless">Az elektromos áramforrás vezeték nélküli.</string>
 
     <!-- About -->
     <string name="issue_title">Problémák</string>
-    <string name="issue_summary">Probléma bejelentése vagy új szolgáltatás kérése.</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
+    <string name="issue_summary">Jelentse a problémát, vagy kérjen új funkciót.</string>
 
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Késés</string>
+    <string name="delay_seconds">másodpercig</string>
+    <string name="delay_minutes">percek</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">SMS-t küldeni</string>
+    <string name="sms_recipient_title">SMS címzett</string>
+    <string name="sms_message">Áramkimaradás történt dátum %1$s</string>
 
 </resources>

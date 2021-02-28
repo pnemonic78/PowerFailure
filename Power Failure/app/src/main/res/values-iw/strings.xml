@@ -11,28 +11,24 @@
     <!-- Service. -->
     <string name="monitor_started">השגחת הפסקת חשמל החלה.</string>
     <string name="monitor_stopped">השגחת הפסקת חשמל נעצרה.</string>
-    <string name="plugged_unknown">מקור כוח לא ידוע.</string>
-    <string name="plugged_unplugged">מנותק - אין מקור כוח.</string>
-    <string name="plugged_ac">מקור כוח הוא מטען זרם חליפין.</string>
-    <string name="plugged_usb">מקור כוח הוא יציאת ה-USB.</string>
-    <string name="plugged_wireless">מקור כוח הוא אלחוטי.</string>
+    <string name="plugged_unknown">מקור חשמל לא ידוע.</string>
+    <string name="plugged_unplugged">מנותק - אין מקור חשמל.</string>
+    <string name="plugged_ac">מקור חשמל הוא מטען AC.</string>
+    <string name="plugged_usb">מקור כוח הוא יציאת USB.</string>
+    <string name="plugged_wireless">מקור חשמל הוא אלחוטי.</string>
 
     <!-- About -->
-    <string name="issue_title">נושאים</string>
+    <string name="issue_title">בעיות</string>
     <string name="issue_summary">דווח על בעיה או בקש תכונה חדשה.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">העיכוב</string>
+    <string name="delay_seconds">שניות</string>
+    <string name="delay_minutes">דקות</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">שלח סמס</string>
+    <string name="sms_recipient_title">נמען סמס</string>
+    <string name="sms_message">הפסקת חשמל התרחש ב- %1$s</string>
 
 </resources>

@@ -21,17 +21,14 @@
     <string name="issue_title">Kwessies</string>
     <string name="issue_summary">Rapporteer \'n probleem of versoek \'n nuwe funksie.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Luitoon tipe</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Vertraag</string>
+    <string name="delay_seconds">sekondes</string>
+    <string name="delay_minutes">minute</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Stuur SMS</string>
+    <string name="sms_recipient_title">SMS-ontvanger</string>
+    <string name="sms_message">Kragonderbreking het op datum %1$s plaasgevind</string>
 
 </resources>

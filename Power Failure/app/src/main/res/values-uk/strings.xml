@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Монітор збою живлення</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Почніть моніторинг</string>
+    <string name="stop_monitor">Зупиніть моніторинг</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Розпочато моніторинг збою в електроенергії.</string>
+    <string name="monitor_stopped">Моніторинг на зникнення електричного струму припинено.</string>
+    <string name="plugged_unknown">Невідоме джерело електричної енергії.</string>
+    <string name="plugged_unplugged">Відключений від мережі - джерело електричної енергії відсутнє.</string>
+    <string name="plugged_ac">Електричний джерело живлення являє собою зарядний пристрій.</string>
+    <string name="plugged_usb">Електричний джерело живлення порту USB.</string>
+    <string name="plugged_wireless">Електричний джерело живлення бездротовий.</string>
 
     <!-- About -->
     <string name="issue_title">Проблеми</string>
     <string name="issue_summary">Повідомити про проблему або запросити нову функцію.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Затримка</string>
+    <string name="delay_seconds">секунд</string>
+    <string name="delay_minutes">хвилин</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Надішліть SMS</string>
+    <string name="sms_recipient_title">Одержувач SMS</string>
+    <string name="sms_message">Збій електричного струму стався %1$s</string>
 
 </resources>

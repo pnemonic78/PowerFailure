@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Monitor awarii zasilania</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Rozpocznij monitorowanie</string>
+    <string name="stop_monitor">Zatrzymaj monitorowanie</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Rozpoczęto monitorowanie awarii zasilania elektrycznego.</string>
+    <string name="monitor_stopped">Monitorowanie awarii zasilania zostało zatrzymane.</string>
+    <string name="plugged_unknown">Nieznane źródło energii elektrycznej.</string>
+    <string name="plugged_unplugged">Odłączony - brak źródła zasilania elektrycznego.</string>
+    <string name="plugged_ac">Źródło energii elektrycznej jest ładowarka prądu przemiennego.</string>
+    <string name="plugged_usb">Źródło energii elektrycznej jest port USB.</string>
+    <string name="plugged_wireless">Źródło energii elektrycznej jest bezprzewodowe.</string>
 
     <!-- About -->
-    <string name="issue_title">Problemy</string>
+    <string name="issue_title">Zagadnienia</string>
     <string name="issue_summary">Zgłoś problem lub poproś o nową funkcję.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Opóźnienie</string>
+    <string name="delay_seconds">sekundy</string>
+    <string name="delay_minutes">minuty</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Wyślij SMS</string>
+    <string name="sms_recipient_title">Odbiorca wiadomości SMS</string>
+    <string name="sms_message">Awaria zasilania elektrycznego miała miejsce w %1$s</string>
 
 </resources>

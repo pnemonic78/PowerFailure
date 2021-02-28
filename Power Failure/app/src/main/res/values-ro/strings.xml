@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Monitor pană curent</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Începeți monitorizarea</string>
+    <string name="stop_monitor">Opriți monitorizarea</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Început monitorizarea defecțiunilor de energie electrică.</string>
+    <string name="monitor_stopped">Monitorizarea pentru întreruperea curentului electric a fost oprită.</string>
+    <string name="plugged_unknown">Sursă de energie electrică necunoscută.</string>
+    <string name="plugged_unplugged">Deconectat - fără sursă de energie electrică.</string>
+    <string name="plugged_ac">Sursa de energie electrică este un încărcător de curent alternativ.</string>
+    <string name="plugged_usb">Sursa de energie electrică este un port USB.</string>
+    <string name="plugged_wireless">Sursa de energie electrică este wireless.</string>
 
     <!-- About -->
     <string name="issue_title">Probleme</string>
     <string name="issue_summary">Raportați o problemă sau solicitați o nouă funcție.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">Intarzierea</string>
+    <string name="delay_seconds">secunde</string>
+    <string name="delay_minutes">minute</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Trimite SMS</string>
+    <string name="sms_recipient_title">Destinatar SMS</string>
+    <string name="sms_message">Pană de curent electric a avut loc la %1$s</string>
 
 </resources>

@@ -2,37 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">정전 모니터</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">모니터링 시작</string>
+    <string name="stop_monitor">모니터링 중지</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">정전 모니터링이 시작되었습니다.</string>
+    <string name="monitor_stopped">정전 모니터링이 중지되었습니다.</string>
+    <string name="plugged_unknown">알 수없는 전원입니다.</string>
+    <string name="plugged_unplugged">전원이 연결되지 않음-전원이 없습니다.</string>
+    <string name="plugged_ac">전원은 AC 충전기입니다.</string>
+    <string name="plugged_usb">전원은 USB 포트입니다.</string>
+    <string name="plugged_wireless">전원은 무선입니다.</string>
 
     <!-- About -->
     <string name="issue_title">이슈</string>
     <string name="issue_summary">문제를보고하거나 새로운 기능을 요청하십시오.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">지연</string>
+    <string name="delay_seconds">초</string>
+    <string name="delay_minutes">의사록</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">문자를 보내다</string>
+    <string name="sms_recipient_title">SMS 수신자</string>
+    <string name="sms_message">%1$s 일에 정전이 발생했습니다.</string>
 
 </resources>

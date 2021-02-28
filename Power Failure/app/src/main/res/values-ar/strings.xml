@@ -5,34 +5,30 @@
     <string name="app_name">مراقب فشل الطاقة</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">ابدأ المراقبة</string>
+    <string name="stop_monitor">توقف عن المراقبة</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">بدأت مراقبة انقطاع التيار الكهربائي.</string>
+    <string name="monitor_stopped">توقفت مراقبة انقطاع التيار الكهربائي.</string>
+    <string name="plugged_unknown">مصدر طاقة كهربائية غير معروف.</string>
+    <string name="plugged_unplugged">غير موصول - لا يوجد مصدر طاقة كهربائية.</string>
+    <string name="plugged_ac">مصدر الطاقة الكهربائية هو شاحن تيار متردد.</string>
+    <string name="plugged_usb">مصدر الطاقة الكهربائية هو منفذ USB.</string>
+    <string name="plugged_wireless">مصدر الطاقة الكهربائية لاسلكي.</string>
 
     <!-- About -->
     <string name="issue_title">مشاكل</string>
     <string name="issue_summary">أبلغ عن مشكلة ، أو اطلب ميزة جديدة.</string>
 
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-
     <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_title">التأخير</string>
+    <string name="delay_seconds">ثواني</string>
+    <string name="delay_minutes">محضر جلسة</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">أرسل رسالة نصية قصيرة</string>
+    <string name="sms_recipient_title">مستلم الرسائل القصيرة</string>
+    <string name="sms_message">حدث انقطاع التيار الكهربائي في التاريخ %1$s</string>
 
 </resources>
