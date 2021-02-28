@@ -19,13 +19,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateUtils
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
-import androidx.preference.ListPreference
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.github.preference.RingtonePreference
@@ -56,6 +55,11 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
         smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
         smsPreference?.onPreferenceChangeListener = this
+        smsPreference?.summaryProvider = Preference.SummaryProvider<SwitchPreference> {
+            val millis = System.currentTimeMillis()
+            val dateTime = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+            getString(R.string.sms_message, dateTime)
+        }
         recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
         if (!BuildConfig.FEATURE_SMS) {
             smsPreference?.isEnabled = false
