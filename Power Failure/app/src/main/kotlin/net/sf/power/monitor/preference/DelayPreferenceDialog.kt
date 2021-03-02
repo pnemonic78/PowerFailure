@@ -31,15 +31,28 @@ class DelayPreferenceDialog : PreferenceDialog() {
         val preference = delayPreference
         val seconds = delayPreference.value
         val pickerMax = preference.max
-        val pickerValue = if (seconds > pickerMax) {
-            seconds / MULTIPLIER_MINUTES
-        } else {
-            seconds / MULTIPLIER_SECONDS
-        }
-        val unitsPosition = if (seconds > pickerMax) {
-            POSITION_MINUTES
-        } else {
-            POSITION_SECONDS
+
+        val minutesDiv = seconds / MULTIPLIER_MINUTES
+        val secondsRem = seconds % MULTIPLIER_MINUTES
+        val pickerValue: Int
+        val unitsPosition: Int
+        when {
+            (secondsRem == 0) -> {
+                pickerValue = minutesDiv
+                unitsPosition = POSITION_MINUTES
+            }
+            (seconds <= pickerMax) -> {
+                pickerValue = seconds
+                unitsPosition = POSITION_SECONDS
+            }
+            (minutesDiv >= 1) -> {
+                pickerValue = minutesDiv
+                unitsPosition = POSITION_MINUTES
+            }
+            else -> {
+                pickerValue = secondsRem
+                unitsPosition = POSITION_SECONDS
+            }
         }
 
         picker = view.findViewById(android.R.id.edit)
