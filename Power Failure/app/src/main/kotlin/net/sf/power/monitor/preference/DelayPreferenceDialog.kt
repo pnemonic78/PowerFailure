@@ -54,10 +54,10 @@ class DelayPreferenceDialog : PreferenceDialog() {
         checkNotNull(units) { "Dialog view must contain a NumberPicker with id 'units'" }
         val unitsEntries = view.context.resources.getStringArray(R.array.delay_units_entries)
         units!!.apply {
-            setFormatter { unitsEntries[it] }
             minValue = 0
             maxValue = unitsEntries.lastIndex
             value = unitsPosition
+            displayedValues = unitsEntries
         }
     }
 
