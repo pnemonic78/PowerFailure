@@ -1,19 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:defaultValue="@string/delay_defaultValue"
-        android:entries="@array/delay_entries"
-        android:entryValues="@array/delay_values"
+    <net.sf.power.monitor.preference.DelayPreference
+        android:defaultValue="@integer/delay_defaultValue"
         android:icon="@drawable/ic_settings_alarm"
         android:key="delay"
         android:title="@string/delay_title" />
-    <ListPreference
-        android:defaultValue="@string/ringtone_type_defaultValue"
-        android:entries="@array/ringtone_type_entries"
-        android:entryValues="@array/ringtone_type_values"
-        android:icon="@drawable/ic_settings_tone"
-        android:key="ringtone.type"
-        android:title="@string/ringtone_stream_title" />
     <com.github.preference.RingtonePreference
         android:defaultValue="@string/ringtone_tone_defaultValue"
         android:icon="@drawable/ic_settings_tone"

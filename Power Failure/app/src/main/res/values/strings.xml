@@ -11,68 +11,38 @@
 
     <!-- Service. -->
     <string name="title_service" translatable="false">@string/app_name</string>
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Monitoring for electrical power failure started.</string>
+    <string name="monitor_stopped">Monitoring for electrical power failure stopped.</string>
+    <string name="plugged_unknown">Unknown electrical power source.</string>
+    <string name="plugged_unplugged">Unplugged - no electrical power source.</string>
+    <string name="plugged_ac">Electrical power source is an AC charger.</string>
+    <string name="plugged_usb">Electrical power source is a USB port.</string>
+    <string name="plugged_wireless">Electrical power source is wireless.</string>
 
     <!-- About -->
-    <string name="version_title">Application version</string>
+    <string name="version_title" translatable="false">@string/preferences_build_version</string>
     <string name="support_url" translatable="false">http://pnemonic78.github.io/PowerFailure</string>
     <string name="issue_title">Issues</string>
     <string name="issue_summary">Report a problem, or request a new feature.</string>
     <string name="issue_url" translatable="false">mailto:pnemonic@gmail.com?subject=Power Failure</string>
 
-    <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
     <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
+    <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
     <string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
     <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
+    <string name="vibrate_title" translatable="false">@string/keywords_vibrate_for_calls</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
-    <plurals name="delay_summary" translatable="false">
-        <item quantity="zero">@string/delay_summary_zero</item>
-        <item quantity="one">@string/delay_summary_one</item>
-        <item quantity="two">@string/delay_summary_two</item>
-        <item quantity="few">@string/delay_summary_few</item>
-        <item quantity="many">@string/delay_summary_many</item>
-        <item quantity="other">@string/delay_summary_other</item>
-    </plurals>
+    <string name="delay_seconds">seconds</string>
+    <string name="delay_minutes">minutes</string>
 
     <!-- Message -->
     <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
     <string name="sms_summary" translatable="false">%1$s</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_message">Electrical power failure occurred on %1$s</string>
+    <string name="sms_recipient_title">SMS Recipient</string>
 
 </resources>

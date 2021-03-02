@@ -2,62 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Monitor falla energía</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Empezar a monitorear</string>
+    <string name="stop_monitor">Detener el monitorear</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Se inició el monitoreo de fallas de energía eléctrica.</string>
+    <string name="monitor_stopped">Se detuvo el monitoreo por falla de energía eléctrica.</string>
+    <string name="plugged_unknown">Fuente de energía eléctrica desconocida.</string>
+    <string name="plugged_unplugged">Desenchufado, sin fuente de energía eléctrica.</string>
+    <string name="plugged_ac">Fuente de energía eléctrica es un cargador de CA.</string>
+    <string name="plugged_usb">Fuente de energía eléctrica es un puerto USB.</string>
+    <string name="plugged_wireless">Fuente de energía eléctrica es inalámbrico.</string>
 
     <!-- About -->
-    <string name="version_title">Versión de aplicación</string>
     <string name="issue_title">Problemas</string>
     <string name="issue_summary">Reportar un problema, o solicitar una nueva característica.</string>
 
     <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
-
-    <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
-
-    <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_title">Retraso</string>
+    <string name="delay_seconds">segundos</string>
+    <string name="delay_minutes">minutos</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Enviar SMS</string>
+    <string name="sms_recipient_title">Destinatario de SMS</string>
+    <string name="sms_message">Se produjo una falla de energía eléctrica en la fecha %1$s.</string>
 
 </resources>

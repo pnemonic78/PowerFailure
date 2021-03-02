@@ -15,7 +15,6 @@ android {
         targetSdkVersion androidBuildTargetSdkVersion
         versionCode versionMajor * 100 + versionMinor
         versionName versionMajor + '.' + versionMinor.toString().padLeft(2, '0')
-        resConfigs "en"
 
         buildConfigField "Boolean", "FEATURE_SMS", "true"
 

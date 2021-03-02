@@ -2,62 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">पावर विफलता मॉनिटर</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">निगरानी शुरू करें</string>
+    <string name="stop_monitor">निगरानी बंद करो</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">बिजली की विफलता के लिए निगरानी शुरू हुई।</string>
+    <string name="monitor_stopped">विद्युत शक्ति की विफलता के लिए निगरानी बंद हो गई।</string>
+    <string name="plugged_unknown">अज्ञात विद्युत शक्ति स्रोत।</string>
+    <string name="plugged_unplugged">अनप्लग्ड - कोई विद्युत शक्ति स्रोत नहीं।</string>
+    <string name="plugged_ac">विद्युत शक्ति स्रोत एक एसी चार्जर है।</string>
+    <string name="plugged_usb">विद्युत शक्ति स्रोत एक यूएसबी पोर्ट है।</string>
+    <string name="plugged_wireless">विद्युत ऊर्जा स्रोत वायरलेस है।</string>
 
     <!-- About -->
-    <string name="version_title">एप्लिकेशन वर्जन</string>
-    <string name="issue_title">समस्या</string>
+    <string name="issue_title">मुद्दे</string>
     <string name="issue_summary">किसी समस्या की रिपोर्ट करें, या एक नई सुविधा का अनुरोध करें।</string>
 
     <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
-
-    <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
-
-    <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_title">विलंब</string>
+    <string name="delay_seconds">सेकंड</string>
+    <string name="delay_minutes">मिनट</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">एसएमएस भेजें</string>
+    <string name="sms_recipient_title">एसएमएस प्राप्तकर्ता</string>
+    <string name="sms_message">%1$s पर विद्युत शक्ति की विफलता हुई</string>
 
 </resources>

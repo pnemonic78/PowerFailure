@@ -19,12 +19,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import android.text.format.DateUtils
 import androidx.annotation.Keep
 import androidx.core.content.ContextCompat
-import androidx.preference.ListPreference
+import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.github.preference.RingtonePreference
@@ -52,10 +52,14 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         initList(PowerPreferences.KEY_FAILURE_DELAY)
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
-        initList(PowerPreferences.KEY_RINGTONE_TYPE)
 
         smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
         smsPreference?.onPreferenceChangeListener = this
+        smsPreference?.summaryProvider = Preference.SummaryProvider<SwitchPreference> {
+            val millis = System.currentTimeMillis()
+            val dateTime = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+            getString(R.string.sms_message, dateTime)
+        }
         recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
         if (!BuildConfig.FEATURE_SMS) {
             smsPreference?.isEnabled = false
@@ -75,18 +79,6 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
             updateRecipientSummary(preference, newValue?.toString() ?: "")
         }
         return super.onPreferenceChange(preference, newValue)
-    }
-
-    override fun onListPreferenceChange(preference: ListPreference, newValue: Any?): Boolean {
-        super.onListPreferenceChange(preference, newValue)
-
-        val key = preference.key
-        if (PowerPreferences.KEY_RINGTONE_TYPE == key && reminderRingtonePreference != null) {
-            val value = newValue.toString()
-            val ringType = if (value.isEmpty()) RingtoneManager.TYPE_ALARM else value.toInt()
-            reminderRingtonePreference!!.ringtoneType = ringType
-        }
-        return false
     }
 
     private fun initSmsRecipient(key: String): RecipientPreference? {
@@ -121,6 +113,23 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun onDisplayPreferenceDialog(preference: Preference) {
+        val fragmentManager = requireFragmentManager()
+        // check if dialog is already showing
+        if (fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
+            return
+        }
+
+        val f: DialogFragment
+        if (preference is DelayPreference) {
+            f = DelayPreferenceDialog.newInstance(preference.getKey())
+            f.setTargetFragment(this, 0)
+            f.show(fragmentManager, DIALOG_FRAGMENT_TAG)
+        } else {
+            super.onDisplayPreferenceDialog(preference)
+        }
     }
 
     companion object {

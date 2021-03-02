@@ -32,11 +32,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     companion object {
 
         /**
-         * Preference name for the reminder type.
-         */
-        const val KEY_RINGTONE_TYPE = "ringtone.type"
-
-        /**
          * Preference name for the reminder ringtone.
          */
         const val KEY_RINGTONE_TONE = "ringtone.tone"
@@ -73,14 +68,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     }
 
     /**
-     * Get the ringtone type.
-     *
-     * @return the ringtone type. One of [RingtoneManager.TYPE_ALARM] or [RingtoneManager.TYPE_NOTIFICATION].
-     */
-    val ringtoneType: Int
-        get() = Integer.parseInt(preferences.getString(KEY_RINGTONE_TYPE, context.getString(R.string.ringtone_type_defaultValue))!!)
-
-    /**
      * Get the ringtone.
      *
      * @return the ringtone.
@@ -88,7 +75,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      */
     val ringtone: Uri?
         get() {
-            val type = ringtoneType
+            val type = RingtoneManager.TYPE_ALARM
             var path = preferences.getString(KEY_RINGTONE_TONE, RingtoneManager.DEFAULT_PATH)
             if (path == RingtoneManager.DEFAULT_PATH) {
                 path = RingtoneManager.getDefaultUri(type).toString()
@@ -115,7 +102,11 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return the time in milliseconds.
      */
     val failureDelay: Long
-        get() = preferences.getString(KEY_FAILURE_DELAY, context.resources.getString(R.string.delay_defaultValue))!!.toLong() * DateUtils.SECOND_IN_MILLIS
+        get() = try {
+            preferences.getInt(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue)).toLong() * DateUtils.SECOND_IN_MILLIS
+        } catch (e: ClassCastException) {
+            preferences.getString(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue).toString())!!.toLong() * DateUtils.SECOND_IN_MILLIS
+        }
 
     /**
      * Get the time when the power failed.

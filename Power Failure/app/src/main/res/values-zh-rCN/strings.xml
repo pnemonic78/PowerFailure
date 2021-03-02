@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application. -->
+    <string name="app_name">停电监控器</string>
+
+    <!-- Activity. -->
+    <string name="start_monitor">开始监控</string>
+    <string name="stop_monitor">停止监控</string>
+
+    <!-- Service. -->
+    <string name="monitor_started">开始监视电源故障。</string>
+    <string name="monitor_stopped">电源故障监视已停止。</string>
+    <string name="plugged_unknown">未知的电源。</string>
+    <string name="plugged_unplugged">拔下-没有电源。</string>
+    <string name="plugged_ac">电源是交流充电器。</string>
+    <string name="plugged_usb">电源是USB端口。</string>
+    <string name="plugged_wireless">电源是无线的。</string>
+
+    <!-- About -->
+    <string name="issue_title">问题</string>
+    <string name="issue_summary">报告问题或请求新功能。</string>
+
+    <!-- Delay -->
+    <string name="delay_title">延误</string>
+    <string name="delay_seconds">秒</string>
+    <string name="delay_minutes">分钟</string>
+
+    <!-- Message -->
+    <string name="sms_title">发简讯</string>
+    <string name="sms_recipient_title">短信接收人</string>
+    <string name="sms_message">%1$s日发生电源故障</string>
+
+</resources>

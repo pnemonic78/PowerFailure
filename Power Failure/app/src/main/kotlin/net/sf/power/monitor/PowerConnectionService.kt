@@ -109,7 +109,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
         private val VIBRATE_PATTERN = longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
 
-        private const val CHANNEL_ID = "power"
+        private const val CHANNEL_ID = "power-failure"
 
         private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
     }
@@ -137,7 +137,6 @@ class PowerConnectionService : Service(), BatteryListener {
     private var isVibrating: Boolean = false
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
-    private var prefRingtoneType: Int = RingtoneManager.TYPE_ALARM
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
@@ -275,11 +274,7 @@ class PowerConnectionService : Service(), BatteryListener {
         if ((ringtone == null) && (prefRingtone != null)) {
             ringtone = RingtoneManager.getRingtone(context, prefRingtone)
             if (ringtone != null) {
-                val audioStreamType = if (prefRingtoneType == RingtoneManager.TYPE_ALARM) {
-                    AudioManager.STREAM_ALARM
-                } else {
-                    AudioManager.STREAM_NOTIFICATION
-                }
+                val audioStreamType = AudioManager.STREAM_ALARM
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     val audioAttributes = AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
@@ -371,7 +366,7 @@ class PowerConnectionService : Service(), BatteryListener {
         // Set the info for the views that show in the notification panel.
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setOngoing(true)
-            .setOnlyAlertOnce(true)
+            .setNotificationSilent()
             .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
             .setSmallIcon(R.drawable.stat_launcher)  // the status icon
             .setTicker(text)  // the status text
@@ -473,7 +468,6 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun onPreferencesChanged() {
         prefTimeDelay = settings.failureDelay
         prefRingtone = null
-        prefRingtoneType = settings.ringtoneType
         prefVibrate = settings.isVibrate
         prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient
@@ -492,7 +486,7 @@ class PowerConnectionService : Service(), BatteryListener {
         val destination = prefSmsRecipient
         if (destination.isEmpty()) return
 
-        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
         val text = getString(R.string.sms_message, dateTime)
 
         val smsManager = SmsManager.getDefault() ?: return

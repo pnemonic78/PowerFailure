@@ -2,62 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Strømbrudd Monitor</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Start overvåking</string>
+    <string name="stop_monitor">Stopp overvåking</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Overvåking for elektrisk strømbrudd startet.</string>
+    <string name="monitor_stopped">Overvåking for strømbrudd stoppet.</string>
+    <string name="plugged_unknown">Ukjent elektrisk strømkilde.</string>
+    <string name="plugged_unplugged">Frakoblet - ingen elektrisk strømkilde.</string>
+    <string name="plugged_ac">Elektrisk strømkilde er en AC-lader.</string>
+    <string name="plugged_usb">Elektrisk strømkilde er en USB-port.</string>
+    <string name="plugged_wireless">Elektrisk strømkilde er trådløs.</string>
 
     <!-- About -->
-    <string name="version_title">Apper versjon</string>
     <string name="issue_title">Problemer</string>
     <string name="issue_summary">Rapporter et problem, eller be om en ny funksjon.</string>
 
     <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
-
-    <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
-
-    <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_title">Utsettelsen</string>
+    <string name="delay_seconds">sekunder</string>
+    <string name="delay_minutes">minutter</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Send tekstmelding</string>
+    <string name="sms_recipient_title">SMS-mottaker</string>
+    <string name="sms_message">Elektrisk strømbrudd skjedde på %1$s</string>
 
 </resources>

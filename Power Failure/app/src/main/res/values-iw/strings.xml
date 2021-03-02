@@ -11,53 +11,24 @@
     <!-- Service. -->
     <string name="monitor_started">השגחת הפסקת חשמל החלה.</string>
     <string name="monitor_stopped">השגחת הפסקת חשמל נעצרה.</string>
-    <string name="plugged_unknown">מקור כוח לא ידוע.</string>
-    <string name="plugged_unplugged">מנותק - אין מקור כוח.</string>
-    <string name="plugged_ac">מקור כוח הוא מטען זרם חליפין.</string>
-    <string name="plugged_usb">מקור כוח הוא יציאת ה-USB.</string>
-    <string name="plugged_wireless">מקור כוח הוא אלחוטי.</string>
+    <string name="plugged_unknown">מקור חשמל לא ידוע.</string>
+    <string name="plugged_unplugged">מנותק - אין מקור חשמל.</string>
+    <string name="plugged_ac">מקור חשמל הוא מטען AC.</string>
+    <string name="plugged_usb">מקור כוח הוא יציאת USB.</string>
+    <string name="plugged_wireless">מקור חשמל הוא אלחוטי.</string>
 
     <!-- About -->
-    <string name="version_title">גרסת יישום</string>
-    <string name="issue_title">נושאים</string>
+    <string name="issue_title">בעיות</string>
     <string name="issue_summary">דווח על בעיה או בקש תכונה חדשה.</string>
 
     <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
-
-    <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
-
-    <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_title">העיכוב</string>
+    <string name="delay_seconds">שניות</string>
+    <string name="delay_minutes">דקות</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">שלח סמס</string>
+    <string name="sms_recipient_title">נמען סמס</string>
+    <string name="sms_message">הפסקת חשמל התרחש ב- %1$s</string>
 
 </resources>

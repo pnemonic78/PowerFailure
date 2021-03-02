@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Application. -->
+    <string name="app_name">مانیتور قطع برق</string>
+
+    <!-- Activity. -->
+    <string name="start_monitor">نظارت را شروع کنید</string>
+    <string name="stop_monitor">نظارت را متوقف کنید</string>
+
+    <!-- Service. -->
+    <string name="monitor_started">نظارت بر خرابی برق شروع شد.</string>
+    <string name="monitor_stopped">نظارت بر قطع برق برق متوقف شد.</string>
+    <string name="plugged_unknown">منبع برق ناشناخته</string>
+    <string name="plugged_unplugged">از برق جدا شوید - منبع برق وجود ندارد.</string>
+    <string name="plugged_ac">منبع تغذیه برق یک شارژر AC است.</string>
+    <string name="plugged_usb">منبع تغذیه برق یک درگاه USB است.</string>
+    <string name="plugged_wireless">منبع انرژی الکتریکی بی سیم است.</string>
+
+    <!-- About -->
+    <string name="issue_title">مسائل</string>
+    <string name="issue_summary">یک مشکل را گزارش دهید یا ویژگی جدیدی را درخواست کنید.</string>
+
+    <!-- Delay -->
+    <string name="delay_title">تاخیر</string>
+    <string name="delay_seconds">ثانیه</string>
+    <string name="delay_minutes">دقایق</string>
+
+    <!-- Message -->
+    <string name="sms_title">ارسال پیامک</string>
+    <string name="sms_recipient_title">گیرنده پیام کوتاه</string>
+    <string name="sms_message">قطع برق در تاریخ %1$s رخ داده است</string>
+
+</resources>

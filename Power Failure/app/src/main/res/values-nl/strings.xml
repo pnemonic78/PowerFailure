@@ -2,62 +2,33 @@
 <resources>
 
     <!-- Application. -->
-    <string name="app_name">Power Failure Monitor</string>
+    <string name="app_name">Stroomuitval Monitor</string>
 
     <!-- Activity. -->
-    <string name="start_monitor">Start monitoring</string>
-    <string name="stop_monitor">Stop monitoring</string>
+    <string name="start_monitor">Begin met monitoren</string>
+    <string name="stop_monitor">Stop met monitoren</string>
 
     <!-- Service. -->
-    <string name="monitor_started">Monitoring for power failure started.</string>
-    <string name="monitor_stopped">Monitoring for power failure stopped.</string>
-    <string name="plugged_unknown">Unknown power source.</string>
-    <string name="plugged_unplugged">Unplugged - no power source.</string>
-    <string name="plugged_ac">Power source is an AC charger.</string>
-    <string name="plugged_usb">Power source is a USB port.</string>
-    <string name="plugged_wireless">Power source is wireless.</string>
+    <string name="monitor_started">Controle op stroomuitval is gestart.</string>
+    <string name="monitor_stopped">Controle op stroomuitval gestopt.</string>
+    <string name="plugged_unknown">Onbekende elektrische stroombron.</string>
+    <string name="plugged_unplugged">Niet aangesloten - geen elektrische voedingsbron.</string>
+    <string name="plugged_ac">Elektrische stroombron is een AC-oplader.</string>
+    <string name="plugged_usb">Elektrische stroombron is een USB-poort.</string>
+    <string name="plugged_wireless">Elektrische stroombron is draadloos.</string>
 
     <!-- About -->
-    <string name="version_title">App versie</string>
     <string name="issue_title">Problemen</string>
     <string name="issue_summary">Meld een probleem of vraag een nieuwe functie aan.</string>
 
     <!-- Delay -->
-    <string name="delay_1_second">1 second</string>
-    <string name="delay_2_seconds">2 seconds</string>
-    <string name="delay_3_seconds">3 seconds</string>
-    <string name="delay_4_seconds">4 seconds</string>
-    <string name="delay_5_seconds">5 seconds</string>
-    <string name="delay_10_seconds">10 seconds</string>
-    <string name="delay_15_seconds">15 seconds</string>
-    <string name="delay_30_seconds">30 seconds</string>
-    <string name="delay_1_minute">1 minute</string>
-    <string name="delay_2_minutes">2 minutes</string>
-    <string name="delay_5_minutes">5 minutes</string>
-    <string name="delay_10_minutes">10 minutes</string>
-    <string name="delay_15_minutes">15 minutes</string>
-
-    <!-- Ringtone -->
-    <string name="ringtone_stream_title">Ringtone type</string>
-    <string name="ringtone_tone">Ringtone</string>
-    <string name="alarm_volume_title">Alarm</string>
-    <string name="notification_volume_title">Notification</string>
-
-    <!-- Vibration -->
-    <string name="vibrate_title">Vibrate</string>
-
-    <!-- Delay -->
-    <string name="delay_title">Delay</string>
-    <string name="delay_summary_zero">@string/delay_summary_other</string>
-    <string name="delay_summary_one">%1$d second</string>
-    <string name="delay_summary_two">@string/delay_summary_other</string>
-    <string name="delay_summary_few">@string/delay_summary_other</string>
-    <string name="delay_summary_many">@string/delay_summary_other</string>
-    <string name="delay_summary_other">%1$d seconds</string>
+    <string name="delay_title">Vertraging</string>
+    <string name="delay_seconds">seconden</string>
+    <string name="delay_minutes">minuten</string>
 
     <!-- Message -->
-    <string name="sms_title">Send SMS</string>
-    <string name="sms_recipient_title">SMS Recipient</string>
-    <string name="sms_message">Power failure occurred on %1$s</string>
+    <string name="sms_title">Verstuur SMS</string>
+    <string name="sms_recipient_title">SMS-ontvanger</string>
+    <string name="sms_message">Er is een stroomstoring opgetreden op datum %1$s</string>
 
 </resources>
