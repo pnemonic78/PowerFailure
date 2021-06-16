@@ -6,6 +6,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Power_Failure.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Power_Failure.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.iml" />
     </modules>
   </component>
 </project>
