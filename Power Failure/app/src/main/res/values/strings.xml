@@ -32,7 +32,7 @@
     <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
-    <string name="vibrate_title" translatable="false">@string/keywords_vibrate_for_calls</string>
+    <string name="vibrate_title" translatable="false">@string/vibration</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
