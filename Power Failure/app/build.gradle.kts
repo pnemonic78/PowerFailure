@@ -20,6 +20,44 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField("Boolean", "FEATURE_SMS", "true")
+
+        resConfigs(
+            "af",
+            "ar",
+            "bg",
+            "cs",
+            "da",
+            "de",
+            "el",
+            "es",
+            "et",
+            "fa",
+            "fi",
+            "fr",
+            "hi",
+            "hu",
+            "in",
+            "it",
+            "iw",
+            "ja",
+            "ko",
+            "lt",
+            "lv",
+            "ms",
+            "nb",
+            "nl",
+            "pl",
+            "pt",
+            "ro",
+            "ru",
+            "sv",
+            "th",
+            "tr",
+            "uk",
+            "vi",
+            "zh",
+            "zu"
+        )
     }
 
     signingConfigs {
