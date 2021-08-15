@@ -7,21 +7,20 @@ val versionMajor = (project.properties["APP_VERSION_MAJOR"] as String).toInt()
 val versionMinor = (project.properties["APP_VERSION_MINOR"] as String).toInt()
 
 android {
-    compileSdkVersion(BuildVersions.compileSdkVersion)
+    compileSdk = BuildVersions.compileSdkVersion
 
     defaultConfig {
-        applicationId("net.sf.power.monitor")
-        minSdkVersion(BuildVersions.minSdkVersion)
-        targetSdkVersion(BuildVersions.targetSdkVersion)
+        applicationId = "net.sf.power.monitor"
+        minSdk = BuildVersions.minSdkVersion
+        targetSdk = BuildVersions.targetSdkVersion
         versionCode = versionMajor * 100 + versionMinor
         versionName = "${versionMajor}." + versionMinor.toString().padStart(2, '0')
-        testInstrumentationRunner("androidx.test.runner.AndroidJUnitRunner")
 
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField("Boolean", "FEATURE_SMS", "true")
 
-        resConfigs(
+        resourceConfigurations += listOf(
             "af",
             "ar",
             "bg",
@@ -102,7 +101,7 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    flavorDimensions("privacy")
+    flavorDimensions += "privacy"
 
     productFlavors {
         create("google") {
