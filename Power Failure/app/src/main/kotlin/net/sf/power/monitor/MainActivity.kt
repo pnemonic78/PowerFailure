@@ -27,8 +27,10 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
@@ -54,6 +56,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     private lateinit var mainBackground: Drawable
     private lateinit var pluggedView: ImageView
     private lateinit var timeView: TextView
+    private lateinit var actionButton: FloatingActionButton
     private var menuItemStart: MenuItem? = null
     private var menuItemStop: MenuItem? = null
 
@@ -116,6 +119,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         pluggedView = findViewById(R.id.plugged)
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
         timeView = findViewById(R.id.time)
+        actionButton = findViewById(R.id.floatingActionButton)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
@@ -172,6 +176,9 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             menuItemStart!!.isVisible = !polling
             menuItemStop!!.isVisible = polling
         }
+        @DrawableRes val iconId = if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        actionButton.setImageResource(iconId)
+        actionButton.setOnClickListener { onClickActionButton(polling) }
         onBatteryPlugged(BatteryUtils.getPlugged(this))
     }
 
@@ -358,5 +365,13 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
         timeView.text = getString(R.string.sms_message, dateTime)
         timeView.visibility = View.VISIBLE
+    }
+
+    private fun onClickActionButton(polling: Boolean) {
+        if (polling) {
+            handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
+        } else {
+            handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
+        }
     }
 }

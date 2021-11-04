@@ -117,6 +117,7 @@ android {
 
 dependencies {
     implementation(project(":android-lib:lib"))
+    implementation("com.google.android.material:material:1.4.0")
 
     // Testing
     testImplementation("junit:junit:${BuildVersions.junitVersion}")
