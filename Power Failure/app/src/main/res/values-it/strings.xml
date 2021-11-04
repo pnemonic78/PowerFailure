@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Ritardo</string>
-    <string name="delay_seconds">secondi</string>
-    <string name="delay_minutes">minuti</string>
 
     <!-- Message -->
     <string name="sms_title">Inviare SMS</string>

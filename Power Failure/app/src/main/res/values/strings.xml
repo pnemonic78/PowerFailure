@@ -36,8 +36,8 @@
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_seconds" translatable="false">@string/time_lapse_seconds</string>
+    <string name="delay_minutes" translatable="false">@string/time_lapse_minutes</string>
 
     <!-- Message -->
     <string name="sms_title">Send SMS</string>

@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">ล่าช้า</string>
-    <string name="delay_seconds">วินาที</string>
-    <string name="delay_minutes">นาที</string>
 
     <!-- Message -->
     <string name="sms_title">ส่ง SMS</string>

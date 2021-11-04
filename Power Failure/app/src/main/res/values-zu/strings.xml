@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Ukubambezeleka</string>
-    <string name="delay_seconds">imizuzwana</string>
-    <string name="delay_minutes">imizuzu</string>
 
     <!-- Message -->
     <string name="sms_title">Thumela i-SMS</string>

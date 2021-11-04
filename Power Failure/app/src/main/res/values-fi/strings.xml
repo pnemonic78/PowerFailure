@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Viive</string>
-    <string name="delay_seconds">sekuntia</string>
-    <string name="delay_minutes">pöytäkirja</string>
 
     <!-- Message -->
     <string name="sms_title">Lähetä tekstiviesti</string>

@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">지연</string>
-    <string name="delay_seconds">초</string>
-    <string name="delay_minutes">의사록</string>
 
     <!-- Message -->
     <string name="sms_title">문자를 보내다</string>

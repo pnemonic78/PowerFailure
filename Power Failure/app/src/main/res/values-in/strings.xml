@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Keterlambatan</string>
-    <string name="delay_seconds">detik</string>
-    <string name="delay_minutes">menit</string>
 
     <!-- Message -->
     <string name="sms_title">Kirim SMS</string>

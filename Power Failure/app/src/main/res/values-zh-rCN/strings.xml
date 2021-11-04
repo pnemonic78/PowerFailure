@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">延误</string>
-    <string name="delay_seconds">秒</string>
-    <string name="delay_minutes">分钟</string>
 
     <!-- Message -->
     <string name="sms_title">发简讯</string>

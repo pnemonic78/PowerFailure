@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Kelewatan</string>
-    <string name="delay_seconds">saat</string>
-    <string name="delay_minutes">minit</string>
 
     <!-- Message -->
     <string name="sms_title">Hantar SMS</string>

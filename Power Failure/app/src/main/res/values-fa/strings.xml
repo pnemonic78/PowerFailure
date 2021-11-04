@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">تاخیر</string>
-    <string name="delay_seconds">ثانیه</string>
-    <string name="delay_minutes">دقایق</string>
 
     <!-- Message -->
     <string name="sms_title">ارسال پیامک</string>

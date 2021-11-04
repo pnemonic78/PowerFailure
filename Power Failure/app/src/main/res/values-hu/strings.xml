@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Késés</string>
-    <string name="delay_seconds">másodpercig</string>
-    <string name="delay_minutes">percek</string>
 
     <!-- Message -->
     <string name="sms_title">SMS-t küldeni</string>
