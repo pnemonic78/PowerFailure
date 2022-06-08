@@ -27,6 +27,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     private lateinit var mainBackground: Drawable
     private lateinit var pluggedView: ImageView
     private lateinit var timeView: TextView
-    private lateinit var floatingActionButton: FloatingActionButton
+    private lateinit var actionButton: FloatingActionButton
     private var menuItemStart: MenuItem? = null
     private var menuItemStop: MenuItem? = null
 
@@ -118,7 +119,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         pluggedView = findViewById(R.id.plugged)
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
         timeView = findViewById(R.id.time)
-        floatingActionButton = findViewById(R.id.floatingActionButton)
+        actionButton = findViewById(R.id.floatingActionButton)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
@@ -171,19 +172,13 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         toolbarBackground.level = LEVEL_UNKNOWN
         mainBackground.level = LEVEL_UNKNOWN
         pluggedView.setImageLevel(LEVEL_UNKNOWN)
-        menuItemStart?.isVisible = !polling
-        menuItemStop?.isVisible = polling
-        if (polling) {
-            floatingActionButton.setImageResource(android.R.drawable.ic_media_pause)
-            floatingActionButton.setOnClickListener {
-                handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
-            }
-        } else {
-            floatingActionButton.setImageResource(android.R.drawable.ic_media_play)
-            floatingActionButton.setOnClickListener {
-                handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
-            }
+        if (menuItemStart != null) {
+            menuItemStart!!.isVisible = !polling
+            menuItemStop!!.isVisible = polling
         }
+        @DrawableRes val iconId = if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        actionButton.setImageResource(iconId)
+        actionButton.setOnClickListener { onClickActionButton(polling) }
         onBatteryPlugged(BatteryUtils.getPlugged(this))
     }
 
@@ -228,8 +223,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
             internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
             internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
-            internal const val MSG_SET_STATUS_MONITOR =
-                PowerConnectionService.MSG_SET_STATUS_MONITOR
+            internal const val MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR
             internal const val MSG_ALARM = PowerConnectionService.MSG_ALARM
             internal const val MSG_SETTINGS = 1000
         }
@@ -245,12 +239,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
                 MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
-                MSG_SETTINGS -> activity.startActivity(
-                    Intent(
-                        activity,
-                        PowerPreferenceActivity::class.java
-                    )
-                )
+                MSG_SETTINGS -> activity.startActivity(Intent(activity, PowerPreferenceActivity::class.java))
                 else -> super.handleMessage(msg)
             }
         }
@@ -373,12 +362,16 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun showFailureTime(millis: Long) {
-        val dateTime = DateUtils.formatDateTime(
-            this,
-            millis,
-            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
-        )
+        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
         timeView.text = getString(R.string.sms_message, dateTime)
         timeView.visibility = View.VISIBLE
+    }
+
+    private fun onClickActionButton(polling: Boolean) {
+        if (polling) {
+            handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
+        } else {
+            handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
+        }
     }
 }

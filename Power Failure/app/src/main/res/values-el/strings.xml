@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Καθυστέρηση</string>
-    <string name="delay_seconds">δευτερόλεπτα</string>
-    <string name="delay_minutes">λεπτά</string>
 
     <!-- Message -->
     <string name="sms_title">Αποστολή SMS</string>

@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">विलंब</string>
-    <string name="delay_seconds">सेकंड</string>
-    <string name="delay_minutes">मिनट</string>
 
     <!-- Message -->
     <string name="sms_title">एसएमएस भेजें</string>
