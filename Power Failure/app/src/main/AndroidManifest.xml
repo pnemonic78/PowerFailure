@@ -4,6 +4,7 @@
     package="net.sf.power.monitor">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
@@ -37,5 +38,4 @@
             android:name="net.sf.power.monitor.PowerConnectionService"
             android:exported="false" />
     </application>
-
 </manifest>

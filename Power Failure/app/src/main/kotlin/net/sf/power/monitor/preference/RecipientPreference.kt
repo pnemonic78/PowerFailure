@@ -1,41 +1,50 @@
 package net.sf.power.monitor.preference
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.provider.ContactsContract
 import android.util.AttributeSet
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContract
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import net.sf.power.monitor.R
 
-class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Preference(context, attrs, defStyleAttr) {
-    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, R.attr.preferenceStyle)
+class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
+    Preference(context, attrs, defStyleAttr) {
+
+    constructor(context: Context, attrs: AttributeSet?) : this(
+        context,
+        attrs,
+        R.attr.preferenceStyle
+    )
+
     constructor(context: Context) : this(context, null)
 
     private var recipientValue: String? = null
     var recipient: String
         get() {
             if (recipientValue == null) {
-                recipientValue = sharedPreferences.getString(key, "") ?: ""
+                recipientValue = sharedPreferences?.getString(key, "") ?: ""
             }
             return recipientValue!!
         }
         private set(value) {
             recipientValue = value
-            persistString(value)
+            if (persistString(value)) {
+                notifyChanged()
+            }
         }
 
     private var host: Fragment? = null
-    private var requestCode = 0
-
-    init {
-        val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        val pm = context.packageManager
-        val info = pm.resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY)
-        isEnabled = (info != null)
-    }
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
+    private var requestPhoneLauncher: ActivityResultLauncher<Void?>? = null
 
     override fun setDefaultValue(defaultValue: Any?) {
         super.setDefaultValue(defaultValue)
@@ -43,26 +52,16 @@ class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: 
     }
 
     override fun onClick() {
-        pickRecipient()
-    }
-
-    private fun pickRecipient() {
-        val intent = Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
-        host?.startActivityForResult(intent, requestCode)
-    }
-
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == this.requestCode) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (data != null) {
-                    chooseBestRecipient(data)
-                }
-            }
+        if (checkPermissions()) {
+            pickRecipient()
         }
     }
 
-    private fun chooseBestRecipient(data: Intent) {
-        val contactUri = data.data ?: return
+    private fun pickRecipient() {
+        requestPhoneLauncher?.launch(null)
+    }
+
+    private fun chooseBestRecipient(contactUri: Uri) {
         val cursor = context.contentResolver.query(contactUri, PROJECTION, SELECTION, null, null)
             ?: return
 
@@ -95,17 +94,62 @@ class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: 
         cursor.close()
     }
 
-    fun setOnClick(host: Fragment, requestCode: Int) {
+    fun setHost(host: Fragment) {
         this.host = host
-        this.requestCode = requestCode
+        this.requestPermissionLauncher =
+            host.registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    pickRecipient()
+                } else if (host.shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+                    // TODO explain that we need this permission to pick a contact with his phone number.
+                }
+            }
+        this.requestPhoneLauncher = host.registerForActivityResult(PickPhone()) { uri ->
+            if (uri != null) {
+                chooseBestRecipient(uri)
+            }
+        }
+    }
+
+    private fun checkPermissions(): Boolean {
+        val context: Context = this.context
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (PermissionChecker.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_CONTACTS
+                ) != PermissionChecker.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher?.launch(Manifest.permission.READ_CONTACTS)
+                return false
+            }
+        }
+        return true
+    }
+
+    class PickPhone : ActivityResultContract<Void?, Uri?>() {
+        override fun createIntent(context: Context, input: Void?): Intent {
+            return getPickerIntent()
+        }
+
+        override fun parseResult(resultCode: Int, intent: Intent?): Uri? {
+            return intent.takeIf { resultCode == Activity.RESULT_OK }?.data
+        }
     }
 
     companion object {
-        private val PROJECTION = arrayOf(ContactsContract.CommonDataKinds.Phone.NUMBER, ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER, ContactsContract.CommonDataKinds.Phone.TYPE)
+        private val PROJECTION = arrayOf(
+            ContactsContract.CommonDataKinds.Phone.NUMBER,
+            ContactsContract.CommonDataKinds.Phone.NORMALIZED_NUMBER,
+            ContactsContract.CommonDataKinds.Phone.TYPE
+        )
         private const val SELECTION = ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER + "=1"
 
         private const val COLUMN_NUMBER = 0
         private const val COLUMN_NORMALIZED_NUMBER = 1
         private const val COLUMN_TYPE = 2
+
+        private fun getPickerIntent(): Intent {
+            return Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI)
+        }
     }
 }

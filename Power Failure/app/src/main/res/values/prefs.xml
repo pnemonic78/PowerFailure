@@ -10,7 +10,7 @@
 
     <integer name="delay_defaultValue" translatable="false">15</integer>
 
-    <bool name="sms_defaultValue" translatable="false" />
+    <bool name="sms_defaultValue" translatable="false">false</bool>
     <string name="sms_recipient_defaultValue" translatable="false" />
 
 </resources>

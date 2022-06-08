@@ -17,13 +17,13 @@ package net.sf.power.monitor.preference
 
 import android.Manifest
 import android.content.Context
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.text.format.DateUtils
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
-import androidx.core.content.ContextCompat
+import androidx.core.content.PermissionChecker
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
@@ -42,6 +42,8 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     private var smsPreference: SwitchPreference? = null
     private var recipientPreference: RecipientPreference? = null
 
+    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
+
     override fun getPreferencesXml(): Int {
         return R.xml.general_preferences
     }
@@ -52,67 +54,75 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         initList(PowerPreferences.KEY_FAILURE_DELAY)
 
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
+        smsPreference = initSmsFeature()
+        recipientPreference = initSmsRecipient()
 
-        smsPreference = findPreference(PowerPreferences.KEY_SMS_ENABLED)
-        smsPreference?.onPreferenceChangeListener = this
-        smsPreference?.summaryProvider = Preference.SummaryProvider<SwitchPreference> {
-            val millis = System.currentTimeMillis()
-            val dateTime = DateUtils.formatDateTime(context, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
-            getString(R.string.sms_message, dateTime)
-        }
-        recipientPreference = initSmsRecipient(PowerPreferences.KEY_SMS_RECIPIENT)
-        if (!BuildConfig.FEATURE_SMS) {
-            smsPreference?.isEnabled = false
-            recipientPreference?.isEnabled = false
-
-            smsPreference?.isVisible = false
-            recipientPreference?.isVisible = false
-        }
+        this.requestPermissionLauncher =
+            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
+                if (isGranted) {
+                    smsPreference?.isEnabled = true
+                } else if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS)) {
+                    smsPreference?.isEnabled = false
+                    // TODO explain that we need this permission to send SMS to a contact.
+                } else {
+                    smsPreference?.isEnabled = false
+                }
+            }
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         if (preference === smsPreference) {
             if (newValue == true) {
-                checkSmsPermission(preference.context)
+                checkPermissions(preference.context)
             }
-        } else if (preference === recipientPreference) {
-            updateRecipientSummary(preference, newValue?.toString() ?: "")
         }
         return super.onPreferenceChange(preference, newValue)
     }
 
-    private fun initSmsRecipient(key: String): RecipientPreference? {
-        val preference = findPreference<RecipientPreference>(key) ?: return null
-        preference.onPreferenceChangeListener = this
-        preference.setOnClick(this, REQUEST_RECIPIENT)
-        updateRecipientSummary(preference, preference.recipient)
+    private fun initSmsFeature(): SwitchPreference? {
+        val preference =
+            findPreference<SwitchPreference>(PowerPreferences.KEY_SMS_ENABLED) ?: return null
+        if (BuildConfig.FEATURE_SMS) {
+            preference.onPreferenceChangeListener = this
+            preference.summaryProvider = Preference.SummaryProvider<SwitchPreference> {
+                val dateTime = DateUtils.formatDateTime(
+                    context,
+                    settings.failureTime,
+                    DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
+                )
+                getString(R.string.sms_message, dateTime)
+            }
+        } else {
+            preference.isEnabled = false
+            preference.isVisible = false
+        }
         return preference
     }
 
-    private fun updateRecipientSummary(preference: Preference, recipient: String) {
-        preference.summary = getString(R.string.sms_summary, recipient)
+    private fun initSmsRecipient(): RecipientPreference? {
+        val preference =
+            findPreference<RecipientPreference>(PowerPreferences.KEY_SMS_RECIPIENT) ?: return null
+        if (BuildConfig.FEATURE_SMS) {
+            preference.setHost(this)
+            preference.summaryProvider = Preference.SummaryProvider<RecipientPreference> {
+                getString(R.string.sms_summary, it.recipient)
+            }
+        } else {
+            preference.isVisible = false
+        }
+        return preference
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        recipientPreference?.onActivityResult(requestCode, resultCode, data)
-    }
-
-    private fun checkSmsPermission(context: Context) {
+    private fun checkPermissions(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(arrayOf(Manifest.permission.SEND_SMS), REQUEST_SMS)
+            if (PermissionChecker.checkSelfPermission(
+                    context,
+                    Manifest.permission.SEND_SMS
+                ) != PermissionChecker.PERMISSION_GRANTED
+            ) {
+                requestPermissionLauncher?.launch(Manifest.permission.SEND_SMS)
             }
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        if (requestCode == REQUEST_SMS) {
-            if (grantResults.isNotEmpty() && (grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
-                smsPreference?.isChecked = false
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -130,10 +140,5 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
-    }
-
-    companion object {
-        private const val REQUEST_SMS = 0x535
-        private const val REQUEST_RECIPIENT = 0x73C1
     }
 }
