@@ -17,6 +17,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name="net.sf.power.monitor.MainActivity"
+            android:exported="true"
             android:label="@string/title_activity_main"
             android:launchMode="singleTask">
             <intent-filter>

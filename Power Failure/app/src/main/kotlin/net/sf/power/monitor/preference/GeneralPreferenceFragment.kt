@@ -116,7 +116,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
-        val fragmentManager = requireFragmentManager()
+        val fragmentManager = parentFragmentManager
         // check if dialog is already showing
         if (fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
             return

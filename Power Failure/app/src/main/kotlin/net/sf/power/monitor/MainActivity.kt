@@ -217,7 +217,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private class MainHandler(activity: MainActivity) : Handler() {
+    private class MainHandler(activity: MainActivity) : Handler(Looper.getMainLooper()) {
 
         companion object {
             internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED

@@ -1,6 +1,6 @@
 plugins {
     id("com.android.application")
-    id("kotlin-android")
+    kotlin("android")
 }
 
 val versionMajor = (project.properties["APP_VERSION_MAJOR"] as String).toInt()
@@ -117,7 +117,7 @@ android {
 
 dependencies {
     implementation(project(":android-lib:lib"))
-    implementation("com.google.android.material:material:1.4.0")
+    implementation("com.google.android.material:material:1.6.1")
 
     // Testing
     testImplementation("junit:junit:${BuildVersions.junitVersion}")

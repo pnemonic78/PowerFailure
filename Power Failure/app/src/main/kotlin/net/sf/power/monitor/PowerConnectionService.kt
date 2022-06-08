@@ -218,7 +218,7 @@ class PowerConnectionService : Service(), BatteryListener {
         BatteryUtils.printStatus(context)
     }
 
-    private class PowerConnectionHandler(service: PowerConnectionService) : Handler() {
+    private class PowerConnectionHandler(service: PowerConnectionService) : Handler(Looper.getMainLooper()) {
 
         private val service: WeakReference<PowerConnectionService> = WeakReference(service)
 
