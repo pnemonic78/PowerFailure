@@ -514,6 +514,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun sendSMS(millis: Long) {
         if (!prefSmsEnabled) return
+        val context: Context = this
 
         val destination = prefSmsRecipient
         if (destination.isEmpty()) return
@@ -525,7 +526,11 @@ class PowerConnectionService : Service(), BatteryListener {
         )
         val text = getString(R.string.sms_message, dateTime)
 
-        val smsManager = SmsManager.getDefault() ?: return
+        val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            context.getSystemService(SmsManager::class.java)
+        } else {
+            SmsManager.getDefault()
+        } ?: return
 
         Timber.i("send SMS to $destination")
         smsManager.sendTextMessage(destination, null, text, null, null)
