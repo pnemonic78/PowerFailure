@@ -393,7 +393,7 @@ class PowerConnectionService : Service(), BatteryListener {
         // Set the info for the views that show in the notification panel.
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setOngoing(true)
-            .setNotificationSilent()
+            .setSilent(true)
             .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
             .setSmallIcon(R.drawable.stat_launcher)  // the status icon
             .setTicker(text)  // the status text

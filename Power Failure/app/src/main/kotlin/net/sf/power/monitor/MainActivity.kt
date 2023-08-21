@@ -15,6 +15,9 @@
  */
 package net.sf.power.monitor
 
+import android.Manifest
+import android.annotation.TargetApi
+import android.app.NotificationManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -31,10 +34,10 @@ import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.lang.ref.WeakReference
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
-import java.lang.ref.WeakReference
 
 /**
  * Main activity.
@@ -42,15 +45,6 @@ import java.lang.ref.WeakReference
  * @author Moshe Waisberg
  */
 class MainActivity : AppCompatActivity(), BatteryListener {
-
-    companion object {
-        private const val LEVEL_UNKNOWN = 0
-        private const val LEVEL_UNPLUGGED = 1
-        private const val LEVEL_PLUGGED_AC = 2
-        private const val LEVEL_PLUGGED_USB = 3
-        private const val LEVEL_PLUGGED_WIRELESS = 4
-        private const val LEVEL_PLUGGED_UNKNOWN = LEVEL_PLUGGED_AC
-    }
 
     private lateinit var toolbarBackground: Drawable
     private lateinit var mainBackground: Drawable
@@ -131,6 +125,10 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         if (time > 0L) {
             showFailureTime(time)
         }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            initNotificationPermissions()
+        }
     }
 
     override fun onStart() {
@@ -176,7 +174,8 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             menuItemStart!!.isVisible = !polling
             menuItemStop!!.isVisible = polling
         }
-        @DrawableRes val iconId = if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        @DrawableRes val iconId =
+            if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
         actionButton.setImageResource(iconId)
         actionButton.setOnClickListener { onClickActionButton(polling) }
         onBatteryPlugged(BatteryUtils.getPlugged(this))
@@ -190,24 +189,28 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 pluggedView.setImageLevel(LEVEL_UNPLUGGED)
                 pluggedView.contentDescription = getText(R.string.plugged_unplugged)
             }
+
             BatteryListener.BATTERY_PLUGGED_AC -> {
                 toolbarBackground.level = LEVEL_PLUGGED_AC
                 mainBackground.level = LEVEL_PLUGGED_AC
                 pluggedView.setImageLevel(LEVEL_PLUGGED_AC)
                 pluggedView.contentDescription = getText(R.string.plugged_ac)
             }
+
             BatteryListener.BATTERY_PLUGGED_USB -> {
                 toolbarBackground.level = LEVEL_PLUGGED_USB
                 mainBackground.level = LEVEL_PLUGGED_USB
                 pluggedView.setImageLevel(LEVEL_PLUGGED_USB)
                 pluggedView.contentDescription = getText(R.string.plugged_usb)
             }
+
             BatteryListener.BATTERY_PLUGGED_WIRELESS -> {
                 toolbarBackground.level = LEVEL_PLUGGED_WIRELESS
                 mainBackground.level = LEVEL_PLUGGED_WIRELESS
                 pluggedView.setImageLevel(LEVEL_PLUGGED_WIRELESS)
                 pluggedView.contentDescription = getText(R.string.plugged_wireless)
             }
+
             else -> {
                 toolbarBackground.level = LEVEL_PLUGGED_UNKNOWN
                 mainBackground.level = LEVEL_PLUGGED_UNKNOWN
@@ -223,7 +226,8 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
             internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
             internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
-            internal const val MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR
+            internal const val MSG_SET_STATUS_MONITOR =
+                PowerConnectionService.MSG_SET_STATUS_MONITOR
             internal const val MSG_ALARM = PowerConnectionService.MSG_ALARM
             internal const val MSG_SETTINGS = 1000
         }
@@ -239,7 +243,13 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
                 MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
-                MSG_SETTINGS -> activity.startActivity(Intent(activity, PowerPreferenceActivity::class.java))
+                MSG_SETTINGS -> activity.startActivity(
+                    Intent(
+                        activity,
+                        PowerPreferenceActivity::class.java
+                    )
+                )
+
                 else -> super.handleMessage(msg)
             }
         }
@@ -334,14 +344,17 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
                 return true
             }
+
             R.id.menu_stop -> {
                 handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
                 return true
             }
+
             R.id.menu_settings -> {
                 handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
                 return true
             }
+
             R.id.menu_force -> {
                 notifyService(MainHandler.MSG_ALARM, 0, 0, System.currentTimeMillis())
                 return true
@@ -362,7 +375,11 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun showFailureTime(millis: Long) {
-        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME)
+        val dateTime = DateUtils.formatDateTime(
+            this,
+            millis,
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
+        )
         timeView.text = getString(R.string.sms_message, dateTime)
         timeView.visibility = View.VISIBLE
     }
@@ -373,5 +390,34 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         } else {
             handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
+    fun checkNotificationPermissions(activity: AppCompatActivity) {
+        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (nm.areNotificationsEnabled()) return
+        activity.requestPermissions(PERMISSIONS, ACTIVITY_PERMISSIONS)
+    }
+
+    @TargetApi(Build.VERSION_CODES.TIRAMISU)
+    private fun initNotificationPermissions() {
+        checkNotificationPermissions(this)
+    }
+
+    companion object {
+        private const val LEVEL_UNKNOWN = 0
+        private const val LEVEL_UNPLUGGED = 1
+        private const val LEVEL_PLUGGED_AC = 2
+        private const val LEVEL_PLUGGED_USB = 3
+        private const val LEVEL_PLUGGED_WIRELESS = 4
+        private const val LEVEL_PLUGGED_UNKNOWN = LEVEL_PLUGGED_AC
+
+        @TargetApi(Build.VERSION_CODES.TIRAMISU)
+        private val PERMISSIONS = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
+
+        /**
+         * Activity id for requesting notification permissions.
+         */
+        private const val ACTIVITY_PERMISSIONS = 0x6057 // "POST"
     }
 }
