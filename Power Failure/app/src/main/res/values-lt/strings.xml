@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Atidėjimas</string>
-    <string name="delay_seconds">sekundžių</string>
-    <string name="delay_minutes">minučių</string>
 
     <!-- Message -->
     <string name="sms_title">Siųsti SMS</string>

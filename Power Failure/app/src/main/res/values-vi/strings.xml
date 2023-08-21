@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Sự trì hoãn</string>
-    <string name="delay_seconds">giây</string>
-    <string name="delay_minutes">phút</string>
 
     <!-- Message -->
     <string name="sms_title">Gửi tin nhắn</string>

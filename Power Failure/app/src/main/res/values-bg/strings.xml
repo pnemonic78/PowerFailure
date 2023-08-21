@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Закъснението</string>
-    <string name="delay_seconds">секунди</string>
-    <string name="delay_minutes">минути</string>
 
     <!-- Message -->
     <string name="sms_title">Изпратете SMS</string>

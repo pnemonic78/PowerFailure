@@ -4,5 +4,6 @@
     package="net.sf.power.monitor">
 
     <uses-permission android:name="android.permission.SEND_SMS" tools:node="remove"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS" tools:node="remove" />
 
 </manifest>

@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">Verzögerung</string>
-    <string name="delay_seconds">Sekunden</string>
-    <string name="delay_minutes">Minuten</string>
 
     <!-- Message -->
     <string name="sms_title">SMS senden</string>

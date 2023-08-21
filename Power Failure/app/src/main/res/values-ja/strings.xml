@@ -23,8 +23,6 @@
 
     <!-- Delay -->
     <string name="delay_title">遅延</string>
-    <string name="delay_seconds">秒</string>
-    <string name="delay_minutes">分</string>
 
     <!-- Message -->
     <string name="sms_title">SMSを送信</string>

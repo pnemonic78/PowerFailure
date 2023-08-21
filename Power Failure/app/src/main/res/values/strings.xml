@@ -28,16 +28,16 @@
 
     <!-- Ringtone -->
     <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
-    <string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
+     kts<string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
     <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
-    <string name="vibrate_title" translatable="false">@string/keywords_vibrate_for_calls</string>
+    <string name="vibrate_title" translatable="false">@string/vibration</string>
 
     <!-- Delay -->
     <string name="delay_title">Delay</string>
-    <string name="delay_seconds">seconds</string>
-    <string name="delay_minutes">minutes</string>
+    <string name="delay_seconds" translatable="false">@string/time_lapse_seconds</string>
+    <string name="delay_minutes" translatable="false">@string/time_lapse_minutes</string>
 
     <!-- Message -->
     <string name="sms_title">Send SMS</string>

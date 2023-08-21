@@ -28,9 +28,7 @@ import net.sf.power.monitor.R
 @Keep
 class AboutPreferenceFragment : PowerPreferenceFragment() {
 
-    override fun getPreferencesXml(): Int {
-        return R.xml.about_preferences
-    }
+    override val preferencesXml = R.xml.about_preferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
@@ -38,7 +36,8 @@ class AboutPreferenceFragment : PowerPreferenceFragment() {
 
         val version = findPreference<Preference>("about.version")
         try {
-            version?.summary = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+            version?.summary =
+                context.packageManager.getPackageInfo(context.packageName, 0).versionName
         } catch (e: PackageManager.NameNotFoundException) {
             // Never should happen with our own package!
         }
