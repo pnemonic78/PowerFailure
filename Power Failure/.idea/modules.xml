@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.main~1.iml" filepath="$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.main~1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.test~1.iml" filepath="$PROJECT_DIR$/.idea/modules/Power Failure.Power_Failure.buildSrc.test~1.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" />
@@ -15,6 +18,12 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.main.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.test.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.buildSrc.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.Power_Failure.app.unitTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/lib.Power_Failure.android-lib.lib.unitTest.iml" />
     </modules>
   </component>
 </project>

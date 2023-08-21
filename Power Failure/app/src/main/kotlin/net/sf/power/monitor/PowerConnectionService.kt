@@ -29,14 +29,22 @@ import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.*
+import android.os.Build
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.Message
+import android.os.Messenger
+import android.os.RemoteException
+import android.os.SystemClock
+import android.os.Vibrator
 import android.telephony.SmsManager
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
+import com.github.app.PendingIntent_FLAG_IMMUTABLE
+import java.lang.ref.WeakReference
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
-import java.lang.ref.WeakReference
-import java.util.*
 
 /**
  * Power connection events service.
@@ -107,7 +115,8 @@ class PowerConnectionService : Service(), BatteryListener {
         private const val POLL_RATE = DateUtils.SECOND_IN_MILLIS
         private const val ID_NOTIFY = R.string.start_monitor
 
-        private val VIBRATE_PATTERN = longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
+        private val VIBRATE_PATTERN =
+            longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
 
         private const val CHANNEL_ID = "power-failure"
 
@@ -218,7 +227,8 @@ class PowerConnectionService : Service(), BatteryListener {
         BatteryUtils.printStatus(context)
     }
 
-    private class PowerConnectionHandler(service: PowerConnectionService) : Handler(Looper.getMainLooper()) {
+    private class PowerConnectionHandler(service: PowerConnectionService) :
+        Handler(Looper.getMainLooper()) {
 
         private val service: WeakReference<PowerConnectionService> = WeakReference(service)
 
@@ -231,7 +241,11 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_UNREGISTER_CLIENT -> service.unregisterClient(client)
                 MSG_START_MONITOR -> service.startLogging()
                 MSG_STOP_MONITOR -> service.stopLogging()
-                MSG_GET_STATUS_MONITOR -> service.notifyClients(MSG_SET_STATUS_MONITOR, if (service.isLogging) 1 else 0)
+                MSG_GET_STATUS_MONITOR -> service.notifyClients(
+                    MSG_SET_STATUS_MONITOR,
+                    if (service.isLogging) 1 else 0
+                )
+
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
@@ -258,10 +272,26 @@ class PowerConnectionService : Service(), BatteryListener {
         }
 
         when (plugged) {
-            BatteryListener.BATTERY_PLUGGED_NONE -> showNotification(R.string.plugged_unplugged, R.drawable.stat_plug_disconnect)
-            BatteryListener.BATTERY_PLUGGED_AC -> showNotification(R.string.plugged_ac, R.drawable.stat_plug_ac)
-            BatteryListener.BATTERY_PLUGGED_USB -> showNotification(R.string.plugged_usb, R.drawable.stat_plug_usb)
-            BatteryListener.BATTERY_PLUGGED_WIRELESS -> showNotification(R.string.plugged_wireless, R.drawable.stat_plug_wireless)
+            BatteryListener.BATTERY_PLUGGED_NONE -> showNotification(
+                R.string.plugged_unplugged,
+                R.drawable.stat_plug_disconnect
+            )
+
+            BatteryListener.BATTERY_PLUGGED_AC -> showNotification(
+                R.string.plugged_ac,
+                R.drawable.stat_plug_ac
+            )
+
+            BatteryListener.BATTERY_PLUGGED_USB -> showNotification(
+                R.string.plugged_usb,
+                R.drawable.stat_plug_usb
+            )
+
+            BatteryListener.BATTERY_PLUGGED_WIRELESS -> showNotification(
+                R.string.plugged_wireless,
+                R.drawable.stat_plug_wireless
+            )
+
             else -> showNotification(R.string.plugged_unknown, R.drawable.stat_plug_ac)
         }
 
@@ -275,17 +305,12 @@ class PowerConnectionService : Service(), BatteryListener {
             ringtone = RingtoneManager.getRingtone(context, prefRingtone)
             if (ringtone != null) {
                 val audioStreamType = AudioManager.STREAM_ALARM
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    val audioAttributes = AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setLegacyStreamType(audioStreamType)
-                        .setUsage(AudioAttributes.USAGE_ALARM)
-                        .build()
-                    ringtone.audioAttributes = audioAttributes
-                } else {
-                    @Suppress("DEPRECATION")
-                    ringtone.streamType = audioStreamType
-                }
+                val audioAttributes = AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setLegacyStreamType(audioStreamType)
+                    .setUsage(AudioAttributes.USAGE_ALARM)
+                    .build()
+                ringtone.audioAttributes = audioAttributes
             }
             this.ringtone = ringtone
         }
@@ -353,12 +378,14 @@ class PowerConnectionService : Service(), BatteryListener {
         val contentIntent = createActivityIntent(context)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var channel: android.app.NotificationChannel? = notificationManager.getNotificationChannel(CHANNEL_ID)
+            var channel: android.app.NotificationChannel? =
+                notificationManager.getNotificationChannel(CHANNEL_ID)
             if (channel == null) {
                 channel = android.app.NotificationChannel(
                     CHANNEL_ID,
                     getText(R.string.app_name),
-                    NotificationManager.IMPORTANCE_DEFAULT)
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
                 notificationManager.createNotificationChannel(channel)
             }
         }
@@ -385,7 +412,12 @@ class PowerConnectionService : Service(), BatteryListener {
         val pm = context.packageManager
         val intent = pm.getLaunchIntentForPackage(context.packageName)
         intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        return PendingIntent.getActivity(context, ID_NOTIFY, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        return PendingIntent.getActivity(
+            context,
+            ID_NOTIFY,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent_FLAG_IMMUTABLE
+        )
     }
 
     /**
@@ -486,7 +518,11 @@ class PowerConnectionService : Service(), BatteryListener {
         val destination = prefSmsRecipient
         if (destination.isEmpty()) return
 
-        val dateTime = DateUtils.formatDateTime(this, millis, DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL)
+        val dateTime = DateUtils.formatDateTime(
+            this,
+            millis,
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
+        )
         val text = getString(R.string.sms_message, dateTime)
 
         val smsManager = SmsManager.getDefault() ?: return

@@ -18,7 +18,5 @@ package net.sf.power.monitor.preference
 import net.sf.power.monitor.R
 
 class MainPreferencesFragment : PowerPreferenceFragment() {
-    override fun getPreferencesXml(): Int {
-        return R.xml.preference_headers
-    }
+    override val preferencesXml = R.xml.preference_headers
 }

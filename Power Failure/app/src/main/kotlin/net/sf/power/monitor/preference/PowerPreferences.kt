@@ -71,14 +71,14 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * Get the ringtone.
      *
      * @return the ringtone.
-     * @see RingtoneManager.getDefaultUri
+     * @see [android.media.RingtoneManager.getDefaultUri]
      */
     val ringtone: Uri?
         get() {
             val type = RingtoneManager.TYPE_ALARM
             var path = preferences.getString(KEY_RINGTONE_TONE, RingtoneManager.DEFAULT_PATH)
             if (path == RingtoneManager.DEFAULT_PATH) {
-                path = RingtoneManager.getDefaultUri(type).toString()
+                path = android.media.RingtoneManager.getDefaultUri(type).toString()
             }
             val ringtoneManager = RingtoneManager(context)
             ringtoneManager.setType(type)

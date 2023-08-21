@@ -44,9 +44,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
     private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
 
-    override fun getPreferencesXml(): Int {
-        return R.xml.general_preferences
-    }
+    override val preferencesXml = R.xml.general_preferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
