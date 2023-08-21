@@ -106,6 +106,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
                 getString(R.string.sms_summary, it.recipient)
             }
         } else {
+            preference.isEnabled = false
             preference.isVisible = false
         }
         return preference
