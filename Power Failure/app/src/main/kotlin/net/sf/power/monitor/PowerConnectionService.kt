@@ -24,10 +24,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.media.AudioAttributes
-import android.media.AudioManager
-import android.media.Ringtone
-import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.os.Handler
@@ -37,12 +33,13 @@ import android.os.Message
 import android.os.Messenger
 import android.os.RemoteException
 import android.os.SystemClock
-import android.os.Vibrator
-import android.telephony.SmsManager
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import com.github.app.PendingIntent_FLAG_IMMUTABLE
 import java.lang.ref.WeakReference
+import net.sf.power.monitor.notify.NotifyAlarm
+import net.sf.power.monitor.notify.NotifySms
+import net.sf.power.monitor.notify.NotifyVibrate
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
 
@@ -55,73 +52,6 @@ import timber.log.Timber
  * @author Moshe Waisberg
  */
 class PowerConnectionService : Service(), BatteryListener {
-
-    companion object {
-
-        /**
-         * Command to the service to register a client, receiving callbacks
-         * from the service.  The Message's replyTo field must be a Messenger of
-         * the client where callbacks should be sent.
-         */
-        const val MSG_REGISTER_CLIENT = 1
-
-        /**
-         * Command to the service to unregister a client, ot stop receiving callbacks
-         * from the service.  The Message's replyTo field must be a Messenger of
-         * the client as previously given with MSG_REGISTER_CLIENT.
-         */
-        const val MSG_UNREGISTER_CLIENT = 2
-
-        /**
-         * Command to the service to start monitoring.
-         */
-        const val MSG_START_MONITOR = 3
-
-        /**
-         * Command to the service to stop monitoring.
-         */
-        const val MSG_STOP_MONITOR = 4
-
-        /**
-         * Command to the service to query the monitoring status.
-         */
-        const val MSG_GET_STATUS_MONITOR = 5
-
-        /**
-         * Command to the clients about the monitoring status.
-         */
-        const val MSG_SET_STATUS_MONITOR = 6
-
-        /**
-         * Command to check the battery status.
-         */
-        const val MSG_CHECK_BATTERY = 10
-
-        /**
-         * Command to the clients that the battery status has been changed.
-         */
-        const val MSG_BATTERY_CHANGED = 11
-
-        /**
-         * Command to the clients that the alarm has activated.
-         */
-        const val MSG_ALARM = 12
-
-        /**
-         * Command to the service that the shared preferences have changed.
-         */
-        const val MSG_PREFERENCES_CHANGED = 20
-
-        private const val POLL_RATE = DateUtils.SECOND_IN_MILLIS
-        private const val ID_NOTIFY = R.string.start_monitor
-
-        private val VIBRATE_PATTERN =
-            longArrayOf(DateUtils.SECOND_IN_MILLIS, DateUtils.SECOND_IN_MILLIS)
-
-        private const val CHANNEL_ID = "power-failure"
-
-        private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
-    }
 
     private lateinit var context: Context
     private lateinit var handler: Handler
@@ -138,12 +68,13 @@ class PowerConnectionService : Service(), BatteryListener {
     private lateinit var notificationManager: NotificationManager
     private var notificationTextId: Int = 0
     private var notificationIconId: Int = 0
-    private var ringtone: Ringtone? = null
     private var powerSince: Long = 0L
     private var powerFailureSince: Long = 0L
     private var isLogging: Boolean = false
     private lateinit var settings: PowerPreferences
-    private var isVibrating: Boolean = false
+    private var notifyAlarm: NotifyAlarm? = null
+    private var notifySms: NotifySms? = null
+    private var notifyVibrate: NotifyVibrate? = null
     private var prefTimeDelay: Long = 0
     private var prefRingtone: Uri? = null
     private var prefVibrate: Boolean = false
@@ -178,7 +109,7 @@ class PowerConnectionService : Service(), BatteryListener {
         onPreferencesChanged()
 
         stopAlarm()
-        // Display a notification about us starting.  We put an icon in the status bar.
+        // Display a notification about us starting. We put an icon in the status bar.
         showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
         checkBatteryStatus()
     }
@@ -195,6 +126,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun startPolling() {
         Timber.v("start polling")
+        val context: Context = context
         printBatteryStatus(context)
         if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
             pollBattery()
@@ -210,6 +142,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun checkBatteryStatus() {
+        val context: Context = context
         printBatteryStatus(context)
 
         val plugged = BatteryUtils.getPlugged(context)
@@ -298,60 +231,36 @@ class PowerConnectionService : Service(), BatteryListener {
         notifyClients(MSG_BATTERY_CHANGED, plugged)
     }
 
-    private fun getRingtone(context: Context): Ringtone? {
-        var ringtone = this.ringtone
-        prefRingtone = settings.ringtone
-        if ((ringtone == null) && (prefRingtone != null)) {
-            ringtone = RingtoneManager.getRingtone(context, prefRingtone)
-            if (ringtone != null) {
-                val audioStreamType = AudioManager.STREAM_ALARM
-                val audioAttributes = AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setLegacyStreamType(audioStreamType)
-                    .setUsage(AudioAttributes.USAGE_ALARM)
-                    .build()
-                ringtone.audioAttributes = audioAttributes
-            }
-            this.ringtone = ringtone
-        }
-        return ringtone
-    }
-
     private fun playAlarm() {
         Timber.v("play alarm")
-        playTone(context)
+        val context: Context = context
+        playSound(context)
         vibrate(context, prefVibrate)
     }
 
-    private fun playTone(context: Context) {
+    private fun playSound(context: Context) {
+        notifyAlarm = notifyAlarm ?: NotifyAlarm(context)
+        var ringtoneUri = prefRingtone
         // Has the tone uri changed?
-        if (prefRingtone == null) {
-            stopTone()
-            this.ringtone = null
+        if (ringtoneUri == null) {
+            notifyAlarm?.stop()
+            prefRingtone = settings.ringtone
+            ringtoneUri = prefRingtone
         }
-        val ringtone = getRingtone(context)
-        try {
-            Timber.v("play tone: %s", ringtone?.getTitle(context) ?: "(none)")
-        } catch (e: Exception) {
-            Timber.v("play tone: %s", ringtone)
-        }
-        if (ringtone != null && !ringtone.isPlaying) {
-            ringtone.play()
+        if (ringtoneUri != null) {
+            notifyAlarm?.play(ringtoneUri)
         }
     }
 
     private fun stopAlarm() {
         Timber.v("stop alarm")
-        stopTone()
+        val context: Context = context
+        stopSound()
         vibrate(context, false)
     }
 
-    private fun stopTone() {
-        Timber.v("stop tone")
-        val ringtone = this.ringtone
-        if (ringtone != null && ringtone.isPlaying) {
-            ringtone.stop()
-        }
+    private fun stopSound() {
+        notifyAlarm?.stop()
     }
 
     /**
@@ -369,6 +278,7 @@ class PowerConnectionService : Service(), BatteryListener {
         this.notificationTextId = textId
         this.notificationIconId = largeIconId
 
+        val context: Context = context
         val res = context.resources
 
         val title = res.getText(R.string.title_service)
@@ -383,7 +293,7 @@ class PowerConnectionService : Service(), BatteryListener {
             if (channel == null) {
                 channel = android.app.NotificationChannel(
                     CHANNEL_ID,
-                    getText(R.string.app_name),
+                    res.getText(R.string.app_name),
                     NotificationManager.IMPORTANCE_DEFAULT
                 )
                 notificationManager.createNotificationChannel(channel)
@@ -391,7 +301,7 @@ class PowerConnectionService : Service(), BatteryListener {
         }
 
         // Set the info for the views that show in the notification panel.
-        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setOngoing(true)
             .setSilent(true)
             .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
@@ -408,10 +318,10 @@ class PowerConnectionService : Service(), BatteryListener {
         startForeground(ID_NOTIFY, notification)
     }
 
-    private fun createActivityIntent(context: Context): PendingIntent {
+    private fun createActivityIntent(context: Context): PendingIntent? {
         val pm = context.packageManager
-        val intent = pm.getLaunchIntentForPackage(context.packageName)
-        intent?.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val intent = pm.getLaunchIntentForPackage(context.packageName) ?: return null
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         return PendingIntent.getActivity(
             context,
             ID_NOTIFY,
@@ -485,16 +395,8 @@ class PowerConnectionService : Service(), BatteryListener {
      * @param vibrate `true` to start vibrating - `false` to stop.
      */
     private fun vibrate(context: Context, vibrate: Boolean) {
-        val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        if (vibrate) {
-            if (!isVibrating && vibrator.hasVibrator()) {
-                isVibrating = true
-                vibrator.vibrate(VIBRATE_PATTERN, 0)
-            }
-        } else if (isVibrating) {
-            isVibrating = false
-            vibrator.cancel()
-        }
+        notifyVibrate = notifyVibrate ?: NotifyVibrate(context)
+        notifyVibrate?.vibrate(vibrate)
     }
 
     private fun onPreferencesChanged() {
@@ -507,32 +409,78 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun handleFailure(plugged: Int, millis: Long) {
         settings.failureTime = millis
-        playAlarm()
         notifyClients(MSG_ALARM, plugged, 0, millis)
+        playAlarm()
         sendSMS(millis)
     }
 
     private fun sendSMS(millis: Long) {
         if (!prefSmsEnabled) return
-        val context: Context = this
+        val context: Context = context
+        notifySms = notifySms ?: NotifySms(context)
+        notifySms?.send(millis, prefSmsRecipient)
+    }
 
-        val destination = prefSmsRecipient
-        if (destination.isEmpty()) return
+    companion object {
 
-        val dateTime = DateUtils.formatDateTime(
-            this,
-            millis,
-            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
-        )
-        val text = getString(R.string.sms_message, dateTime)
+        /**
+         * Command to the service to register a client, receiving callbacks
+         * from the service.  The Message's replyTo field must be a Messenger of
+         * the client where callbacks should be sent.
+         */
+        const val MSG_REGISTER_CLIENT = 1
 
-        val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            context.getSystemService(SmsManager::class.java)
-        } else {
-            SmsManager.getDefault()
-        } ?: return
+        /**
+         * Command to the service to unregister a client, ot stop receiving callbacks
+         * from the service.  The Message's replyTo field must be a Messenger of
+         * the client as previously given with MSG_REGISTER_CLIENT.
+         */
+        const val MSG_UNREGISTER_CLIENT = 2
 
-        Timber.i("send SMS to $destination")
-        smsManager.sendTextMessage(destination, null, text, null, null)
+        /**
+         * Command to the service to start monitoring.
+         */
+        const val MSG_START_MONITOR = 3
+
+        /**
+         * Command to the service to stop monitoring.
+         */
+        const val MSG_STOP_MONITOR = 4
+
+        /**
+         * Command to the service to query the monitoring status.
+         */
+        const val MSG_GET_STATUS_MONITOR = 5
+
+        /**
+         * Command to the clients about the monitoring status.
+         */
+        const val MSG_SET_STATUS_MONITOR = 6
+
+        /**
+         * Command to check the battery status.
+         */
+        const val MSG_CHECK_BATTERY = 10
+
+        /**
+         * Command to the clients that the battery status has been changed.
+         */
+        const val MSG_BATTERY_CHANGED = 11
+
+        /**
+         * Command to the clients that the alarm has activated.
+         */
+        const val MSG_ALARM = 12
+
+        /**
+         * Command to the service that the shared preferences have changed.
+         */
+        const val MSG_PREFERENCES_CHANGED = 20
+
+        private const val POLL_RATE = DateUtils.SECOND_IN_MILLIS
+        private const val ID_NOTIFY = 1
+        private const val CHANNEL_ID = "power-failure"
+
+        private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
     }
 }
