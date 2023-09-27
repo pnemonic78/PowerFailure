@@ -9,7 +9,7 @@
             android:data="@string/support_url"/>
     </Preference>
     <Preference
-        android:icon="@android:drawable/ic_menu_send"
+        android:icon="@drawable/ic_settings_bug"
         android:key="about.issue"
         android:summary="@string/issue_summary"
         android:title="@string/issue_title">

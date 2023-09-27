@@ -21,7 +21,7 @@
 
     <!-- About -->
     <string name="version_title" translatable="false">@string/preferences_build_version</string>
-    <string name="support_url" translatable="false">http://pnemonic78.github.io/PowerFailure</string>
+    <string name="support_url" translatable="false">https://pnemonic78.github.io/PowerFailure</string>
     <string name="issue_title">Issues</string>
     <string name="issue_summary">Report a problem, or request a new feature.</string>
     <string name="issue_url" translatable="false">mailto:pnemonic@gmail.com?subject=Power Failure</string>

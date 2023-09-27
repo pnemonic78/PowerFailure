@@ -16,4 +16,5 @@
     <color name="unknown_end">#888888</color>
     <color name="unknown_border">#444444</color>
 
+    <color name="icon_tint">?android:attr/textColorPrimary</color>
 </resources>
