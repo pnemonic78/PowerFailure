@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Nieznane źródło energii elektrycznej.</string>
     <string name="plugged_unplugged">Odłączony - brak źródła zasilania elektrycznego.</string>
     <string name="plugged_ac">Źródło energii elektrycznej jest ładowarka prądu przemiennego.</string>
+    <string name="plugged_dock">Źródłem zasilania elektrycznego jest stacja dokująca.</string>
     <string name="plugged_usb">Źródło energii elektrycznej jest port USB.</string>
     <string name="plugged_wireless">Źródło energii elektrycznej jest bezprzewodowe.</string>
 

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Неизвестный источник электроэнергии.</string>
     <string name="plugged_unplugged">Отключено от сети - нет источника электроэнергии.</string>
     <string name="plugged_ac">Источник питания - зарядное устройство переменного тока.</string>
+    <string name="plugged_dock">Источник питания - док.</string>
     <string name="plugged_usb">Источник питания - порт USB.</string>
     <string name="plugged_wireless">Источник питания беспроводной.</string>
 

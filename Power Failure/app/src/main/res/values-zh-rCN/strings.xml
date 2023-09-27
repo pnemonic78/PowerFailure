@@ -14,6 +14,7 @@
     <string name="plugged_unknown">未知的电源。</string>
     <string name="plugged_unplugged">拔下-没有电源。</string>
     <string name="plugged_ac">电源是交流充电器。</string>
+    <string name="plugged_dock">电源是一个扩展坞。</string>
     <string name="plugged_usb">电源是USB端口。</string>
     <string name="plugged_wireless">电源是无线的。</string>
 

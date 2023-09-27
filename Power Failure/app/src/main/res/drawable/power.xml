@@ -15,4 +15,7 @@
     <item
         android:drawable="@drawable/power_wireless"
         android:maxLevel="4"/>
+    <item
+        android:drawable="@drawable/power_dock"
+        android:maxLevel="5"/>
 </level-list>

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Tuntematon virtalähde.</string>
     <string name="plugged_unplugged">Irrotettu - ei virtalähdettä.</string>
     <string name="plugged_ac">Sähkövirtalähde on vaihtovirtalaturi.</string>
+    <string name="plugged_dock">Sähkövirtalähde on telakointiasema.</string>
     <string name="plugged_usb">Sähkövirtalähde on USB-portti.</string>
     <string name="plugged_wireless">Sähkövirtalähde on langaton.</string>
 

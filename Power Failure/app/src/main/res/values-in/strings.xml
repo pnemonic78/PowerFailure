@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Sumber daya listrik tidak diketahui.</string>
     <string name="plugged_unplugged">Cabut - tidak ada sumber daya listrik.</string>
     <string name="plugged_ac">Sumber tenaga listrik adalah pengisi daya AC.</string>
+    <string name="plugged_dock">Sumber tenaga listrik adalah stasiun dok.</string>
     <string name="plugged_usb">Sumber tenaga listrik adalah port USB.</string>
     <string name="plugged_wireless">Sumber daya listrik adalah nirkabel.</string>
 

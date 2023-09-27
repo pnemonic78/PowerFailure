@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Fonte di alimentazione elettrica sconosciuta.</string>
     <string name="plugged_unplugged">Scollegato - nessuna fonte di alimentazione elettrica.</string>
     <string name="plugged_ac">Fonte di alimentazione elettrica è un caricabatterie CA.</string>
+    <string name="plugged_dock">Fonte di alimentazione elettrica è una docking station.</string>
     <string name="plugged_usb">Fonte di alimentazione elettrica è una porta USB.</string>
     <string name="plugged_wireless">Fonte di alimentazione elettrica è wireless.</string>
 

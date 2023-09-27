@@ -13,9 +13,10 @@
     <string name="monitor_stopped">Pemantauan kegagalan kuasa elektrik dihentikan.</string>
     <string name="plugged_unknown">Punca kuasa elektrik tidak diketahui.</string>
     <string name="plugged_unplugged">Tidak dicabut - tiada sumber kuasa elektrik.</string>
-    <string name="plugged_ac">Sumber kuasa elektrik adalah pengecas AC.</string>
-    <string name="plugged_usb">Sumber kuasa elektrik adalah port USB.</string>
-    <string name="plugged_wireless">Sumber kuasa elektrik adalah tanpa wayar.</string>
+    <string name="plugged_ac">Sumber kuasa elektrik ialah pengecas AC.</string>
+    <string name="plugged_dock">Sumber kuasa elektrik ialah stesen dok.</string>
+    <string name="plugged_usb">Sumber kuasa elektrik ialah port USB.</string>
+    <string name="plugged_wireless">Sumber kuasa elektrik ialah tanpa wayar.</string>
 
     <!-- About -->
     <string name="issue_title">Isu</string>

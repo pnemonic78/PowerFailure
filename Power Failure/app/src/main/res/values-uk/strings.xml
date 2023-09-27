@@ -13,9 +13,10 @@
     <string name="monitor_stopped">Моніторинг на зникнення електричного струму припинено.</string>
     <string name="plugged_unknown">Невідоме джерело електричної енергії.</string>
     <string name="plugged_unplugged">Відключений від мережі - джерело електричної енергії відсутнє.</string>
-    <string name="plugged_ac">Електричний джерело живлення являє собою зарядний пристрій.</string>
-    <string name="plugged_usb">Електричний джерело живлення порту USB.</string>
-    <string name="plugged_wireless">Електричний джерело живлення бездротовий.</string>
+    <string name="plugged_ac">Джерелом електроживлення є зарядний пристрій змінного струму.</string>
+    <string name="plugged_dock">Джерелом електроживлення є док-станція.</string>
+    <string name="plugged_usb">Джерелом електроживлення є порт USB.</string>
+    <string name="plugged_wireless">Джерело електроживлення бездротове.</string>
 
     <!-- About -->
     <string name="issue_title">Проблеми</string>

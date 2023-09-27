@@ -11,11 +11,12 @@
     <!-- Service. -->
     <string name="monitor_started">Monitering vir kragonderbreking het begin.</string>
     <string name="monitor_stopped">Die monitering vir kragonderbreking is gestaak.</string>
-    <string name="plugged_unknown">Onbekende kragbron.</string>
-    <string name="plugged_unplugged">Ontkoppel - geen kragbron nie.</string>
-    <string name="plugged_ac">Kragbron is \'n wisselstroomlaaier.</string>
-    <string name="plugged_usb">Kragbron is \'n USB-poort.</string>
-    <string name="plugged_wireless">Kragbron is draadloos.</string>
+    <string name="plugged_unknown">Onbekende elektriese kragbron.</string>
+    <string name="plugged_unplugged">Ontkoppel - geen elektriese kragbron nie.</string>
+    <string name="plugged_ac">Elektriese kragbron is \'n wisselstroomlaaier.</string>
+    <string name="plugged_dock">Elektriese kragbron is \'n dokstasie.</string>
+    <string name="plugged_usb">Elektriese kragbron is \'n USB-poort.</string>
+    <string name="plugged_wireless">Elektriese kragbron is draadloos.</string>
 
     <!-- About -->
     <string name="issue_title">Kwessies</string>

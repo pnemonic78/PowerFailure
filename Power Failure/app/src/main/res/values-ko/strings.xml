@@ -14,6 +14,7 @@
     <string name="plugged_unknown">알 수없는 전원입니다.</string>
     <string name="plugged_unplugged">전원이 연결되지 않음-전원이 없습니다.</string>
     <string name="plugged_ac">전원은 AC 충전기입니다.</string>
+    <string name="plugged_dock">전력원은 도킹 스테이션이다.</string>
     <string name="plugged_usb">전원은 USB 포트입니다.</string>
     <string name="plugged_wireless">전원은 무선입니다.</string>
 

@@ -215,6 +215,11 @@ class PowerConnectionService : Service(), BatteryListener {
                 R.drawable.stat_plug_ac
             )
 
+            BatteryListener.BATTERY_PLUGGED_DOCK -> showNotification(
+                R.string.plugged_dock,
+                R.drawable.stat_plug_dock
+            )
+
             BatteryListener.BATTERY_PLUGGED_USB -> showNotification(
                 R.string.plugged_usb,
                 R.drawable.stat_plug_usb

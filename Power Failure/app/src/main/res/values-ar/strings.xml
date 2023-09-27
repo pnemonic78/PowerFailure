@@ -14,6 +14,7 @@
     <string name="plugged_unknown">مصدر طاقة كهربائية غير معروف.</string>
     <string name="plugged_unplugged">غير موصول - لا يوجد مصدر طاقة كهربائية.</string>
     <string name="plugged_ac">مصدر الطاقة الكهربائية هو شاحن تيار متردد.</string>
+    <string name="plugged_dock">مصدر الطاقة الكهربائية هو محطة لرسو السفن.</string>
     <string name="plugged_usb">مصدر الطاقة الكهربائية هو منفذ USB.</string>
     <string name="plugged_wireless">مصدر الطاقة الكهربائية لاسلكي.</string>
 

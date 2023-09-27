@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Fuente de energía eléctrica desconocida.</string>
     <string name="plugged_unplugged">Desenchufado, sin fuente de energía eléctrica.</string>
     <string name="plugged_ac">Fuente de energía eléctrica es un cargador de CA.</string>
+    <string name="plugged_dock">Fuente de energía eléctrica es una estación de acoplamiento.</string>
     <string name="plugged_usb">Fuente de energía eléctrica es un puerto USB.</string>
     <string name="plugged_wireless">Fuente de energía eléctrica es inalámbrico.</string>
 

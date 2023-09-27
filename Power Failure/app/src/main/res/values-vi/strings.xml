@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Nguồn điện không xác định.</string>
     <string name="plugged_unplugged">Đã rút phích cắm - không có nguồn điện.</string>
     <string name="plugged_ac">Nguồn điện là bộ sạc AC.</string>
+    <string name="plugged_dock">Nguồn điện là một trạm nối.</string>
     <string name="plugged_usb">Nguồn điện là một cổng USB.</string>
     <string name="plugged_wireless">Nguồn điện là không dây.</string>
 

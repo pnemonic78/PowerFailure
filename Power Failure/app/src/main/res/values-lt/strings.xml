@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Nežinomas elektros energijos šaltinis.</string>
     <string name="plugged_unplugged">Neprijungtas - nėra elektros energijos šaltinio.</string>
     <string name="plugged_ac">Elektros energijos šaltinis yra kintamosios srovės įkroviklis.</string>
+    <string name="plugged_dock">Elektros energijos šaltinis yra prijungimo stotelė.</string>
     <string name="plugged_usb">Elektros energijos šaltinis yra USB jungtis.</string>
     <string name="plugged_wireless">Elektros energijos šaltinis yra belaidis.</string>
 

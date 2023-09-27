@@ -16,6 +16,7 @@
     <string name="plugged_unknown">Unknown electrical power source.</string>
     <string name="plugged_unplugged">Unplugged - no electrical power source.</string>
     <string name="plugged_ac">Electrical power source is an AC charger.</string>
+    <string name="plugged_dock">Electrical power source is a dock.</string>
     <string name="plugged_usb">Electrical power source is a USB port.</string>
     <string name="plugged_wireless">Electrical power source is wireless.</string>
 

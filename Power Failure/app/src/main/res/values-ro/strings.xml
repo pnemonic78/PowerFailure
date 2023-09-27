@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Sursă de energie electrică necunoscută.</string>
     <string name="plugged_unplugged">Deconectat - fără sursă de energie electrică.</string>
     <string name="plugged_ac">Sursa de energie electrică este un încărcător de curent alternativ.</string>
+    <string name="plugged_dock">Sursa de energie electrică este un încărcător de curent alternativ.</string>
     <string name="plugged_usb">Sursa de energie electrică este un port USB.</string>
     <string name="plugged_wireless">Sursa de energie electrică este wireless.</string>
 

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Fonte de energia elétrica desconhecida.</string>
     <string name="plugged_unplugged">Desconectado - sem fonte de energia elétrica.</string>
     <string name="plugged_ac">Fonte de energia elétrica é um carregador AC.</string>
+    <string name="plugged_dock">Fonte de energia elétrica é uma estação de acoplamento.</string>
     <string name="plugged_usb">Fonte de energia elétrica é uma porta USB.</string>
     <string name="plugged_wireless">Fonte de energia elétrica é sem fio.</string>
 

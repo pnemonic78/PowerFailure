@@ -14,6 +14,7 @@
     <string name="plugged_unknown">แหล่งพลังงานไฟฟ้าที่ไม่รู้จัก</string>
     <string name="plugged_unplugged">ไม่ได้เสียบปลั๊ก - ไม่มีแหล่งพลังงานไฟฟ้า</string>
     <string name="plugged_ac">แหล่งพลังงานไฟฟ้าคือเครื่องชาร์จ AC</string>
+    <string name="plugged_dock">แหล่งพลังงานไฟฟ้าเป็นสถานีเชื่อมต่อ</string>
     <string name="plugged_usb">แหล่งพลังงานไฟฟ้าคือพอร์ต USB</string>
     <string name="plugged_wireless">แหล่งพลังงานไฟฟ้าเป็นแบบไร้สาย</string>
 

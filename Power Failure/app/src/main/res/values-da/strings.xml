@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Ukendt elektrisk strømkilde.</string>
     <string name="plugged_unplugged">Frakoblet - ingen elektrisk strømkilde.</string>
     <string name="plugged_ac">Elektrisk strømkilde er en vekselstrømsoplader.</string>
+    <string name="plugged_dock">Elektrisk strømkilde er en dockingstation.</string>
     <string name="plugged_usb">Elektrisk strømkilde er en USB-port.</string>
     <string name="plugged_wireless">Elektrisk strømkilde er trådløs.</string>
 
