@@ -12,6 +12,8 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <!-- Notifications for Android 13+ -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Keep the CPU on -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name="net.sf.power.monitor.PowerMonitorApplication"

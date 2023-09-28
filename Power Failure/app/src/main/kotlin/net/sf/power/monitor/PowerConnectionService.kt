@@ -15,6 +15,7 @@
  */
 package net.sf.power.monitor
 
+import android.annotation.SuppressLint
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
@@ -31,6 +32,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Message
 import android.os.Messenger
+import android.os.PowerManager
 import android.os.RemoteException
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
@@ -79,6 +81,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
+    private var wakeLock: PowerManager.WakeLock? = null
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -378,6 +381,7 @@ class PowerConnectionService : Service(), BatteryListener {
         if (!isLogging) {
             isLogging = true
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher)
+            acquireWakeLock()
             //TODO Write logs.
         }
     }
@@ -389,6 +393,7 @@ class PowerConnectionService : Service(), BatteryListener {
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
             //TODO Write logs.
         }
+        releaseWakeLock()
     }
 
     /**
@@ -422,6 +427,24 @@ class PowerConnectionService : Service(), BatteryListener {
         val context: Context = context
         notifySms = notifySms ?: NotifySms(context)
         notifySms?.send(millis, prefSmsRecipient)
+    }
+
+    @SuppressLint("WakelockTimeout")
+    private fun acquireWakeLock() {
+        var wakeLock = this.wakeLock
+        if (wakeLock == null) {
+            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG_POWER)
+            wakeLock.acquire()
+            this.wakeLock = wakeLock
+        } else {
+            wakeLock.acquire()
+        }
+    }
+
+    private fun releaseWakeLock() {
+        wakeLock?.release()
+        wakeLock = null
     }
 
     companion object {
@@ -483,6 +506,7 @@ class PowerConnectionService : Service(), BatteryListener {
         private const val POLL_RATE = DateUtils.SECOND_IN_MILLIS
         private const val ID_NOTIFY = 1
         private const val CHANNEL_ID = "power-failure"
+        private const val TAG_POWER = "power:lock"
 
         private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
         private const val NEVER = 0L

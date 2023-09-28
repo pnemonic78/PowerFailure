@@ -263,6 +263,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun bindService() {
+        Timber.i("Service binding.")
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
@@ -278,11 +279,11 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
         bindService(intent, connection, Context.BIND_AUTO_CREATE)
         serviceIsBound = true
-        Timber.i("Service binding.")
     }
 
     private fun unbindService() {
         if (serviceIsBound) {
+            Timber.i("Service unbinding.")
             // If we have received the service, and hence registered with
             // it, then now is the time to unregister.
             unregisterClient()
@@ -290,7 +291,6 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             // Detach our existing connection.
             unbindService(connection)
             serviceIsBound = false
-            Timber.i("Service unbinding.")
         }
     }
 
