@@ -32,7 +32,6 @@ import android.os.Looper
 import android.os.Message
 import android.os.Messenger
 import android.os.RemoteException
-import android.os.SystemClock
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
 import com.github.app.PendingIntent_FLAG_IMMUTABLE
@@ -68,8 +67,8 @@ class PowerConnectionService : Service(), BatteryListener {
     private lateinit var notificationManager: NotificationManager
     private var notificationTextId: Int = 0
     private var notificationIconId: Int = 0
-    private var powerSince: Long = 0L
-    private var powerFailureSince: Long = 0L
+    private var powerSince: Long = NEVER
+    private var powerFailureSince: Long = NEVER
     private var isLogging: Boolean = false
     private lateinit var settings: PowerPreferences
     private var notifyAlarm: NotifyAlarm? = null
@@ -101,11 +100,11 @@ class PowerConnectionService : Service(), BatteryListener {
         handler = PowerConnectionHandler(this)
         messenger = Messenger(handler)
         notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        settings = PowerPreferences(this)
+        settings = PowerPreferences(context)
 
         val filter = IntentFilter()
         filter.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
-        registerReceiver(receiver, filter)
+        registerReceiver(receiver, filter, null, handler)
         onPreferencesChanged()
 
         stopAlarm()
@@ -146,8 +145,7 @@ class PowerConnectionService : Service(), BatteryListener {
         printBatteryStatus(context)
 
         val plugged = BatteryUtils.getPlugged(context)
-        val msg = handler.obtainMessage(MSG_BATTERY_CHANGED, plugged, 0)
-        msg.sendToTarget()
+        Message.obtain(handler, MSG_BATTERY_CHANGED, plugged, 0).sendToTarget()
 
         pollBattery()
     }
@@ -189,16 +187,16 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     override fun onBatteryPlugged(plugged: Int) {
-        val now = SystemClock.uptimeMillis()
+        val now = System.currentTimeMillis()
 
         if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
             powerSince = now
-            powerFailureSince = 0L
+            powerFailureSince = NEVER
             stopAlarm()
         } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
-            if (powerFailureSince <= 0L) {
+            if (powerFailureSince <= NEVER) {
                 powerFailureSince = now
-                handleFailure(plugged, System.currentTimeMillis())
+                handleFailure(plugged, now)
             }
         } else {
             stopAlarm()
@@ -487,5 +485,6 @@ class PowerConnectionService : Service(), BatteryListener {
         private const val CHANNEL_ID = "power-failure"
 
         private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
+        private const val NEVER = 0L
     }
 }
