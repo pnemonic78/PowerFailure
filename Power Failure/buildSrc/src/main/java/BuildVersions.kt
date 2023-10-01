@@ -3,7 +3,7 @@ import org.gradle.api.JavaVersion
 object BuildVersions {
     const val androidGradle = "7.4.2"
     const val kotlin_version = "1.8.20"
-    val jvm = JavaVersion.VERSION_1_8
+    val jvm = JavaVersion.VERSION_17
 
     const val minSdkVersion = 21
     const val compileSdkVersion = 34

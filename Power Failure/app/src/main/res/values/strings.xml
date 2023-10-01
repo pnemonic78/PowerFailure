@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Power Failure Monitor</string>
 
@@ -29,8 +28,6 @@
 
     <!-- Ringtone -->
     <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
-     kts<string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
-    <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
     <string name="vibrate_title" translatable="false">@string/vibration</string>
@@ -45,5 +42,4 @@
     <string name="sms_summary" translatable="false">%1$s</string>
     <string name="sms_message">Electrical power failure occurred on %1$s</string>
     <string name="sms_recipient_title">SMS Recipient</string>
-
 </resources>

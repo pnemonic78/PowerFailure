@@ -332,7 +332,7 @@ class PowerConnectionService : Service(), BatteryListener {
             context,
             ID_NOTIFY,
             intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent_FLAG_IMMUTABLE
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
     }
 

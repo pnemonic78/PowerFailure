@@ -15,12 +15,11 @@
  */
 package net.sf.power.monitor
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
-import android.os.Build
-import androidx.annotation.RequiresApi
 import timber.log.Timber
 
 /**
@@ -43,7 +42,7 @@ object BatteryUtils {
     /**
      * Power source is dock.
      */
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    @SuppressLint("InlinedApi")
     const val BATTERY_PLUGGED_DOCK = BatteryManager.BATTERY_PLUGGED_DOCK
 
     /**

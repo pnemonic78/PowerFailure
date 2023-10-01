@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout android:background="@drawable/bg_power_main"
-    android:id="@+id/main"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg_power_main"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".MainActivity">
 
     <ImageView
-        android:contentDescription="@string/plugged_unknown"
         android:id="@+id/plugged"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/power_size_margin"
-        android:layout_width="0dp"
+        android:contentDescription="@string/plugged_unknown"
         android:src="@drawable/power"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="1,1"
@@ -26,25 +26,25 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:background="@drawable/bg_unplugged_time"
         android:id="@+id/time"
-        android:layout_height="wrap_content"
+        style="?android:textAppearanceLarge"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_unplugged_time"
         android:padding="16dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/plugged"
-        style="?android:textAppearanceLarge"
         tools:text="@tools:sample/date/hhmmss"
         tools:visibility="visible" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:contentDescription="@string/start_monitor"
         android:id="@+id/floatingActionButton"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/start_monitor"
         android:src="@android:drawable/ic_media_play"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
