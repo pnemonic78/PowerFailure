@@ -130,10 +130,10 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         if (fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
             return
         }
-
+        val key = preference.key
         val f: DialogFragment
         if (preference is DelayPreference) {
-            f = DelayPreferenceDialog.newInstance(preference.getKey())
+            f = DelayPreferenceDialog.newInstance(key)
             f.setTargetFragment(this, 0)
             f.show(fragmentManager, DIALOG_FRAGMENT_TAG)
         } else {

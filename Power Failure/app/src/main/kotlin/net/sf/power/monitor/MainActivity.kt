@@ -401,9 +401,17 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
     fun checkNotificationPermissions(activity: AppCompatActivity) {
-        val nm = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val nm = getNotificationManager()
         if (nm.areNotificationsEnabled()) return
         activity.requestPermissions(PERMISSIONS, ACTIVITY_PERMISSIONS)
+    }
+
+    private fun getNotificationManager(): NotificationManager {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(NotificationManager::class.java)
+        } else {
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.TIRAMISU)

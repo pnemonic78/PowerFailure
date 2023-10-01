@@ -36,7 +36,6 @@ import android.os.PowerManager
 import android.os.RemoteException
 import android.text.format.DateUtils
 import androidx.core.app.NotificationCompat
-import com.github.app.PendingIntent_FLAG_IMMUTABLE
 import java.lang.ref.WeakReference
 import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
@@ -102,7 +101,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
         handler = PowerConnectionHandler(this)
         messenger = Messenger(handler)
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getNotificationManager()
         settings = PowerPreferences(context)
 
         val filter = IntentFilter()
@@ -124,6 +123,14 @@ class PowerConnectionService : Service(), BatteryListener {
         stopAlarm()
         hideNotification()
         unregisterReceiver(receiver)
+    }
+
+    private fun getNotificationManager(): NotificationManager {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(NotificationManager::class.java)
+        } else {
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
     }
 
     private fun startPolling() {
@@ -433,12 +440,20 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun acquireWakeLock() {
         var wakeLock = this.wakeLock
         if (wakeLock == null) {
-            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            val powerManager = getPowerManager()
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG_POWER)
             wakeLock.acquire()
             this.wakeLock = wakeLock
         } else {
             wakeLock.acquire()
+        }
+    }
+
+    private fun getPowerManager(): PowerManager{
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(PowerManager::class.java)
+        } else {
+            getSystemService(Context.POWER_SERVICE) as PowerManager
         }
     }
 
