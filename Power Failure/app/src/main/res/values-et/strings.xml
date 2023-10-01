@@ -13,9 +13,10 @@
     <string name="monitor_stopped">Elektritõrke seire on peatatud.</string>
     <string name="plugged_unknown">Tundmatu elektriallikas.</string>
     <string name="plugged_unplugged">Pistikupesast välja lülitatud - elektrit ei ole.</string>
-    <string name="plugged_ac">Elektriline toiteallikas on vahelduvvoolu laadija.</string>
-    <string name="plugged_usb">Elektriline toiteallikas on USB-port.</string>
-    <string name="plugged_wireless">Elektriline toiteallikas on traadita.</string>
+    <string name="plugged_ac">Elektritoiteallikaks on vahelduvvoolu laadija.</string>
+    <string name="plugged_dock">Elektritoiteallikaks on dokkimisjaam.</string>
+    <string name="plugged_usb">Elektritoiteallikaks on USB-port.</string>
+    <string name="plugged_wireless">Elektritoiteallikaks on traadita.</string>
 
     <!-- About -->
     <string name="issue_title">Küsimused</string>

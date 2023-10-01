@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.PowerFailure" parent="Theme.AppCompat.Dark" />
+    <style name="Theme.PowerFailure" parent="Theme.AppCompat.DayNight" />
 
     <style name="Theme.PowerFailure.Settings" parent="Theme.AppCompat.Settings" />
-
 </resources>

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Neznámý zdroj elektrické energie.</string>
     <string name="plugged_unplugged">Odpojeno - žádný zdroj elektrické energie.</string>
     <string name="plugged_ac">Zdrojem elektrické energie je AC nabíječka.</string>
+    <string name="plugged_dock">Zdrojem elektrické energie je dokovací stanice.</string>
     <string name="plugged_usb">Zdrojem elektrické energie je port USB.</string>
     <string name="plugged_wireless">Zdrojem elektrické energie je bezdrátový.</string>
 

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">منبع برق ناشناخته</string>
     <string name="plugged_unplugged">از برق جدا شوید - منبع برق وجود ندارد.</string>
     <string name="plugged_ac">منبع تغذیه برق یک شارژر AC است.</string>
+    <string name="plugged_dock">منبع برق یک ایستگاه اتصال است.</string>
     <string name="plugged_usb">منبع تغذیه برق یک درگاه USB است.</string>
     <string name="plugged_wireless">منبع انرژی الکتریکی بی سیم است.</string>
 

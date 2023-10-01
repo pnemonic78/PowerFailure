@@ -32,6 +32,7 @@ interface BatteryListener {
     companion object {
         const val BATTERY_PLUGGED_NONE = BatteryUtils.BATTERY_PLUGGED_NONE
         const val BATTERY_PLUGGED_AC = BatteryUtils.BATTERY_PLUGGED_AC
+        const val BATTERY_PLUGGED_DOCK = BatteryUtils.BATTERY_PLUGGED_DOCK
         const val BATTERY_PLUGGED_USB = BatteryUtils.BATTERY_PLUGGED_USB
         const val BATTERY_PLUGGED_WIRELESS = BatteryUtils.BATTERY_PLUGGED_WIRELESS
     }

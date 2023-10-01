@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Bilinmeyen elektrik güç kaynağı.</string>
     <string name="plugged_unplugged">Takılı değil - elektrik güç kaynağı yok.</string>
     <string name="plugged_ac">Elektrik güç kaynağı bir AC şarj cihazıdır.</string>
+    <string name="plugged_dock">Elektrik güç kaynağı bir yerleştirme istasyonudur.</string>
     <string name="plugged_usb">Elektrik güç kaynağı bir USB bağlantı noktasıdır.</string>
     <string name="plugged_wireless">Elektrik güç kaynağı kablosuzdur.</string>
 

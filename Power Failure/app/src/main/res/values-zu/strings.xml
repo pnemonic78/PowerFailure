@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Umthombo wamandla kagesi ongaziwa.</string>
     <string name="plugged_unplugged">Okungaxhunyiwe - awukho umthombo wamandla kagesi.</string>
     <string name="plugged_ac">Umthombo wamandla kagesi yishaja ye-AC.</string>
+    <string name="plugged_dock">Umthombo wamandla kagesi uyisiteshi sedokodo.</string>
     <string name="plugged_usb">Umthombo wamandla kagesi uyimbobo ye-USB.</string>
     <string name="plugged_wireless">Umthombo wamandla kagesi awunantambo.</string>
 

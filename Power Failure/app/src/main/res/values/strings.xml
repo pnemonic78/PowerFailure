@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Power Failure Monitor</string>
 
@@ -16,20 +15,19 @@
     <string name="plugged_unknown">Unknown electrical power source.</string>
     <string name="plugged_unplugged">Unplugged - no electrical power source.</string>
     <string name="plugged_ac">Electrical power source is an AC charger.</string>
+    <string name="plugged_dock">Electrical power source is a dock.</string>
     <string name="plugged_usb">Electrical power source is a USB port.</string>
     <string name="plugged_wireless">Electrical power source is wireless.</string>
 
     <!-- About -->
     <string name="version_title" translatable="false">@string/preferences_build_version</string>
-    <string name="support_url" translatable="false">http://pnemonic78.github.io/PowerFailure</string>
+    <string name="support_url" translatable="false">https://pnemonic78.github.io/PowerFailure</string>
     <string name="issue_title">Issues</string>
     <string name="issue_summary">Report a problem, or request a new feature.</string>
     <string name="issue_url" translatable="false">mailto:pnemonic@gmail.com?subject=Power Failure</string>
 
     <!-- Ringtone -->
     <string name="ringtone_tone" translatable="false">@string/preferences_alerts_ringtone_title</string>
-     kts<string name="ringtone_stream_alarm" translatable="false">@string/alarm_volume_title</string>
-    <string name="ringtone_stream_notification" translatable="false">@string/notification_volume_title</string>
 
     <!-- Vibration -->
     <string name="vibrate_title" translatable="false">@string/vibration</string>
@@ -44,5 +42,4 @@
     <string name="sms_summary" translatable="false">%1$s</string>
     <string name="sms_message">Electrical power failure occurred on %1$s</string>
     <string name="sms_recipient_title">SMS Recipient</string>
-
 </resources>

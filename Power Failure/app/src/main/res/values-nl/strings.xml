@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Onbekende elektrische stroombron.</string>
     <string name="plugged_unplugged">Niet aangesloten - geen elektrische voedingsbron.</string>
     <string name="plugged_ac">Elektrische stroombron is een AC-oplader.</string>
+    <string name="plugged_dock">Elektrische stroombron is een dockingstation.</string>
     <string name="plugged_usb">Elektrische stroombron is een USB-poort.</string>
     <string name="plugged_wireless">Elektrische stroombron is draadloos.</string>
 

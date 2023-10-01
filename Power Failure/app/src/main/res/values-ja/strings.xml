@@ -14,6 +14,7 @@
     <string name="plugged_unknown">不明な電源。</string>
     <string name="plugged_unplugged">プラグが抜かれています-電源がありません。</string>
     <string name="plugged_ac">電源はAC充電器です。</string>
+    <string name="plugged_dock">電源はドッキングステーションです。</string>
     <string name="plugged_usb">電源はUSBポートです。</string>
     <string name="plugged_wireless">電源は無線です。</string>
 

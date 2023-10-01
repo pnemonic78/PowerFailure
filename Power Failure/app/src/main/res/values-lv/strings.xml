@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Nezināms elektrības avots.</string>
     <string name="plugged_unplugged">Atvienots - nav elektrības avota.</string>
     <string name="plugged_ac">Elektrības avots ir maiņstrāvas lādētājs.</string>
+    <string name="plugged_dock">Elektrības avots ir dokstacija.</string>
     <string name="plugged_usb">Elektrības avots ir USB ports.</string>
     <string name="plugged_wireless">Elektrības avots ir bezvadu.</string>
 

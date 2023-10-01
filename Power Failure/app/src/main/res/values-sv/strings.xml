@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Okänd elektrisk strömkälla.</string>
     <string name="plugged_unplugged">Frånkopplad - ingen elektrisk strömkälla.</string>
     <string name="plugged_ac">Elektrisk strömkälla är en AC-laddare.</string>
+    <string name="plugged_dock">Elektrisk strömkälla är en dockningsstation.</string>
     <string name="plugged_usb">Elektrisk strömkälla är en USB-port.</string>
     <string name="plugged_wireless">Elektrisk strömkälla är trådlös.</string>
 

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Source d\'alimentation électrique inconnue.</string>
     <string name="plugged_unplugged">Débranché - pas de source d\'alimentation électrique.</string>
     <string name="plugged_ac">Source d\'alimentation électrique est un chargeur CA.</string>
+    <string name="plugged_dock">Source d\'alimentation électrique est une station d\'accueil.</string>
     <string name="plugged_usb">Source d\'alimentation électrique est un port USB.</string>
     <string name="plugged_wireless">Source d\'alimentation électrique est sans fil.</string>
 

@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Ismeretlen elektromos áramforrás.</string>
     <string name="plugged_unplugged">Áramtalanítva - nincs elektromos áramforrás.</string>
     <string name="plugged_ac">Az elektromos áramforrás egy AC töltő.</string>
+    <string name="plugged_dock">Az elektromos áramforrás egy dokkoló állomás.</string>
     <string name="plugged_usb">Az elektromos áramforrás egy USB port.</string>
     <string name="plugged_wireless">Az elektromos áramforrás vezeték nélküli.</string>
 

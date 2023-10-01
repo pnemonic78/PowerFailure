@@ -14,6 +14,7 @@
     <string name="plugged_unknown">Unbekannte Stromquelle.</string>
     <string name="plugged_unplugged">Unplugged - keine Stromquelle.</string>
     <string name="plugged_ac">Stromquelle ist ein USB-Anschluss.</string>
+    <string name="plugged_dock">Stromquelle ist eine Dockingstation.</string>
     <string name="plugged_usb">Stromquelle ist ein USB-Anschluss.</string>
     <string name="plugged_wireless">Stromquelle ist drahtlos.</string>
 

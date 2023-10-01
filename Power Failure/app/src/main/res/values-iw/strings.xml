@@ -14,7 +14,8 @@
     <string name="plugged_unknown">מקור חשמל לא ידוע.</string>
     <string name="plugged_unplugged">מנותק - אין מקור חשמל.</string>
     <string name="plugged_ac">מקור חשמל הוא מטען AC.</string>
-    <string name="plugged_usb">מקור כוח הוא יציאת USB.</string>
+    <string name="plugged_dock">מקור הכוח החשמלי הוא תחנת עגינה.</string>
+    <string name="plugged_usb">מקור חשמל הוא יציאת USB.</string>
     <string name="plugged_wireless">מקור חשמל הוא אלחוטי.</string>
 
     <!-- About -->

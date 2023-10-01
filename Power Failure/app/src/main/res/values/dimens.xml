@@ -5,7 +5,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="power_size_margin">50dp</dimen>
-    <item name="power_gradientRadius" format="float" type="dimen">150</item>
-    <item name="power_main_gradientRadius" format="float" type="dimen">1050</item>
-
+    <dimen name="power_main_gradientRadius">350dp</dimen>
 </resources>
