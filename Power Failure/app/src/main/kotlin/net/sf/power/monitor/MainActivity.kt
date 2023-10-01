@@ -426,7 +426,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         private const val LEVEL_PLUGGED_USB = 3
         private const val LEVEL_PLUGGED_WIRELESS = 4
         private const val LEVEL_PLUGGED_DOCK = 5
-        private const val LEVEL_PLUGGED_UNKNOWN = LEVEL_PLUGGED_AC
+        private const val LEVEL_PLUGGED_UNKNOWN = LEVEL_UNKNOWN
 
         @TargetApi(Build.VERSION_CODES.TIRAMISU)
         private val PERMISSIONS = arrayOf(Manifest.permission.POST_NOTIFICATIONS)

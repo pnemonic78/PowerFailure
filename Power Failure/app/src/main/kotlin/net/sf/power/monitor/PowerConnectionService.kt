@@ -23,7 +23,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -35,7 +34,9 @@ import android.os.Messenger
 import android.os.PowerManager
 import android.os.RemoteException
 import android.text.format.DateUtils
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
+import androidx.core.graphics.drawable.toBitmap
 import java.lang.ref.WeakReference
 import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
@@ -215,30 +216,30 @@ class PowerConnectionService : Service(), BatteryListener {
         when (plugged) {
             BatteryListener.BATTERY_PLUGGED_NONE -> showNotification(
                 R.string.plugged_unplugged,
-                R.drawable.stat_plug_disconnect
+                R.drawable.plug_unplugged
             )
 
             BatteryListener.BATTERY_PLUGGED_AC -> showNotification(
                 R.string.plugged_ac,
-                R.drawable.stat_plug_ac
+                R.drawable.plug_ac
             )
 
             BatteryListener.BATTERY_PLUGGED_DOCK -> showNotification(
                 R.string.plugged_dock,
-                R.drawable.stat_plug_dock
+                R.drawable.plug_dock
             )
 
             BatteryListener.BATTERY_PLUGGED_USB -> showNotification(
                 R.string.plugged_usb,
-                R.drawable.stat_plug_usb
+                R.drawable.plug_usb
             )
 
             BatteryListener.BATTERY_PLUGGED_WIRELESS -> showNotification(
                 R.string.plugged_wireless,
-                R.drawable.stat_plug_wireless
+                R.drawable.plug_wireless
             )
 
-            else -> showNotification(R.string.plugged_unknown, R.drawable.stat_plug_ac)
+            else -> showNotification(R.string.plugged_unknown, R.drawable.plug_unknown)
         }
 
         notifyClients(MSG_BATTERY_CHANGED, plugged)
@@ -301,8 +302,7 @@ class PowerConnectionService : Service(), BatteryListener {
         val contentIntent = createActivityIntent(context)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var channel: android.app.NotificationChannel? =
-                notificationManager.getNotificationChannel(CHANNEL_ID)
+            var channel = notificationManager.getNotificationChannel(CHANNEL_ID)
             if (channel == null) {
                 channel = android.app.NotificationChannel(
                     CHANNEL_ID,
@@ -314,11 +314,12 @@ class PowerConnectionService : Service(), BatteryListener {
         }
 
         // Set the info for the views that show in the notification panel.
+        val largeIcon = AppCompatResources.getDrawable(context, largeIconId)?.toBitmap()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setOngoing(true)
             .setSilent(true)
-            .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
-            .setSmallIcon(R.drawable.stat_launcher)  // the status icon
+            .setLargeIcon(largeIcon)
+            .setSmallIcon(R.drawable.ic_launcher_mono)  // the status icon
             .setTicker(text)  // the status text
             .setWhen(System.currentTimeMillis())  // the time stamp
             .setContentTitle(title)  // the label of the entry

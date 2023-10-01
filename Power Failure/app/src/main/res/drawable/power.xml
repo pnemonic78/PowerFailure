@@ -7,7 +7,7 @@
         android:drawable="@drawable/power_unplugged"
         android:maxLevel="1"/>
     <item
-        android:drawable="@drawable/power_plugged"
+        android:drawable="@drawable/power_ac"
         android:maxLevel="2"/>
     <item
         android:drawable="@drawable/power_usb"
