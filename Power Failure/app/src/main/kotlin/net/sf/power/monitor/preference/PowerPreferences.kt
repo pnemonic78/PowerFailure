@@ -28,45 +28,6 @@ import net.sf.power.monitor.R
  * @author Moshe Waisberg
  */
 class PowerPreferences(context: Context) : SimplePreferences(context) {
-
-    companion object {
-
-        /**
-         * Preference name for the reminder ringtone.
-         */
-        const val KEY_RINGTONE_TONE = "ringtone.tone"
-
-        /**
-         * Preference name for vibration.
-         */
-        const val KEY_VIBRATE = "vibrate"
-
-        /**
-         * Preference name for delay (seconds).
-         */
-        const val KEY_FAILURE_DELAY = "delay"
-
-        /**
-         * Preference name for the when was the last significant power failure.
-         */
-        const val KEY_FAILURE_TIME = "failure.time"
-
-        /**
-         * Preference name for enabling sending an SMS.
-         */
-        const val KEY_SMS_ENABLED = "sms.enabled"
-
-        /**
-         * Preference name for the SMS recipient number.
-         */
-        const val KEY_SMS_RECIPIENT = "sms.recipient"
-
-        /**
-         * Action that the shared preferences have changed.
-         */
-        const val ACTION_PREFERENCES_CHANGED = "net.sf.power.monitor.action.PREFERENCES_CHANGED"
-    }
-
     /**
      * Get the ringtone.
      *
@@ -94,7 +55,10 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return `true` to vibrate.
      */
     val isVibrate: Boolean
-        get() = preferences.getBoolean(KEY_VIBRATE, context.resources.getBoolean(R.bool.vibrate_defaultValue))
+        get() = preferences.getBoolean(
+            KEY_VIBRATE,
+            context.resources.getBoolean(R.bool.vibrate_defaultValue)
+        )
 
     /**
      * Get the time delay after the power is disconnected to when to notify about the failure.
@@ -103,9 +67,15 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      */
     val failureDelay: Long
         get() = try {
-            preferences.getInt(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue)).toLong() * DateUtils.SECOND_IN_MILLIS
+            preferences.getInt(
+                KEY_FAILURE_DELAY,
+                context.resources.getInteger(R.integer.delay_defaultValue)
+            ).toLong() * DateUtils.SECOND_IN_MILLIS
         } catch (e: ClassCastException) {
-            preferences.getString(KEY_FAILURE_DELAY, context.resources.getInteger(R.integer.delay_defaultValue).toString())!!.toLong() * DateUtils.SECOND_IN_MILLIS
+            preferences.getString(
+                KEY_FAILURE_DELAY,
+                context.resources.getInteger(R.integer.delay_defaultValue).toString()
+            )!!.toLong() * DateUtils.SECOND_IN_MILLIS
         }
 
     /**
@@ -113,13 +83,22 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      *
      * @return the time in milliseconds.
      */
-    var failureTime: Long = 0L
-        get() = preferences.getLong(KEY_FAILURE_TIME, 0L)
+    var failureTime: Long = NEVER
+        get() = preferences.getLong(KEY_FAILURE_TIME, field)
         set(value) {
             field = value
-            preferences.edit()
-                .putLong(KEY_FAILURE_TIME, value)
-                .apply()
+            preferences.edit().putLong(KEY_FAILURE_TIME, value).apply()
+        }
+
+    /**
+     * Get the time when the power was restored.
+     *
+     * @return the time in milliseconds.
+     */
+    var restoredTime: Long
+        get() = preferences.getLong(KEY_RESTORED_TIME, NEVER)
+        set(value) {
+            preferences.edit().putLong(KEY_RESTORED_TIME, value).apply()
         }
 
     /**
@@ -143,4 +122,49 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
         set(value) {
             preferences.edit().putString(KEY_SMS_RECIPIENT, value).apply()
         }
+
+    companion object {
+
+        /**
+         * Preference name for the reminder ringtone.
+         */
+        const val KEY_RINGTONE_TONE = "ringtone.tone"
+
+        /**
+         * Preference name for vibration.
+         */
+        const val KEY_VIBRATE = "vibrate"
+
+        /**
+         * Preference name for delay (seconds).
+         */
+        const val KEY_FAILURE_DELAY = "delay"
+
+        /**
+         * Preference name for the when was the last significant power failure.
+         */
+        const val KEY_FAILURE_TIME = "failure.time"
+
+        /**
+         * Preference name for when was the last significant power restoration.
+         */
+        const val KEY_RESTORED_TIME = "restored.time"
+
+        /**
+         * Preference name for enabling sending an SMS.
+         */
+        const val KEY_SMS_ENABLED = "sms.enabled"
+
+        /**
+         * Preference name for the SMS recipient number.
+         */
+        const val KEY_SMS_RECIPIENT = "sms.recipient"
+
+        /**
+         * Action that the shared preferences have changed.
+         */
+        const val ACTION_PREFERENCES_CHANGED = "net.sf.power.monitor.action.PREFERENCES_CHANGED"
+
+        const val NEVER = 0L
+    }
 }

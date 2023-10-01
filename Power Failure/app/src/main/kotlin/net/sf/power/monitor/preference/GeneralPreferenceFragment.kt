@@ -88,7 +88,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
                     settings.failureTime,
                     DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
                 )
-                getString(R.string.sms_message, dateTime)
+                getString(R.string.sms_failed_on, dateTime)
             }
         } else {
             preference.isEnabled = false

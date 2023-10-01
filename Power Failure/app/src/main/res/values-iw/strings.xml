@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">משגיח הפסקת חשמל</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">מקור הכוח החשמלי הוא תחנת עגינה.</string>
     <string name="plugged_usb">מקור חשמל הוא יציאת USB.</string>
     <string name="plugged_wireless">מקור חשמל הוא אלחוטי.</string>
+    <string name="power_failed_on">הפסקת חשמל התרחש ב- %1$s</string>
+    <string name="power_restored_on">הכוח החשמלי שוחזר בתאריך %1$s</string>
 
     <!-- About -->
     <string name="issue_title">בעיות</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">שלח סמס</string>
     <string name="sms_recipient_title">נמען סמס</string>
-    <string name="sms_message">הפסקת חשמל התרחש ב- %1$s</string>
-
 </resources>

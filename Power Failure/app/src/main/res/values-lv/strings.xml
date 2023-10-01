@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Strāvas atteices monitors</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektrības avots ir dokstacija.</string>
     <string name="plugged_usb">Elektrības avots ir USB ports.</string>
     <string name="plugged_wireless">Elektrības avots ir bezvadu.</string>
+    <string name="power_failed_on">Elektrības padeves pārtraukums notika %1$s</string>
+    <string name="power_restored_on">Elektrības padeve atjaunota %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Jautājumi</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Sūtīt īsziņu</string>
     <string name="sms_recipient_title">SMS saņēmējs</string>
-    <string name="sms_message">Elektrības padeves pārtraukums notika %1$s</string>
-
 </resources>

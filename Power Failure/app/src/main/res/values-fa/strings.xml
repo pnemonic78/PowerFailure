@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">مانیتور قطع برق</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">منبع برق یک ایستگاه اتصال است.</string>
     <string name="plugged_usb">منبع تغذیه برق یک درگاه USB است.</string>
     <string name="plugged_wireless">منبع انرژی الکتریکی بی سیم است.</string>
+    <string name="power_failed_on">قطع برق در تاریخ %1$s رخ داده است</string>
+    <string name="power_restored_on">برق در %1$s برقرار شد</string>
 
     <!-- About -->
     <string name="issue_title">مسائل</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">ارسال پیامک</string>
     <string name="sms_recipient_title">گیرنده پیام کوتاه</string>
-    <string name="sms_message">قطع برق در تاریخ %1$s رخ داده است</string>
-
 </resources>

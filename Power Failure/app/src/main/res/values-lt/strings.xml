@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Maitinimo gedimų monitorius</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektros energijos šaltinis yra prijungimo stotelė.</string>
     <string name="plugged_usb">Elektros energijos šaltinis yra USB jungtis.</string>
     <string name="plugged_wireless">Elektros energijos šaltinis yra belaidis.</string>
+    <string name="power_failed_on">Elektros energijos gedimas įvyko %1$s</string>
+    <string name="power_restored_on">Elektros maitinimas atstatytas %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Problemos</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Siųsti SMS</string>
     <string name="sms_recipient_title">SMS gavėjas</string>
-    <string name="sms_message">Elektros energijos gedimas įvyko %1$s</string>
-
 </resources>

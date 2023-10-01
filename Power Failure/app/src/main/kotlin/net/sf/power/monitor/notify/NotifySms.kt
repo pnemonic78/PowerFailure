@@ -17,7 +17,7 @@ class NotifySms(private val context: Context) {
             timeInMillis,
             DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
         )
-        val text = context.getString(R.string.sms_message, dateTime)
+        val text = context.getString(R.string.sms_failed_on, dateTime)
 
         val smsManager = getSmsManager() ?: return
 

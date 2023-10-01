@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Strömavbrott monitor</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektrisk strömkälla är en dockningsstation.</string>
     <string name="plugged_usb">Elektrisk strömkälla är en USB-port.</string>
     <string name="plugged_wireless">Elektrisk strömkälla är trådlös.</string>
+    <string name="power_failed_on">Elektriskt strömavbrott inträffade %1$s</string>
+    <string name="power_restored_on">Elektrisk ström återställd den %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Frågor</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Skicka SMS</string>
     <string name="sms_recipient_title">SMS-mottagare</string>
-    <string name="sms_message">Elektriskt strömavbrott inträffade %1$s</string>
-
 </resources>

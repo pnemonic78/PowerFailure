@@ -191,7 +191,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_ALARM -> service.handleFailure(msg.arg1, msg.obj as Long)
+                MSG_FAILED -> service.handleFailure(msg.arg1, msg.obj as Long)
                 else -> super.handleMessage(msg)
             }
         }
@@ -202,8 +202,15 @@ class PowerConnectionService : Service(), BatteryListener {
 
         if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
             powerSince = now
-            powerFailureSince = NEVER
-            stopAlarm()
+            if (isLogging && (powerFailureSince > NEVER)) {
+                if (now >= powerFailureSince + prefTimeDelay) {
+                    powerFailureSince = NEVER
+                    handleRestore(plugged, now)
+                }
+            } else {
+                powerFailureSince = NEVER
+                stopAlarm()
+            }
         } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
             if (powerFailureSince <= NEVER) {
                 powerFailureSince = now
@@ -423,18 +430,25 @@ class PowerConnectionService : Service(), BatteryListener {
         prefSmsRecipient = settings.smsRecipient
     }
 
-    private fun handleFailure(plugged: Int, millis: Long) {
-        settings.failureTime = millis
-        notifyClients(MSG_ALARM, plugged, 0, millis)
+    private fun handleFailure(plugged: Int, timeMillis: Long) {
+        settings.failureTime = timeMillis
+        settings.restoredTime = PowerPreferences.NEVER
+        notifyClients(MSG_FAILED, plugged, 0, timeMillis)
         playAlarm()
-        sendSMS(millis)
+        sendSMS(timeMillis)
     }
 
-    private fun sendSMS(millis: Long) {
+    private fun handleRestore(plugged: Int, timeMillis: Long) {
+        settings.restoredTime = timeMillis
+        notifyClients(MSG_RESTORED, plugged, 0, timeMillis)
+        stopAlarm()
+    }
+
+    private fun sendSMS(timeMillis: Long) {
         if (!prefSmsEnabled) return
         val context: Context = context
         notifySms = notifySms ?: NotifySms(context)
-        notifySms?.send(millis, prefSmsRecipient)
+        notifySms?.send(timeMillis, prefSmsRecipient)
     }
 
     @SuppressLint("WakelockTimeout")
@@ -450,7 +464,7 @@ class PowerConnectionService : Service(), BatteryListener {
         }
     }
 
-    private fun getPowerManager(): PowerManager{
+    private fun getPowerManager(): PowerManager {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getSystemService(PowerManager::class.java)
         } else {
@@ -510,9 +524,14 @@ class PowerConnectionService : Service(), BatteryListener {
         const val MSG_BATTERY_CHANGED = 11
 
         /**
-         * Command to the clients that the alarm has activated.
+         * Command to the clients that the power failed.
          */
-        const val MSG_ALARM = 12
+        const val MSG_FAILED = 12
+
+        /**
+         * Command to the clients that the power was restored.
+         */
+        const val MSG_RESTORED = 13
 
         /**
          * Command to the service that the shared preferences have changed.

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">停電モニター</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">電源はドッキングステーションです。</string>
     <string name="plugged_usb">電源はUSBポートです。</string>
     <string name="plugged_wireless">電源は無線です。</string>
+    <string name="power_failed_on">%1$s日目に停電が発生しました</string>
+    <string name="power_restored_on">%1$sに電力が復旧しました</string>
 
     <!-- About -->
     <string name="issue_title">問題</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">SMSを送信</string>
     <string name="sms_recipient_title">SMS受信者</string>
-    <string name="sms_message">%1$s日目に停電が発生しました</string>
-
 </resources>

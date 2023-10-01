@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">정전 모니터</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">전력원은 도킹 스테이션이다.</string>
     <string name="plugged_usb">전원은 USB 포트입니다.</string>
     <string name="plugged_wireless">전원은 무선입니다.</string>
+    <string name="power_failed_on">%1$s 일에 정전이 발생했습니다.</string>
+    <string name="power_restored_on">%1$s에 전력이 복원되었습니다.</string>
 
     <!-- About -->
     <string name="issue_title">이슈</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">문자를 보내다</string>
     <string name="sms_recipient_title">SMS 수신자</string>
-    <string name="sms_message">%1$s 일에 정전이 발생했습니다.</string>
-
 </resources>

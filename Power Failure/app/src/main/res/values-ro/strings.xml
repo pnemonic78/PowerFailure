@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Monitor pană curent</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Sursa de energie electrică este un încărcător de curent alternativ.</string>
     <string name="plugged_usb">Sursa de energie electrică este un port USB.</string>
     <string name="plugged_wireless">Sursa de energie electrică este wireless.</string>
+    <string name="power_failed_on">Pană de curent electric a avut loc la %1$s</string>
+    <string name="power_restored_on">Alimentarea electrică a fost restabilită pe %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Probleme</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Trimite SMS</string>
     <string name="sms_recipient_title">Destinatar SMS</string>
-    <string name="sms_message">Pană de curent electric a avut loc la %1$s</string>
-
 </resources>

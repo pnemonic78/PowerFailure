@@ -18,6 +18,8 @@
     <string name="plugged_dock">Electrical power source is a dock.</string>
     <string name="plugged_usb">Electrical power source is a USB port.</string>
     <string name="plugged_wireless">Electrical power source is wireless.</string>
+    <string name="power_failed_on">Electrical power failure occurred on %1$s</string>
+    <string name="power_restored_on">Electrical power restored on %1$s</string>
 
     <!-- About -->
     <string name="version_title" translatable="false">@string/preferences_build_version</string>
@@ -40,6 +42,6 @@
     <!-- Message -->
     <string name="sms_title">Send SMS</string>
     <string name="sms_summary" translatable="false">%1$s</string>
-    <string name="sms_message">Electrical power failure occurred on %1$s</string>
+    <string name="sms_failed_on" translatable="false">@string/power_failed_on</string>
     <string name="sms_recipient_title">SMS Recipient</string>
 </resources>

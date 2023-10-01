@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Stroomuitval Monitor</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektrische stroombron is een dockingstation.</string>
     <string name="plugged_usb">Elektrische stroombron is een USB-poort.</string>
     <string name="plugged_wireless">Elektrische stroombron is draadloos.</string>
+    <string name="power_failed_on">Er is een stroomstoring opgetreden op datum %1$s</string>
+    <string name="power_restored_on">Elektrische stroom is hersteld op %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Problemen</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Verstuur SMS</string>
     <string name="sms_recipient_title">SMS-ontvanger</string>
-    <string name="sms_message">Er is een stroomstoring opgetreden op datum %1$s</string>
-
 </resources>

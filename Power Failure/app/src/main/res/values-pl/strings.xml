@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Monitor awarii zasilania</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Źródłem zasilania elektrycznego jest stacja dokująca.</string>
     <string name="plugged_usb">Źródło energii elektrycznej jest port USB.</string>
     <string name="plugged_wireless">Źródło energii elektrycznej jest bezprzewodowe.</string>
+    <string name="power_failed_on">Awaria zasilania elektrycznego miała miejsce w %1$s</string>
+    <string name="power_restored_on">Zasilanie elektryczne przywrócono w dniu %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Zagadnienia</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Wyślij SMS</string>
     <string name="sms_recipient_title">Odbiorca wiadomości SMS</string>
-    <string name="sms_message">Awaria zasilania elektrycznego miała miejsce w %1$s</string>
-
 </resources>

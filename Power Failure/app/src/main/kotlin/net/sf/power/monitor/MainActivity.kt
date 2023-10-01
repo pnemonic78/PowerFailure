@@ -27,14 +27,12 @@ import android.os.*
 import android.text.format.DateUtils
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import androidx.core.view.isVisible
 import java.lang.ref.WeakReference
+import net.sf.power.monitor.databinding.ActivityMainBinding
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
@@ -46,11 +44,8 @@ import timber.log.Timber
  */
 class MainActivity : AppCompatActivity(), BatteryListener {
 
+    private lateinit var binding: ActivityMainBinding
     private lateinit var toolbarBackground: Drawable
-    private lateinit var mainBackground: Drawable
-    private lateinit var pluggedView: ImageView
-    private lateinit var timeView: TextView
-    private lateinit var actionButton: FloatingActionButton
     private var menuItemStart: MenuItem? = null
     private var menuItemStop: MenuItem? = null
 
@@ -106,14 +101,13 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         toolbarBackground.level = LEVEL_UNKNOWN
         supportActionBar?.setBackgroundDrawable(toolbarBackground)
 
-        setContentView(R.layout.activity_main)
-        val mainView = findViewById<View>(R.id.main)
-        mainBackground = mainView.background
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        this.binding = binding
+        setContentView(binding.root)
+        val mainView = binding.main
+        val mainBackground = mainView.background
         mainBackground.level = LEVEL_UNKNOWN
-        pluggedView = findViewById(R.id.plugged)
-        pluggedView.setImageLevel(LEVEL_UNKNOWN)
-        timeView = findViewById(R.id.time)
-        actionButton = findViewById(R.id.floatingActionButton)
+        binding.plugged.setImageLevel(LEVEL_UNKNOWN)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
@@ -121,10 +115,8 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         onBatteryPlugged(BatteryUtils.getPlugged(context))
 
         settings = PowerPreferences(context)
-        val time = settings.failureTime
-        if (time > 0L) {
-            showFailureTime(time)
-        }
+        showFailureTime(settings.failureTime)
+        showRestoredTime(settings.restoredTime)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             initNotificationPermissions()
@@ -167,21 +159,28 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun setMonitorStatus(polling: Boolean) {
+        val mainView = binding.main
+        val mainBackground = mainView.background
+
         toolbarBackground.level = LEVEL_UNKNOWN
         mainBackground.level = LEVEL_UNKNOWN
-        pluggedView.setImageLevel(LEVEL_UNKNOWN)
-        if (menuItemStart != null) {
-            menuItemStart!!.isVisible = !polling
-            menuItemStop!!.isVisible = polling
-        }
+        binding.plugged.setImageLevel(LEVEL_UNKNOWN)
+        menuItemStart?.isVisible = !polling
+        menuItemStop?.isVisible = polling
+
         @DrawableRes val iconId =
             if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
+        val actionButton = binding.floatingActionButton
         actionButton.setImageResource(iconId)
         actionButton.setOnClickListener { onClickActionButton(polling) }
         onBatteryPlugged(BatteryUtils.getPlugged(this))
     }
 
     override fun onBatteryPlugged(plugged: Int) {
+        val mainView = binding.main
+        val mainBackground = mainView.background
+        val pluggedView = binding.plugged
+
         when (plugged) {
             BatteryListener.BATTERY_PLUGGED_NONE -> {
                 toolbarBackground.level = LEVEL_UNPLUGGED
@@ -229,16 +228,6 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
     private class MainHandler(activity: MainActivity) : Handler(Looper.getMainLooper()) {
 
-        companion object {
-            internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
-            internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
-            internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
-            internal const val MSG_SET_STATUS_MONITOR =
-                PowerConnectionService.MSG_SET_STATUS_MONITOR
-            internal const val MSG_ALARM = PowerConnectionService.MSG_ALARM
-            internal const val MSG_SETTINGS = 1000
-        }
-
         private val activity: WeakReference<MainActivity> = WeakReference(activity)
 
         override fun handleMessage(msg: Message) {
@@ -249,7 +238,18 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 MSG_START_MONITOR -> activity.startMonitor()
                 MSG_STOP_MONITOR -> activity.stopMonitor()
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
-                MSG_ALARM -> activity.showFailureTime(msg.obj as Long)
+                MSG_FAILED -> {
+                    val settings = activity.settings
+                    activity.showFailureTime(msg.obj as Long)
+                    activity.showRestoredTime(settings.restoredTime)
+                }
+
+                MSG_RESTORED -> {
+                    val settings = activity.settings
+                    activity.showFailureTime(settings.failureTime)
+                    activity.showRestoredTime(msg.obj as Long)
+                }
+
                 MSG_SETTINGS -> activity.startActivity(
                     Intent(
                         activity,
@@ -259,6 +259,17 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
                 else -> super.handleMessage(msg)
             }
+        }
+
+        companion object {
+            internal const val MSG_FAILED = PowerConnectionService.MSG_FAILED
+            internal const val MSG_RESTORED = PowerConnectionService.MSG_RESTORED
+            internal const val MSG_SETTINGS = 1000
+            internal const val MSG_SET_STATUS_MONITOR =
+                PowerConnectionService.MSG_SET_STATUS_MONITOR
+            internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
+            internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
+            internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
         }
     }
 
@@ -363,7 +374,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             }
 
             R.id.menu_force -> {
-                notifyService(MainHandler.MSG_ALARM, 0, 0, System.currentTimeMillis())
+                notifyService(MainHandler.MSG_FAILED, 0, 0, System.currentTimeMillis())
                 return true
             }
         }
@@ -381,14 +392,36 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private fun showFailureTime(millis: Long) {
-        val dateTime = DateUtils.formatDateTime(
-            this,
-            millis,
-            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
-        )
-        timeView.text = getString(R.string.sms_message, dateTime)
-        timeView.visibility = View.VISIBLE
+    private fun showFailureTime(timeMillis: Long) {
+        val context: Context = this
+        val timeView = binding.failedOn
+        if (timeMillis > PowerPreferences.NEVER) {
+            val dateTime = DateUtils.formatDateTime(
+                context,
+                timeMillis,
+                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
+            )
+            timeView.text = getString(R.string.power_failed_on, dateTime)
+            timeView.isVisible = true
+        } else {
+            timeView.isVisible = false
+        }
+    }
+
+    private fun showRestoredTime(timeMillis: Long) {
+        val context: Context = this
+        val timeView = binding.restoredOn
+        if (timeMillis > PowerPreferences.NEVER) {
+            val dateTime = DateUtils.formatDateTime(
+                context,
+                timeMillis,
+                DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
+            )
+            timeView.text = getString(R.string.power_restored_on, dateTime)
+            timeView.isVisible = true
+        } else {
+            timeView.isVisible = false
+        }
     }
 
     private fun onClickActionButton(polling: Boolean) {
