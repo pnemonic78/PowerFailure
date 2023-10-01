@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Монитор сбоя питания</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Источник питания - док.</string>
     <string name="plugged_usb">Источник питания - порт USB.</string>
     <string name="plugged_wireless">Источник питания беспроводной.</string>
+    <string name="power_failed_on">Перебой в подаче электроэнергии произошел %1$s</string>
+    <string name="power_restored_on">Электроснабжение восстановлено %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Проблемы</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Отправить смс</string>
     <string name="sms_recipient_title">Получатель смс</string>
-    <string name="sms_message">Перебой в подаче электроэнергии произошел %1$s</string>
-
 </resources>

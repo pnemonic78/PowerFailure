@@ -17,15 +17,20 @@ class NotifySms(private val context: Context) {
             timeInMillis,
             DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
         )
-        val text = context.getString(R.string.sms_message, dateTime)
+        val text = context.getString(R.string.sms_failed_on, dateTime)
 
-        val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            context.getSystemService(SmsManager::class.java)
-        } else {
-            SmsManager.getDefault()
-        } ?: return
+        val smsManager = getSmsManager() ?: return
 
         Timber.i("send SMS to $destination")
         smsManager.sendTextMessage(destination, null, text, null, null)
+    }
+
+    @Suppress("DEPRECATION")
+    private fun getSmsManager(): SmsManager? {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            context.getSystemService(SmsManager::class.java)
+        } else {
+            SmsManager.getDefault()
+        }
     }
 }

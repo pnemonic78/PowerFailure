@@ -88,7 +88,7 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
                     settings.failureTime,
                     DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_ALL
                 )
-                getString(R.string.sms_message, dateTime)
+                getString(R.string.sms_failed_on, dateTime)
             }
         } else {
             preference.isEnabled = false
@@ -130,10 +130,10 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         if (fragmentManager.findFragmentByTag(DIALOG_FRAGMENT_TAG) != null) {
             return
         }
-
+        val key = preference.key
         val f: DialogFragment
         if (preference is DelayPreference) {
-            f = DelayPreferenceDialog.newInstance(preference.getKey())
+            f = DelayPreferenceDialog.newInstance(key)
             f.setTargetFragment(this, 0)
             f.show(fragmentManager, DIALOG_FRAGMENT_TAG)
         } else {

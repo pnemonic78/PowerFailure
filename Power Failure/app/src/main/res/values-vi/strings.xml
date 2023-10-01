@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Màn hình lỗi nguồn</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Nguồn điện là một trạm nối.</string>
     <string name="plugged_usb">Nguồn điện là một cổng USB.</string>
     <string name="plugged_wireless">Nguồn điện là không dây.</string>
+    <string name="power_failed_on">Mất điện xảy ra vào ngày %1$s</string>
+    <string name="power_restored_on">Nguồn điện được khôi phục vào %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Vấn đề</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Gửi tin nhắn</string>
     <string name="sms_recipient_title">Người nhận SMS</string>
-    <string name="sms_message">Mất điện xảy ra vào ngày %1$s</string>
-
 </resources>

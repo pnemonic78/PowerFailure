@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Monitor Kegagalan Daya</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Sumber tenaga listrik adalah stasiun dok.</string>
     <string name="plugged_usb">Sumber tenaga listrik adalah port USB.</string>
     <string name="plugged_wireless">Sumber daya listrik adalah nirkabel.</string>
+    <string name="power_failed_on">Listrik mati terjadi pada tanggal %1$s</string>
+    <string name="power_restored_on">Listrik pulih pada %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Masalah</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Kirim SMS</string>
     <string name="sms_recipient_title">Penerima SMS</string>
-    <string name="sms_message">Listrik mati terjadi pada tanggal %1$s</string>
-
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Áramkimaradás-figyelő</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Az elektromos áramforrás egy dokkoló állomás.</string>
     <string name="plugged_usb">Az elektromos áramforrás egy USB port.</string>
     <string name="plugged_wireless">Az elektromos áramforrás vezeték nélküli.</string>
+    <string name="power_failed_on">Áramkimaradás történt dátum %1$s</string>
+    <string name="power_restored_on">Az elektromos áram visszaállítása ekkor: %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Problémák</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">SMS-t küldeni</string>
     <string name="sms_recipient_title">SMS címzett</string>
-    <string name="sms_message">Áramkimaradás történt dátum %1$s</string>
-
 </resources>

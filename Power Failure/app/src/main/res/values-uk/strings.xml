@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Монітор збою живлення</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Джерелом електроживлення є док-станція.</string>
     <string name="plugged_usb">Джерелом електроживлення є порт USB.</string>
     <string name="plugged_wireless">Джерело електроживлення бездротове.</string>
+    <string name="power_failed_on">Збій електричного струму стався %1$s</string>
+    <string name="power_restored_on">Електропостачання відновлено %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Проблеми</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Надішліть SMS</string>
     <string name="sms_recipient_title">Одержувач SMS</string>
-    <string name="sms_message">Збій електричного струму стався %1$s</string>
-
 </resources>

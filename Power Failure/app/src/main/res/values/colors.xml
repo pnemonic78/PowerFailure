@@ -16,4 +16,14 @@
     <color name="unknown_border">#444444</color>
 
     <color name="icon_tint">?android:attr/textColorPrimary</color>
+
+    <color name="plug_1">#FDCC00</color>
+    <color name="plug_2">#FFE100</color>
+    <color name="plug_3">#FFA800</color>
+    <color name="plug_4">#63D3FD</color>
+    <color name="plug_5">#3DB9F9</color>
+    <color name="plug_6">@color/white</color>
+    <color name="plug_7">@color/black</color>
+
+    <color name="ic_launcher_background">#ee8800</color>
 </resources>

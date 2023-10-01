@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Toitekatkestuse Jälgija</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektritoiteallikaks on dokkimisjaam.</string>
     <string name="plugged_usb">Elektritoiteallikaks on USB-port.</string>
     <string name="plugged_wireless">Elektritoiteallikaks on traadita.</string>
+    <string name="power_failed_on">Elektritõrge tekkis kuupäeval %1$s</string>
+    <string name="power_restored_on">Elektritoide taastati %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Küsimused</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Saada SMS</string>
     <string name="sms_recipient_title">SMS-i saaja</string>
-    <string name="sms_message">Elektritõrge tekkis kuupäeval %1$s</string>
-
 </resources>

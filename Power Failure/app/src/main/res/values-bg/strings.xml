@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Монитор за спиране на захранването</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Източникът на електрическо захранване е докинг станция.</string>
     <string name="plugged_usb">Източникът на електрическо захранване е USB порт.</string>
     <string name="plugged_wireless">Източникът на електрическо захранване е безжичен.</string>
+    <string name="power_failed_on">Прекъсване на електрическото захранване е възникнало на дата %1$s</string>
+    <string name="power_restored_on">Електрическото захранване е възстановено на %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Проблеми</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Изпратете SMS</string>
     <string name="sms_recipient_title">Получател на SMS</string>
-    <string name="sms_message">Прекъсване на електрическото захранване е възникнало на дата %1$s</string>
-
 </resources>

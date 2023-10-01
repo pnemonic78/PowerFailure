@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Ukuqapha Ukwehluleka kwamandla</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Umthombo wamandla kagesi uyisiteshi sedokodo.</string>
     <string name="plugged_usb">Umthombo wamandla kagesi uyimbobo ye-USB.</string>
     <string name="plugged_wireless">Umthombo wamandla kagesi awunantambo.</string>
+    <string name="power_failed_on">Ukwehluleka kwamandla kagesi kwenzeka ngosuku %1$s</string>
+    <string name="power_restored_on">Amandla kagesi abuyiselwe ngomhla ka-%1$s</string>
 
     <!-- About -->
     <string name="issue_title">Izinkinga</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Thumela i-SMS</string>
     <string name="sms_recipient_title">Umamukeli we-SMS</string>
-    <string name="sms_message">Ukwehluleka kwamandla kagesi kwenzeka ngosuku %1$s</string>
-
 </resources>

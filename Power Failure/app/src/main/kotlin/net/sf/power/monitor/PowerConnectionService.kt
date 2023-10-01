@@ -23,7 +23,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -35,8 +34,9 @@ import android.os.Messenger
 import android.os.PowerManager
 import android.os.RemoteException
 import android.text.format.DateUtils
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
-import com.github.app.PendingIntent_FLAG_IMMUTABLE
+import androidx.core.graphics.drawable.toBitmap
 import java.lang.ref.WeakReference
 import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
@@ -102,7 +102,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
         handler = PowerConnectionHandler(this)
         messenger = Messenger(handler)
-        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getNotificationManager()
         settings = PowerPreferences(context)
 
         val filter = IntentFilter()
@@ -124,6 +124,14 @@ class PowerConnectionService : Service(), BatteryListener {
         stopAlarm()
         hideNotification()
         unregisterReceiver(receiver)
+    }
+
+    private fun getNotificationManager(): NotificationManager {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(NotificationManager::class.java)
+        } else {
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        }
     }
 
     private fun startPolling() {
@@ -183,7 +191,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_ALARM -> service.handleFailure(msg.arg1, msg.obj as Long)
+                MSG_FAILED -> service.handleFailure(msg.arg1, msg.obj as Long)
                 else -> super.handleMessage(msg)
             }
         }
@@ -194,8 +202,15 @@ class PowerConnectionService : Service(), BatteryListener {
 
         if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
             powerSince = now
-            powerFailureSince = NEVER
-            stopAlarm()
+            if (isLogging && (powerFailureSince > NEVER)) {
+                if (now >= powerFailureSince + prefTimeDelay) {
+                    powerFailureSince = NEVER
+                    handleRestore(plugged, now)
+                }
+            } else {
+                powerFailureSince = NEVER
+                stopAlarm()
+            }
         } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
             if (powerFailureSince <= NEVER) {
                 powerFailureSince = now
@@ -208,30 +223,30 @@ class PowerConnectionService : Service(), BatteryListener {
         when (plugged) {
             BatteryListener.BATTERY_PLUGGED_NONE -> showNotification(
                 R.string.plugged_unplugged,
-                R.drawable.stat_plug_disconnect
+                R.drawable.plug_unplugged
             )
 
             BatteryListener.BATTERY_PLUGGED_AC -> showNotification(
                 R.string.plugged_ac,
-                R.drawable.stat_plug_ac
+                R.drawable.plug_ac
             )
 
             BatteryListener.BATTERY_PLUGGED_DOCK -> showNotification(
                 R.string.plugged_dock,
-                R.drawable.stat_plug_dock
+                R.drawable.plug_dock
             )
 
             BatteryListener.BATTERY_PLUGGED_USB -> showNotification(
                 R.string.plugged_usb,
-                R.drawable.stat_plug_usb
+                R.drawable.plug_usb
             )
 
             BatteryListener.BATTERY_PLUGGED_WIRELESS -> showNotification(
                 R.string.plugged_wireless,
-                R.drawable.stat_plug_wireless
+                R.drawable.plug_wireless
             )
 
-            else -> showNotification(R.string.plugged_unknown, R.drawable.stat_plug_ac)
+            else -> showNotification(R.string.plugged_unknown, R.drawable.plug_unknown)
         }
 
         notifyClients(MSG_BATTERY_CHANGED, plugged)
@@ -294,8 +309,7 @@ class PowerConnectionService : Service(), BatteryListener {
         val contentIntent = createActivityIntent(context)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var channel: android.app.NotificationChannel? =
-                notificationManager.getNotificationChannel(CHANNEL_ID)
+            var channel = notificationManager.getNotificationChannel(CHANNEL_ID)
             if (channel == null) {
                 channel = android.app.NotificationChannel(
                     CHANNEL_ID,
@@ -307,11 +321,12 @@ class PowerConnectionService : Service(), BatteryListener {
         }
 
         // Set the info for the views that show in the notification panel.
+        val largeIcon = AppCompatResources.getDrawable(context, largeIconId)?.toBitmap()
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setOngoing(true)
             .setSilent(true)
-            .setLargeIcon(BitmapFactory.decodeResource(res, largeIconId))
-            .setSmallIcon(R.drawable.stat_launcher)  // the status icon
+            .setLargeIcon(largeIcon)
+            .setSmallIcon(R.drawable.ic_launcher_mono)  // the status icon
             .setTicker(text)  // the status text
             .setWhen(System.currentTimeMillis())  // the time stamp
             .setContentTitle(title)  // the label of the entry
@@ -415,30 +430,45 @@ class PowerConnectionService : Service(), BatteryListener {
         prefSmsRecipient = settings.smsRecipient
     }
 
-    private fun handleFailure(plugged: Int, millis: Long) {
-        settings.failureTime = millis
-        notifyClients(MSG_ALARM, plugged, 0, millis)
+    private fun handleFailure(plugged: Int, timeMillis: Long) {
+        settings.failureTime = timeMillis
+        settings.restoredTime = PowerPreferences.NEVER
+        notifyClients(MSG_FAILED, plugged, 0, timeMillis)
         playAlarm()
-        sendSMS(millis)
+        sendSMS(timeMillis)
     }
 
-    private fun sendSMS(millis: Long) {
+    private fun handleRestore(plugged: Int, timeMillis: Long) {
+        settings.restoredTime = timeMillis
+        notifyClients(MSG_RESTORED, plugged, 0, timeMillis)
+        stopAlarm()
+    }
+
+    private fun sendSMS(timeMillis: Long) {
         if (!prefSmsEnabled) return
         val context: Context = context
         notifySms = notifySms ?: NotifySms(context)
-        notifySms?.send(millis, prefSmsRecipient)
+        notifySms?.send(timeMillis, prefSmsRecipient)
     }
 
     @SuppressLint("WakelockTimeout")
     private fun acquireWakeLock() {
         var wakeLock = this.wakeLock
         if (wakeLock == null) {
-            val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+            val powerManager = getPowerManager()
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG_POWER)
             wakeLock.acquire()
             this.wakeLock = wakeLock
         } else {
             wakeLock.acquire()
+        }
+    }
+
+    private fun getPowerManager(): PowerManager {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(PowerManager::class.java)
+        } else {
+            getSystemService(Context.POWER_SERVICE) as PowerManager
         }
     }
 
@@ -494,9 +524,14 @@ class PowerConnectionService : Service(), BatteryListener {
         const val MSG_BATTERY_CHANGED = 11
 
         /**
-         * Command to the clients that the alarm has activated.
+         * Command to the clients that the power failed.
          */
-        const val MSG_ALARM = 12
+        const val MSG_FAILED = 12
+
+        /**
+         * Command to the clients that the power was restored.
+         */
+        const val MSG_RESTORED = 13
 
         /**
          * Command to the service that the shared preferences have changed.

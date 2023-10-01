@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Monitor falha energia</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Fonte de energia elétrica é uma estação de acoplamento.</string>
     <string name="plugged_usb">Fonte de energia elétrica é uma porta USB.</string>
     <string name="plugged_wireless">Fonte de energia elétrica é sem fio.</string>
+    <string name="power_failed_on">Falha de energia elétrica ocorreu na %1$s</string>
+    <string name="power_restored_on">Energia elétrica restaurada em %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Problemas</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Enviar SMS</string>
     <string name="sms_recipient_title">Destinatário de SMS</string>
-    <string name="sms_message">Falha de energia elétrica ocorreu na %1$s</string>
-
 </resources>

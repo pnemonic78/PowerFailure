@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">पावर विफलता मॉनिटर</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">विद्युत शक्ति स्रोत एक डॉकिंग स्टेशन है।</string>
     <string name="plugged_usb">विद्युत शक्ति स्रोत एक यूएसबी पोर्ट है।</string>
     <string name="plugged_wireless">विद्युत ऊर्जा स्रोत वायरलेस है।</string>
+    <string name="power_failed_on">%1$s पर विद्युत शक्ति की विफलता हुई</string>
+    <string name="power_restored_on">%1$s को विद्युत शक्ति बहाल की गई</string>
 
     <!-- About -->
     <string name="issue_title">मुद्दे</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">एसएमएस भेजें</string>
     <string name="sms_recipient_title">एसएमएस प्राप्तकर्ता</string>
-    <string name="sms_message">%1$s पर विद्युत शक्ति की विफलता हुई</string>
-
 </resources>

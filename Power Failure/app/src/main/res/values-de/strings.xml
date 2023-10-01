@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Stromausfallüberwachung</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Stromquelle ist eine Dockingstation.</string>
     <string name="plugged_usb">Stromquelle ist ein USB-Anschluss.</string>
     <string name="plugged_wireless">Stromquelle ist drahtlos.</string>
+    <string name="power_failed_on">Am Tag %1$s trat ein Stromausfall auf</string>
+    <string name="power_restored_on">Stromversorgung wurde am %1$s wiederhergestellt</string>
 
     <!-- About -->
     <string name="issue_title">Probleme</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">SMS senden</string>
     <string name="sms_recipient_title">SMS-Empfänger</string>
-    <string name="sms_message">Am Tag %1$s trat ein Stromausfall auf</string>
-
 </resources>

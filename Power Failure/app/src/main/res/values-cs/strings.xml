@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Monitor výpadku proudu</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Zdrojem elektrické energie je dokovací stanice.</string>
     <string name="plugged_usb">Zdrojem elektrické energie je port USB.</string>
     <string name="plugged_wireless">Zdrojem elektrické energie je bezdrátový.</string>
+    <string name="power_failed_on">K datu %1$s došlo k výpadku elektrického proudu</string>
+    <string name="power_restored_on">Elektrická energie byla obnovena dne %1$s</string>
 
     <!-- About -->
     <string name="issue_title">Problémy</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">Pošli SMS</string>
     <string name="sms_recipient_title">Příjemce SMS</string>
-    <string name="sms_message">K datu %1$s došlo k výpadku elektrického proudu</string>
-
 </resources>

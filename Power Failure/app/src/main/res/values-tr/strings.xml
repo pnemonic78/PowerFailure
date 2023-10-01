@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">Elektrik Kesintisi Monitörü</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">Elektrik güç kaynağı bir yerleştirme istasyonudur.</string>
     <string name="plugged_usb">Elektrik güç kaynağı bir USB bağlantı noktasıdır.</string>
     <string name="plugged_wireless">Elektrik güç kaynağı kablosuzdur.</string>
+    <string name="power_failed_on">%1$s tarihinde elektrik kesintisi meydana geldi</string>
+    <string name="power_restored_on">%1$s tarihinde elektrik yeniden sağlandı</string>
 
     <!-- About -->
     <string name="issue_title">Sorunlar</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">SMS gönder</string>
     <string name="sms_recipient_title">SMS Alıcısı</string>
-    <string name="sms_message">%1$s tarihinde elektrik kesintisi meydana geldi</string>
-
 </resources>

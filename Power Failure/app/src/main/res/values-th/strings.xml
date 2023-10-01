@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <!-- Application. -->
     <string name="app_name">การตรวจสอบไฟฟ้าขัดข้อง</string>
 
@@ -17,6 +16,8 @@
     <string name="plugged_dock">แหล่งพลังงานไฟฟ้าเป็นสถานีเชื่อมต่อ</string>
     <string name="plugged_usb">แหล่งพลังงานไฟฟ้าคือพอร์ต USB</string>
     <string name="plugged_wireless">แหล่งพลังงานไฟฟ้าเป็นแบบไร้สาย</string>
+    <string name="power_failed_on">เกิดไฟฟ้าขัดข้องในวันที่ %1$s</string>
+    <string name="power_restored_on">ไฟฟ้ากลับมาใช้งานได้อีกครั้งเมื่อ %1$s</string>
 
     <!-- About -->
     <string name="issue_title">ประเด็น</string>
@@ -28,6 +29,4 @@
     <!-- Message -->
     <string name="sms_title">ส่ง SMS</string>
     <string name="sms_recipient_title">ผู้รับ SMS</string>
-    <string name="sms_message">เกิดไฟฟ้าขัดข้องในวันที่ %1$s</string>
-
 </resources>
