@@ -6,16 +6,17 @@
         android:title="@string/version_title">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="@string/support_url"/>
+            android:data="@string/support_url" />
     </Preference>
     <Preference
+        android:enabled="false"
         android:icon="@drawable/ic_settings_bug"
         android:key="about.issue"
         android:summary="@string/issue_summary"
         android:title="@string/issue_title">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="@string/issue_url"/>
+            android:data="@string/issue_url" />
     </Preference>
 
 </PreferenceScreen>
