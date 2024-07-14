@@ -3,16 +3,17 @@ plugins {
     kotlin("android")
 }
 
-val versionMajor = (project.properties["APP_VERSION_MAJOR"] as String).toInt()
-val versionMinor = (project.properties["APP_VERSION_MINOR"] as String).toInt()
+val versionMajor = project.properties["APP_VERSION_MAJOR"].toString().toInt()
+val versionMinor = project.properties["APP_VERSION_MINOR"].toString().toInt()
 
 android {
-    compileSdk = BuildVersions.compileSdkVersion
+    namespace = "net.sf.power.monitor"
+    compileSdk = BuildVersions.compileSdk
 
     defaultConfig {
         applicationId = "net.sf.power.monitor"
-        minSdk = BuildVersions.minSdkVersion
-        targetSdk = BuildVersions.targetSdkVersion
+        minSdk = BuildVersions.minSdk
+        targetSdk = BuildVersions.targetSdk
         versionCode = versionMajor * 100 + versionMinor
         versionName = "${versionMajor}." + versionMinor.toString().padStart(2, '0')
 
@@ -85,18 +86,6 @@ android {
         viewBinding = true
     }
 
-    sourceSets {
-        getByName("androidTest") {
-            java { srcDir(file("src/androidTest/kotlin")) }
-        }
-        getByName("main") {
-            java { srcDir(file("src/main/kotlin")) }
-        }
-        getByName("test") {
-            java { srcDir(file("src/test/kotlin")) }
-        }
-    }
-
     compileOptions {
         sourceCompatibility = BuildVersions.jvm
         targetCompatibility = BuildVersions.jvm
@@ -122,8 +111,8 @@ android {
 
 dependencies {
     implementation(project(":android-lib:lib"))
-    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.google.android.material:material:1.12.0")
 
     // Testing
-    testImplementation("junit:junit:${BuildVersions.junitVersion}")
+    testImplementation("junit:junit:${BuildVersions.junit}")
 }

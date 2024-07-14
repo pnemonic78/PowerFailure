@@ -14,7 +14,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
-import net.sf.power.monitor.R
 
 class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     Preference(context, attrs, defStyleAttr) {
@@ -22,7 +21,7 @@ class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: 
     constructor(context: Context, attrs: AttributeSet?) : this(
         context,
         attrs,
-        R.attr.preferenceStyle
+        androidx.preference.R.attr.preferenceStyle
     )
 
     constructor(context: Context) : this(context, null)

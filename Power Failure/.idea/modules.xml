@@ -4,6 +4,10 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Power_Failure.iml" filepath="$PROJECT_DIR$/.idea/modules/Power_Failure.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/Power_Failure.android-lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.main.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/kotlin/Power_Failure.android-lib.kotlin.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.androidTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.main.iml" filepath="$PROJECT_DIR$/.idea/modules/android-lib/lib/Power_Failure.android-lib.lib.main.iml" />

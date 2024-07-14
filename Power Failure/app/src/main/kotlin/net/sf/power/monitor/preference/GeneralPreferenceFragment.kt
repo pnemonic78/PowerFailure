@@ -49,8 +49,6 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
 
-        initList(PowerPreferences.KEY_FAILURE_DELAY)
-
         reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
         smsPreference = initSmsFeature()
         recipientPreference = initSmsRecipient()

@@ -23,6 +23,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -107,7 +108,11 @@ class PowerConnectionService : Service(), BatteryListener {
 
         val filter = IntentFilter()
         filter.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
-        registerReceiver(receiver, filter, null, handler)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, filter, RECEIVER_NOT_EXPORTED)
+        } else {
+            registerReceiver(receiver, filter, null, handler)
+        }
         onPreferencesChanged()
 
         stopAlarm()
@@ -336,7 +341,21 @@ class PowerConnectionService : Service(), BatteryListener {
             .build()
 
         // Send the notification.
-        startForeground(ID_NOTIFY, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            startForeground(
+                ID_NOTIFY,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                ID_NOTIFY,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE
+            )
+        } else {
+            startForeground(ID_NOTIFY, notification)
+        }
     }
 
     private fun createActivityIntent(context: Context): PendingIntent? {

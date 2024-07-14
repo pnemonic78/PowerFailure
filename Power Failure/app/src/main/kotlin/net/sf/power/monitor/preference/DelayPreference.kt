@@ -35,7 +35,7 @@ import net.sf.power.monitor.R
 class DelayPreference(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) : NumberPickerPreference(context, attrs, defStyleAttr, defStyleRes) {
 
     @SuppressLint("RestrictedApi")
-    constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs, TypedArrayUtils.getAttr(context, R.attr.dialogPreferenceStyle, android.R.attr.dialogPreferenceStyle))
+    constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs, TypedArrayUtils.getAttr(context, androidx.preference.R.attr.dialogPreferenceStyle, android.R.attr.dialogPreferenceStyle))
 
     constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 

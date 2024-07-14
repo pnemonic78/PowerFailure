@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <net.sf.power.monitor.preference.DelayPreference
         android:defaultValue="@integer/delay_defaultValue"
         android:icon="@drawable/ic_settings_alarm"
         android:key="delay"
-        android:title="@string/delay_title" />
+        android:title="@string/delay_title"
+        app:useSimpleSummaryProvider="true" />
     <com.github.preference.RingtonePreference
         android:defaultValue="@string/ringtone_tone_defaultValue"
         android:icon="@drawable/ic_settings_tone"
