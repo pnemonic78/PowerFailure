@@ -14,6 +14,7 @@ android {
         applicationId = "net.sf.power.monitor"
         minSdk = BuildVersions.minSdk
         targetSdk = BuildVersions.targetSdk
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = versionMajor * 100 + versionMinor
         versionName = "${versionMajor}." + versionMinor.toString().padStart(2, '0')
 
@@ -115,4 +116,8 @@ dependencies {
 
     // Testing
     testImplementation("junit:junit:${BuildVersions.junit}")
+    androidTestImplementation("androidx.test:core:${BuildVersions.androidTest}")
+    androidTestImplementation("androidx.test:rules:${BuildVersions.androidTest}")
+    androidTestImplementation("androidx.test:runner:${BuildVersions.androidTest}")
+    androidTestImplementation("androidx.test.ext:junit:${BuildVersions.junitExt}")
 }
