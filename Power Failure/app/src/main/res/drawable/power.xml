@@ -2,20 +2,20 @@
 <level-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/power_unknown"
-        android:maxLevel="0"/>
+        android:maxLevel="0" />
     <item
         android:drawable="@drawable/power_unplugged"
-        android:maxLevel="1"/>
+        android:maxLevel="1" />
     <item
         android:drawable="@drawable/power_ac"
-        android:maxLevel="2"/>
+        android:maxLevel="2" />
     <item
         android:drawable="@drawable/power_usb"
-        android:maxLevel="3"/>
+        android:maxLevel="3" />
     <item
         android:drawable="@drawable/power_wireless"
-        android:maxLevel="4"/>
+        android:maxLevel="4" />
     <item
         android:drawable="@drawable/power_dock"
-        android:maxLevel="5"/>
+        android:maxLevel="5" />
 </level-list>

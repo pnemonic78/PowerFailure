@@ -3,9 +3,11 @@
 
     <Preference
         android:fragment="net.sf.power.monitor.preference.GeneralPreferenceFragment"
-        android:title="@string/pref_general_title"/>
+        android:icon="@drawable/ic_settings_general"
+        android:title="@string/pref_general_title" />
     <Preference
         android:fragment="net.sf.power.monitor.preference.AboutPreferenceFragment"
-        android:title="@string/preferences_about_title"/>
+        android:icon="@drawable/ic_settings_about"
+        android:title="@string/preferences_about_title" />
 
 </PreferenceScreen>

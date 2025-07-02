@@ -5,5 +5,5 @@
         android:endColor="@color/plugged_end"
         android:gradientRadius="@dimen/power_main_gradientRadius"
         android:startColor="@color/plugged_start"
-        android:type="radial"/>
+        android:type="radial" />
 </shape>
