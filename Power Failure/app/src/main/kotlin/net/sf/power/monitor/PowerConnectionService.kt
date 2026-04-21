@@ -350,6 +350,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
             )
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            @Suppress("DEPRECATION")
             startForeground(
                 ID_NOTIFY,
                 notification,
@@ -489,7 +490,7 @@ class PowerConnectionService : Service(), BatteryListener {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getSystemService(PowerManager::class.java)
         } else {
-            getSystemService(Context.POWER_SERVICE) as PowerManager
+            getSystemService(POWER_SERVICE) as PowerManager
         }
     }
 

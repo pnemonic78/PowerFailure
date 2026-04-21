@@ -1,6 +1,8 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
-    id("com.android.application")
-    kotlin("android")
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
 }
 
 val versionMajor = project.properties["APP_VERSION_MAJOR"].toString().toInt()
@@ -8,104 +10,108 @@ val versionMinor = project.properties["APP_VERSION_MINOR"].toString().toInt()
 
 android {
     namespace = "net.sf.power.monitor"
-    compileSdk = BuildVersions.compileSdk
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "net.sf.power.monitor"
-        minSdk = BuildVersions.minSdk
-        targetSdk = BuildVersions.targetSdk
+        minSdk = libs.versions.minSdk.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        versionCode = versionMajor * 100 + versionMinor
-        versionName = "${versionMajor}." + versionMinor.toString().padStart(2, '0')
+        versionCode = (versionMajor * 100) + versionMinor
+        versionName = "${versionMajor}.${versionMinor}"
 
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField("Boolean", "FEATURE_SMS", "true")
 
-        resourceConfigurations += listOf(
-            "af",
-            "ar",
-            "bg",
-            "cs",
-            "da",
-            "de",
-            "el",
-            "es",
-            "et",
-            "fa",
-            "fi",
-            "fr",
-            "hi",
-            "hu",
-            "in",
-            "it",
-            "iw",
-            "ja",
-            "ko",
-            "lt",
-            "lv",
-            "ms",
-            "nb",
-            "nl",
-            "pl",
-            "pt",
-            "ro",
-            "ru",
-            "sv",
-            "th",
-            "tr",
-            "uk",
-            "vi",
-            "zh",
-            "zu"
-        )
-    }
-
-    signingConfigs {
-        create("release") {
-            storeFile = file("../release.keystore")
-            storePassword = project.properties["STORE_PASSWORD_RELEASE"] as String
-            keyAlias = "release"
-            keyPassword = project.properties["KEY_PASSWORD_RELEASE"] as String
+        androidResources {
+            localeFilters += setOf(
+                "af",
+                "ar",
+                "bg",
+                "cs",
+                "da",
+                "de",
+                "el",
+                "es",
+                "et",
+                "fa",
+                "fi",
+                "fr",
+                "hi",
+                "hu",
+                "in",
+                "it",
+                "iw",
+                "ja",
+                "ko",
+                "lt",
+                "lv",
+                "ms",
+                "nb",
+                "nl",
+                "pl",
+                "pt",
+                "ro",
+                "ru",
+                "sv",
+                "th",
+                "tr",
+                "uk",
+                "vi",
+                "zh",
+                "zu"
+            )
         }
-    }
 
-    buildTypes {
-        getByName("debug") {
-            applicationIdSuffix = ".debug"
+        signingConfigs {
+            create("release") {
+                storeFile = file("../release.keystore")
+                storePassword = project.properties["STORE_PASSWORD_RELEASE"] as String
+                keyAlias = "release"
+                keyPassword = project.properties["KEY_PASSWORD_RELEASE"] as String
+            }
         }
-        getByName("release") {
-            // disabled until fix proguard issues: minifyEnabled true
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"))
-            proguardFiles("proguard-rules.pro")
-            signingConfig = signingConfigs.getByName("release")
+
+        buildTypes {
+            getByName("debug") {
+                applicationIdSuffix = ".debug"
+            }
+            getByName("release") {
+                // disabled until fix proguard issues: minifyEnabled true
+                proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+                proguardFiles("proguard-rules.pro")
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
-    }
 
-    buildFeatures {
-        buildConfig = true
-        viewBinding = true
-    }
-
-    compileOptions {
-        sourceCompatibility = BuildVersions.jvm
-        targetCompatibility = BuildVersions.jvm
-    }
-
-    kotlinOptions {
-        jvmTarget = BuildVersions.jvm.toString()
-    }
-
-    flavorDimensions += "privacy"
-
-    productFlavors {
-        create("google") {
-            dimension = "privacy"
-            buildConfigField("Boolean", "FEATURE_SMS", "false")
+        buildFeatures {
+            buildConfig = true
+            viewBinding = true
         }
-        create("regular") {
-            dimension = "privacy"
-            isDefault = true
+
+        compileOptions {
+            sourceCompatibility = BuildVersions.jvm
+            targetCompatibility = BuildVersions.jvm
+        }
+
+        kotlin {
+            compilerOptions {
+                jvmTarget = JvmTarget.JVM_1_8
+            }
+        }
+
+        flavorDimensions += "privacy"
+
+        productFlavors {
+            create("google") {
+                dimension = "privacy"
+                buildConfigField("Boolean", "FEATURE_SMS", "false")
+            }
+            create("regular") {
+                dimension = "privacy"
+                isDefault = true
+            }
         }
     }
 }
@@ -113,11 +119,8 @@ android {
 dependencies {
     implementation(project(":android-lib:lib"))
     implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.log.timber)
 
-    // Testing
-    testImplementation("junit:junit:${BuildVersions.junit}")
-    androidTestImplementation("androidx.test:core:${BuildVersions.androidTest}")
-    androidTestImplementation("androidx.test:rules:${BuildVersions.androidTest}")
-    androidTestImplementation("androidx.test:runner:${BuildVersions.androidTest}")
-    androidTestImplementation("androidx.test.ext:junit:${BuildVersions.junitExt}")
+    testImplementation(libs.bundles.test)
+    androidTestImplementation(libs.bundles.test.android)
 }
