@@ -21,6 +21,7 @@ import android.text.format.DateUtils
 import com.github.media.RingtoneManager
 import com.github.preference.SimplePreferences
 import net.sf.power.monitor.R
+import androidx.core.net.toUri
 
 /**
  * Application settings.
@@ -46,7 +47,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
             if (!ringtoneManager.isIncludeExternal) {
                 path = ringtoneManager.filterInternal(path)
             }
-            return if (path.isNullOrEmpty()) null else Uri.parse(path)
+            return if (path.isNullOrEmpty()) null else path.toUri()
         }
 
     /**

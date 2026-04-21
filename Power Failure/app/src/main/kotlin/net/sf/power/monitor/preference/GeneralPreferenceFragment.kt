@@ -27,7 +27,7 @@ import androidx.core.content.PermissionChecker
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
-import com.github.preference.RingtonePreference
+import com.github.preference.PermitRingtonePreference
 import net.sf.power.monitor.BuildConfig
 import net.sf.power.monitor.R
 
@@ -38,7 +38,7 @@ import net.sf.power.monitor.R
 @Keep
 class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
-    private var reminderRingtonePreference: RingtonePreference? = null
+    private var reminderRingtonePreference: PermitRingtonePreference? = null
     private var smsPreference: SwitchPreference? = null
     private var recipientPreference: RecipientPreference? = null
 
@@ -49,7 +49,9 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
 
-        reminderRingtonePreference = initRingtone(PowerPreferences.KEY_RINGTONE_TONE)
+        reminderRingtonePreference = initRingtone<PermitRingtonePreference>(PowerPreferences.KEY_RINGTONE_TONE)!!.apply {
+            setRequestPermissionsCode(this@GeneralPreferenceFragment, REQUEST_PERMISSIONS)
+        }
         smsPreference = initSmsFeature()
         recipientPreference = initSmsRecipient()
 
@@ -137,5 +139,20 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == REQUEST_PERMISSIONS) {
+            reminderRingtonePreference?.onRequestPermissionsResult(permissions, grantResults)
+        }
+    }
+
+    companion object {
+        private const val REQUEST_PERMISSIONS = 0x702E // TONE
     }
 }
