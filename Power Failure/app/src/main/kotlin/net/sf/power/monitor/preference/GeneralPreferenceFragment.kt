@@ -113,14 +113,12 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
     }
 
     private fun checkPermissions(context: Context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PermissionChecker.checkSelfPermission(
-                    context,
-                    Manifest.permission.SEND_SMS
-                ) != PermissionChecker.PERMISSION_GRANTED
-            ) {
-                requestPermissionLauncher?.launch(Manifest.permission.SEND_SMS)
-            }
+        if (PermissionChecker.checkSelfPermission(
+                context,
+                Manifest.permission.SEND_SMS
+            ) != PermissionChecker.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher?.launch(Manifest.permission.SEND_SMS)
         }
     }
 

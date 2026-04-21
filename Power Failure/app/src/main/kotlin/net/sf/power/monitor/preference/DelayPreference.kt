@@ -15,12 +15,13 @@
  */
 package net.sf.power.monitor.preference
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.text.format.DateUtils
 import android.util.AttributeSet
-import androidx.core.content.res.TypedArrayUtils
+import androidx.annotation.AttrRes
+import androidx.annotation.StyleRes
 import com.github.preference.NumberPickerPreference
+import com.github.util.TypedValueUtils
 import net.sf.power.monitor.R
 
 /**
@@ -32,12 +33,16 @@ import net.sf.power.monitor.R
  *
  * @author Moshe Waisberg
  */
-class DelayPreference(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0) : NumberPickerPreference(context, attrs, defStyleAttr, defStyleRes) {
-
-    @SuppressLint("RestrictedApi")
-    constructor(context: Context, attrs: AttributeSet? = null) : this(context, attrs, TypedArrayUtils.getAttr(context, androidx.preference.R.attr.dialogPreferenceStyle, android.R.attr.dialogPreferenceStyle))
-
-    constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
+class DelayPreference @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    @AttrRes defStyleAttr: Int = TypedValueUtils.getAttr(
+        context,
+        androidx.preference.R.attr.dialogPreferenceStyle,
+        android.R.attr.dialogPreferenceStyle
+    ),
+    @StyleRes defStyleRes: Int = 0
+) : NumberPickerPreference(context, attrs, defStyleAttr, defStyleRes) {
 
     init {
         min = 1
@@ -49,7 +54,7 @@ class DelayPreference(context: Context, attrs: AttributeSet? = null, defStyleAtt
     override fun getPersistedInt(defaultReturnValue: Int): Int {
         return try {
             super.getPersistedInt(defaultReturnValue)
-        } catch (e: ClassCastException) {
+        } catch (_: ClassCastException) {
             val value = getPersistedString(null)
             return value?.toInt() ?: defaultReturnValue
         }

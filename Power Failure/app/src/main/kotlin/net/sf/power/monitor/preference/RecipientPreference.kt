@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.os.Build
 import android.provider.ContactsContract
 import android.util.AttributeSet
 import androidx.activity.result.ActivityResultLauncher
@@ -15,16 +14,11 @@ import androidx.core.content.PermissionChecker
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 
-class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
-    Preference(context, attrs, defStyleAttr) {
-
-    constructor(context: Context, attrs: AttributeSet?) : this(
-        context,
-        attrs,
-        androidx.preference.R.attr.preferenceStyle
-    )
-
-    constructor(context: Context) : this(context, null)
+class RecipientPreference @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = androidx.preference.R.attr.preferenceStyle
+) : Preference(context, attrs, defStyleAttr) {
 
     private var recipientValue: String? = null
     var recipient: String
@@ -112,15 +106,13 @@ class RecipientPreference(context: Context, attrs: AttributeSet?, defStyleAttr: 
 
     private fun checkPermissions(): Boolean {
         val context: Context = this.context
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (PermissionChecker.checkSelfPermission(
-                    context,
-                    Manifest.permission.READ_CONTACTS
-                ) != PermissionChecker.PERMISSION_GRANTED
-            ) {
-                requestPermissionLauncher?.launch(Manifest.permission.READ_CONTACTS)
-                return false
-            }
+        if (PermissionChecker.checkSelfPermission(
+                context,
+                Manifest.permission.READ_CONTACTS
+            ) != PermissionChecker.PERMISSION_GRANTED
+        ) {
+            requestPermissionLauncher?.launch(Manifest.permission.READ_CONTACTS)
+            return false
         }
         return true
     }

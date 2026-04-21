@@ -113,6 +113,7 @@ class PowerConnectionService : Service(), BatteryListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             registerReceiver(receiver, filter, RECEIVER_NOT_EXPORTED)
         } else {
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
             registerReceiver(receiver, filter, null, handler)
         }
         onPreferencesChanged()
@@ -134,11 +135,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun getNotificationManager(): NotificationManager {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getSystemService(NotificationManager::class.java)
-        } else {
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        }
+        return getSystemService(NotificationManager::class.java)
     }
 
     private fun startPolling() {
@@ -487,11 +484,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun getPowerManager(): PowerManager {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getSystemService(PowerManager::class.java)
-        } else {
-            getSystemService(POWER_SERVICE) as PowerManager
-        }
+        return getSystemService(PowerManager::class.java)
     }
 
     private fun releaseWakeLock() {
