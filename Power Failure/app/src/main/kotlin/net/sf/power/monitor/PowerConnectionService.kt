@@ -35,6 +35,8 @@ import android.os.Messenger
 import android.os.PowerManager
 import android.os.RemoteException
 import android.text.format.DateUtils
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -68,8 +70,8 @@ class PowerConnectionService : Service(), BatteryListener {
      */
     private val clients = ArrayList<Messenger>()
     private lateinit var notificationManager: NotificationManager
-    private var notificationTextId: Int = 0
-    private var notificationIconId: Int = 0
+    @StringRes private var notificationTextId: Int = 0
+    @DrawableRes private var notificationIconId: Int = 0
     private var powerSince: Long = NEVER
     private var powerFailureSince: Long = NEVER
     private var isLogging: Boolean = false
@@ -295,7 +297,7 @@ class PowerConnectionService : Service(), BatteryListener {
      * @param textId      the text resource id.
      * @param largeIconId the large icon resource id.
      */
-    private fun showNotification(textId: Int, largeIconId: Int) {
+    private fun showNotification(@StringRes textId: Int, @DrawableRes largeIconId: Int) {
         // Are we already showing the notification?
         // Updating with same notification info causes flashing.
         if (notificationTextId == textId && notificationIconId == largeIconId) {
