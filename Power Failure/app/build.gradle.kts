@@ -63,62 +63,62 @@ android {
                 "zu"
             )
         }
+    }
 
-        signingConfigs {
-            create("release") {
-                storeFile = file("../release.keystore")
-                storePassword = project.properties["STORE_PASSWORD_RELEASE"] as String
-                keyAlias = "release"
-                keyPassword = project.properties["KEY_PASSWORD_RELEASE"] as String
-            }
+    signingConfigs {
+        create("release") {
+            storeFile = file("../release.keystore")
+            storePassword = project.properties["STORE_PASSWORD_RELEASE"] as String
+            keyAlias = "release"
+            keyPassword = project.properties["KEY_PASSWORD_RELEASE"] as String
         }
+    }
 
-        buildTypes {
-            getByName("debug") {
-                applicationIdSuffix = ".debug"
-            }
-            getByName("release") {
-                // disabled until fix proguard issues: minifyEnabled true
-                proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
-                proguardFiles("proguard-rules.pro")
-                signingConfig = signingConfigs.getByName("release")
-            }
+    buildTypes {
+        getByName("debug") {
+            applicationIdSuffix = ".debug"
         }
-
-        buildFeatures {
-            buildConfig = true
-            viewBinding = true
+        getByName("release") {
+            // disabled until fix proguard issues: minifyEnabled true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
+            proguardFiles("proguard-rules.pro")
+            signingConfig = signingConfigs.getByName("release")
         }
+    }
 
-        compileOptions {
-            sourceCompatibility = BuildVersions.jvm
-            targetCompatibility = BuildVersions.jvm
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+
+    compileOptions {
+        sourceCompatibility = BuildVersions.jvm
+        targetCompatibility = BuildVersions.jvm
+    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget(BuildVersions.jvm.toString())
         }
+    }
 
-        kotlin {
-            compilerOptions {
-                jvmTarget = JvmTarget.JVM_1_8
-            }
+    flavorDimensions += "privacy"
+
+    productFlavors {
+        create("google") {
+            dimension = "privacy"
+            buildConfigField("Boolean", "FEATURE_SMS", "false")
         }
-
-        flavorDimensions += "privacy"
-
-        productFlavors {
-            create("google") {
-                dimension = "privacy"
-                buildConfigField("Boolean", "FEATURE_SMS", "false")
-            }
-            create("regular") {
-                dimension = "privacy"
-                isDefault = true
-            }
+        create("regular") {
+            dimension = "privacy"
+            isDefault = true
         }
     }
 }
 
 dependencies {
     implementation(project(":android-lib:lib"))
-    implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.material)
     implementation(libs.log.timber)
 
     testImplementation(libs.bundles.test)
