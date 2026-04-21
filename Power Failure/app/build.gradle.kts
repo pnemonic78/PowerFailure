@@ -5,6 +5,7 @@ import java.util.Locale
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.crashlytics)
     alias(libs.plugins.google.services)
 }
@@ -14,12 +15,12 @@ val versionMinor = project.properties["APP_VERSION_MINOR"].toString().toInt()
 
 android {
     namespace = "net.sf.power.monitor"
-    compileSdk = libs.versions.compileSdk.get().toInt()
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "net.sf.power.monitor"
-        minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+        minSdk = libs.versions.android.minSdk.get().toInt()
+        targetSdk = libs.versions.android.compileSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = (versionMajor * 100) + versionMinor
         versionName = "${versionMajor}.${versionMinor}"
@@ -94,6 +95,7 @@ android {
     buildFeatures {
         buildConfig = true
         viewBinding = true
+        compose = true
     }
 
     compileOptions {
@@ -135,6 +137,8 @@ dependencies {
     implementation(project(":android-lib:lib"))
     implementation(libs.material)
     implementation(libs.log.timber)
+
+    implementation(libs.bundles.compose)
 
     testImplementation(libs.bundles.test)
     androidTestImplementation(libs.bundles.test.android)

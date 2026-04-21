@@ -22,20 +22,38 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
-import android.graphics.drawable.Drawable
-import android.os.*
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.os.IBinder
+import android.os.Looper
+import android.os.Message
+import android.os.Messenger
+import android.os.RemoteException
 import android.text.format.DateUtils
-import android.view.Menu
-import android.view.MenuItem
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
-import java.lang.ref.WeakReference
+import net.sf.power.monitor.compose.AppTheme
 import net.sf.power.monitor.databinding.ActivityMainBinding
+import net.sf.power.monitor.menu.ActionsMenuCollapsed
+import net.sf.power.monitor.menu.SettingsButton
+import net.sf.power.monitor.menu.StartButton
+import net.sf.power.monitor.menu.StopButton
+import net.sf.power.monitor.menu.TestButton
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 /**
  * Main activity.
@@ -45,9 +63,7 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity(), BatteryListener {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var toolbarBackground: Drawable
-    private var menuItemStart: MenuItem? = null
-    private var menuItemStop: MenuItem? = null
+    private var isPolling by mutableStateOf(false)
 
     private lateinit var handler: Handler
 
@@ -94,20 +110,14 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         val context: Context = this
-
-        toolbarBackground = ContextCompat.getDrawable(context, R.drawable.bg_power_toolbar)!!
-        toolbarBackground.level = LEVEL_UNKNOWN
-        supportActionBar?.setBackgroundDrawable(toolbarBackground)
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         this.binding = binding
         setContentView(binding.root)
-        val mainView = binding.main
-        val mainBackground = mainView.background
-        mainBackground.level = LEVEL_UNKNOWN
-        binding.plugged.setImageLevel(LEVEL_UNKNOWN)
+        initView(binding)
 
         handler = MainHandler(this)
         messenger = Messenger(handler)
@@ -123,6 +133,47 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
+    private fun initView(binding: ActivityMainBinding) {
+        val mainView = binding.main
+        val mainBackground = mainView.background
+        mainBackground.level = LEVEL_UNKNOWN
+        binding.plugged.setImageLevel(LEVEL_UNKNOWN)
+
+        ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        val actionBar = binding.actionBar
+        actionBar.setContent {
+            AppTheme {
+                ActionsMenuCollapsed { spacing ->
+                    if (BuildConfig.DEBUG) {
+                        TestButton(onClick = {
+                            handler.sendEmptyMessage(MainHandler.MSG_TEST)
+                        })
+                        Spacer(modifier = Modifier.width(spacing))
+                    }
+                    if (isPolling) {
+                        StopButton(onClick = {
+                            handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
+                        })
+                        Spacer(modifier = Modifier.width(spacing))
+                    } else {
+                        StartButton(onClick = {
+                            handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
+                        })
+                        Spacer(modifier = Modifier.width(spacing))
+                    }
+                    SettingsButton(onClick = {
+                        handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
+                    })
+                }
+            }
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         bindService()
@@ -133,12 +184,25 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         unbindService()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        try {
+            notifyService(PowerConnectionService.MSG_GET_STATUS_MONITOR)
+        } catch (_: RemoteException) {
+            // In this case the service has crashed before we could even
+            // do anything with it; we can count on soon being
+            // disconnected (and then reconnected if it can be restarted)
+            // so there is no need to do anything here.
+        }
+    }
+
     private fun startMonitor() {
         // We want to monitor the service for as long as we are connected to it.
         try {
             notifyService(PowerConnectionService.MSG_START_MONITOR)
             setMonitorStatus(true)
-        } catch (e: RemoteException) {
+        } catch (_: RemoteException) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
             // disconnected (and then reconnected if it can be restarted)
@@ -150,7 +214,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         try {
             notifyService(PowerConnectionService.MSG_STOP_MONITOR)
             setMonitorStatus(false)
-        } catch (e: RemoteException) {
+        } catch (_: RemoteException) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
             // disconnected (and then reconnected if it can be restarted)
@@ -159,14 +223,12 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun setMonitorStatus(polling: Boolean) {
+        this.isPolling = polling
         val mainView = binding.main
         val mainBackground = mainView.background
 
-        toolbarBackground.level = LEVEL_UNKNOWN
         mainBackground.level = LEVEL_UNKNOWN
         binding.plugged.setImageLevel(LEVEL_UNKNOWN)
-        menuItemStart?.isVisible = !polling
-        menuItemStop?.isVisible = polling
 
         @DrawableRes val iconId =
             if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
@@ -183,42 +245,36 @@ class MainActivity : AppCompatActivity(), BatteryListener {
 
         when (plugged) {
             BatteryListener.BATTERY_PLUGGED_NONE -> {
-                toolbarBackground.level = LEVEL_UNPLUGGED
                 mainBackground.level = LEVEL_UNPLUGGED
                 pluggedView.setImageLevel(LEVEL_UNPLUGGED)
                 pluggedView.contentDescription = getText(R.string.plugged_unplugged)
             }
 
             BatteryListener.BATTERY_PLUGGED_AC -> {
-                toolbarBackground.level = LEVEL_PLUGGED_AC
                 mainBackground.level = LEVEL_PLUGGED_AC
                 pluggedView.setImageLevel(LEVEL_PLUGGED_AC)
                 pluggedView.contentDescription = getText(R.string.plugged_ac)
             }
 
             BatteryListener.BATTERY_PLUGGED_DOCK -> {
-                toolbarBackground.level = LEVEL_PLUGGED_DOCK
                 mainBackground.level = LEVEL_PLUGGED_DOCK
                 pluggedView.setImageLevel(LEVEL_PLUGGED_DOCK)
                 pluggedView.contentDescription = getText(R.string.plugged_dock)
             }
 
             BatteryListener.BATTERY_PLUGGED_USB -> {
-                toolbarBackground.level = LEVEL_PLUGGED_USB
                 mainBackground.level = LEVEL_PLUGGED_USB
                 pluggedView.setImageLevel(LEVEL_PLUGGED_USB)
                 pluggedView.contentDescription = getText(R.string.plugged_usb)
             }
 
             BatteryListener.BATTERY_PLUGGED_WIRELESS -> {
-                toolbarBackground.level = LEVEL_PLUGGED_WIRELESS
                 mainBackground.level = LEVEL_PLUGGED_WIRELESS
                 pluggedView.setImageLevel(LEVEL_PLUGGED_WIRELESS)
                 pluggedView.contentDescription = getText(R.string.plugged_wireless)
             }
 
             else -> {
-                toolbarBackground.level = LEVEL_PLUGGED_UNKNOWN
                 mainBackground.level = LEVEL_PLUGGED_UNKNOWN
                 pluggedView.setImageLevel(LEVEL_PLUGGED_UNKNOWN)
                 pluggedView.contentDescription = getText(R.string.plugged_unknown)
@@ -257,19 +313,23 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                     )
                 )
 
+                MSG_TEST -> {
+                    activity.notifyService(MSG_FAILED, 0, 0, System.currentTimeMillis())
+                }
+
                 else -> super.handleMessage(msg)
             }
         }
 
         companion object {
-            internal const val MSG_FAILED = PowerConnectionService.MSG_FAILED
-            internal const val MSG_RESTORED = PowerConnectionService.MSG_RESTORED
-            internal const val MSG_SETTINGS = 1000
-            internal const val MSG_SET_STATUS_MONITOR =
-                PowerConnectionService.MSG_SET_STATUS_MONITOR
-            internal const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
-            internal const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
-            internal const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
+            const val MSG_FAILED = PowerConnectionService.MSG_FAILED
+            const val MSG_RESTORED = PowerConnectionService.MSG_RESTORED
+            const val MSG_SETTINGS = 1000
+            const val MSG_TEST = 1001
+            const val MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR
+            const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
+            const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
+            const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
         }
     }
 
@@ -288,7 +348,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             startService(intent)
         }
 
-        bindService(intent, connection, Context.BIND_AUTO_CREATE)
+        bindService(intent, connection, BIND_AUTO_CREATE)
         serviceIsBound = true
     }
 
@@ -313,7 +373,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         try {
             notifyService(PowerConnectionService.MSG_REGISTER_CLIENT)
             Timber.i("Registered with service.")
-        } catch (e: RemoteException) {
+        } catch (_: RemoteException) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
             // disconnected (and then reconnected if it can be restarted)
@@ -328,58 +388,9 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         try {
             notifyService(PowerConnectionService.MSG_UNREGISTER_CLIENT)
             Timber.i("Unregistered from service.")
-        } catch (e: RemoteException) {
+        } catch (_: RemoteException) {
             // There is nothing special we need to do if the service has crashed.
         }
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-
-        val menuItemForce = menu.findItem(R.id.menu_force)
-        if (BuildConfig.DEBUG) {
-            menuItemForce.isEnabled = true
-            menuItemForce.isVisible = true
-        }
-        menuItemStart = menu.findItem(R.id.menu_start)
-        menuItemStop = menu.findItem(R.id.menu_stop)
-
-        try {
-            notifyService(PowerConnectionService.MSG_GET_STATUS_MONITOR)
-        } catch (e: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
-
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_start -> {
-                handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
-                return true
-            }
-
-            R.id.menu_stop -> {
-                handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
-                return true
-            }
-
-            R.id.menu_settings -> {
-                handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
-                return true
-            }
-
-            R.id.menu_force -> {
-                notifyService(MainHandler.MSG_FAILED, 0, 0, System.currentTimeMillis())
-                return true
-            }
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 
     @Throws(RemoteException::class)
@@ -440,11 +451,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun getNotificationManager(): NotificationManager {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            getSystemService(NotificationManager::class.java)
-        } else {
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        }
+        return getSystemService(NotificationManager::class.java)
     }
 
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
