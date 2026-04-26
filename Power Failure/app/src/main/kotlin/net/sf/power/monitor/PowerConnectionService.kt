@@ -40,6 +40,9 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
+import net.sf.power.monitor.model.BatteryListener
+import net.sf.power.monitor.model.BatteryState
+import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
 import net.sf.power.monitor.notify.NotifyVibrate
@@ -75,14 +78,14 @@ class PowerConnectionService : Service(), BatteryListener {
 
     @DrawableRes
     private var notificationIconId: Int = 0
-    private var powerSince: Long = NEVER
-    private var powerFailureSince: Long = NEVER
+    private var powerSince: TimeMillis = NEVER
+    private var powerFailureSince: TimeMillis = NEVER
     private var isLogging: Boolean = false
     private lateinit var settings: PowerPreferences
     private var notifyAlarm: NotifyAlarm? = null
     private var notifySms: NotifySms? = null
     private var notifyVibrate: NotifyVibrate? = null
-    private var prefTimeDelay: Long = 0
+    private var prefTimeDelay: TimeMillis = 0
     private var prefRingtone: Uri? = null
     private var prefVibrate: Boolean = false
     private var prefSmsEnabled: Boolean = false
@@ -142,8 +145,6 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun startPolling() {
         Timber.v("start polling")
-        val context: Context = this
-        printBatteryStatus(context)
         if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
             pollBattery()
         }
@@ -159,10 +160,11 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun checkBatteryStatus() {
         val context: Context = this
-        printBatteryStatus(context)
+        val state = BatteryUtils.getState(context)
+        printBatteryStatus(state)
 
-        val plugged = BatteryUtils.getPlugged(context)
-        Message.obtain(handler, MSG_BATTERY_CHANGED, plugged, 0).sendToTarget()
+        val plugged = state.plugged
+        Message.obtain(handler, MSG_BATTERY_CHANGED, plugged.source, 0).sendToTarget()
 
         pollBattery()
     }
@@ -171,8 +173,8 @@ class PowerConnectionService : Service(), BatteryListener {
         handler.sendEmptyMessageDelayed(MSG_CHECK_BATTERY, POLL_RATE)
     }
 
-    private fun printBatteryStatus(context: Context) {
-        BatteryUtils.printStatus(context)
+    private fun printBatteryStatus(state: BatteryState) {
+        Timber.i("$state")
     }
 
     private class PowerConnectionHandler(service: PowerConnectionService) :
@@ -195,18 +197,18 @@ class PowerConnectionService : Service(), BatteryListener {
                 )
 
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
-                MSG_BATTERY_CHANGED -> service.onBatteryPlugged(msg.arg1)
+                MSG_BATTERY_CHANGED -> service.onBatteryPlugged(Plugged.of(msg.arg1))
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_FAILED -> service.handleFailure(msg.arg1, msg.obj as Long)
+                MSG_FAILED -> service.handleFailure(Plugged.of(msg.arg1,), msg.obj as TimeMillis)
                 else -> super.handleMessage(msg)
             }
         }
     }
 
-    override fun onBatteryPlugged(plugged: Int) {
+    override fun onBatteryPlugged(plugged: Plugged) {
         val now = System.currentTimeMillis()
 
-        if (plugged != BatteryListener.BATTERY_PLUGGED_NONE) {
+        if (plugged != Plugged.None) {
             powerSince = now
             if (isLogging && (powerFailureSince > NEVER)) {
                 if (now >= powerFailureSince + prefTimeDelay) {
@@ -227,27 +229,27 @@ class PowerConnectionService : Service(), BatteryListener {
         }
 
         when (plugged) {
-            BatteryListener.BATTERY_PLUGGED_NONE -> showNotification(
+            Plugged.None -> showNotification(
                 R.string.plugged_unplugged,
                 R.drawable.plug_unplugged
             )
 
-            BatteryListener.BATTERY_PLUGGED_AC -> showNotification(
+            Plugged.AC -> showNotification(
                 R.string.plugged_ac,
                 R.drawable.plug_ac
             )
 
-            BatteryListener.BATTERY_PLUGGED_DOCK -> showNotification(
+            Plugged.Dock -> showNotification(
                 R.string.plugged_dock,
                 R.drawable.plug_dock
             )
 
-            BatteryListener.BATTERY_PLUGGED_USB -> showNotification(
+            Plugged.USB -> showNotification(
                 R.string.plugged_usb,
                 R.drawable.plug_usb
             )
 
-            BatteryListener.BATTERY_PLUGGED_WIRELESS -> showNotification(
+            Plugged.Wireless -> showNotification(
                 R.string.plugged_wireless,
                 R.drawable.plug_wireless
             )
@@ -255,7 +257,7 @@ class PowerConnectionService : Service(), BatteryListener {
             else -> showNotification(R.string.plugged_unknown, R.drawable.plug_unknown)
         }
 
-        notifyClients(MSG_BATTERY_CHANGED, plugged)
+        notifyClients(MSG_BATTERY_CHANGED, plugged.source)
     }
 
     private fun playAlarm() {
@@ -451,21 +453,21 @@ class PowerConnectionService : Service(), BatteryListener {
         prefSmsRecipient = settings.smsRecipient
     }
 
-    private fun handleFailure(plugged: Int, timeMillis: Long) {
+    private fun handleFailure(plugged: Plugged, timeMillis: TimeMillis) {
         settings.failureTime = timeMillis
         settings.restoredTime = PowerPreferences.NEVER
-        notifyClients(MSG_FAILED, plugged, 0, timeMillis)
+        notifyClients(MSG_FAILED, plugged.source, 0, timeMillis)
         playAlarm()
         sendSMS(timeMillis)
     }
 
-    private fun handleRestore(plugged: Int, timeMillis: Long) {
+    private fun handleRestore(plugged: Plugged, timeMillis: TimeMillis) {
         settings.restoredTime = timeMillis
-        notifyClients(MSG_RESTORED, plugged, 0, timeMillis)
+        notifyClients(MSG_RESTORED, plugged.source, 0, timeMillis)
         stopAlarm()
     }
 
-    private fun sendSMS(timeMillis: Long) {
+    private fun sendSMS(timeMillis: TimeMillis) {
         if (!prefSmsEnabled) return
         val context: Context = this
         notifySms = notifySms ?: NotifySms(context)

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -18,6 +19,6 @@ class ApplicationTest {
     fun useAppContext() {
         // Context of the app under test.
         val appContext = ApplicationProvider.getApplicationContext<Context>()
-        Assert.assertEquals("net.sf.power.monitor.debug", appContext.getPackageName())
+        assertEquals("net.sf.power.monitor.debug", appContext.packageName)
     }
 }

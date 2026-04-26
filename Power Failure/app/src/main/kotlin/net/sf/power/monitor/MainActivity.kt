@@ -51,6 +51,8 @@ import net.sf.power.monitor.menu.SettingsButton
 import net.sf.power.monitor.menu.StartButton
 import net.sf.power.monitor.menu.StopButton
 import net.sf.power.monitor.menu.TestButton
+import net.sf.power.monitor.model.BatteryListener
+import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
@@ -238,37 +240,37 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         onBatteryPlugged(BatteryUtils.getPlugged(this))
     }
 
-    override fun onBatteryPlugged(plugged: Int) {
+    override fun onBatteryPlugged(plugged: Plugged) {
         val mainView = binding.main
         val mainBackground = mainView.background
         val pluggedView = binding.plugged
 
         when (plugged) {
-            BatteryListener.BATTERY_PLUGGED_NONE -> {
+            Plugged.None -> {
                 mainBackground.level = LEVEL_UNPLUGGED
                 pluggedView.setImageLevel(LEVEL_UNPLUGGED)
                 pluggedView.contentDescription = getText(R.string.plugged_unplugged)
             }
 
-            BatteryListener.BATTERY_PLUGGED_AC -> {
+            Plugged.AC -> {
                 mainBackground.level = LEVEL_PLUGGED_AC
                 pluggedView.setImageLevel(LEVEL_PLUGGED_AC)
                 pluggedView.contentDescription = getText(R.string.plugged_ac)
             }
 
-            BatteryListener.BATTERY_PLUGGED_DOCK -> {
+            Plugged.Dock -> {
                 mainBackground.level = LEVEL_PLUGGED_DOCK
                 pluggedView.setImageLevel(LEVEL_PLUGGED_DOCK)
                 pluggedView.contentDescription = getText(R.string.plugged_dock)
             }
 
-            BatteryListener.BATTERY_PLUGGED_USB -> {
+            Plugged.USB -> {
                 mainBackground.level = LEVEL_PLUGGED_USB
                 pluggedView.setImageLevel(LEVEL_PLUGGED_USB)
                 pluggedView.contentDescription = getText(R.string.plugged_usb)
             }
 
-            BatteryListener.BATTERY_PLUGGED_WIRELESS -> {
+            Plugged.Wireless -> {
                 mainBackground.level = LEVEL_PLUGGED_WIRELESS
                 pluggedView.setImageLevel(LEVEL_PLUGGED_WIRELESS)
                 pluggedView.contentDescription = getText(R.string.plugged_wireless)
@@ -290,27 +292,28 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             val activity = this.activity.get() ?: return
 
             when (msg.what) {
-                MSG_STATUS_CHANGED -> activity.onBatteryPlugged(msg.arg1)
+                MSG_STATUS_CHANGED -> activity.onBatteryPlugged(Plugged.of(msg.arg1))
+
                 MSG_START_MONITOR -> activity.startMonitor()
+
                 MSG_STOP_MONITOR -> activity.stopMonitor()
+
                 MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
+
                 MSG_FAILED -> {
                     val settings = activity.settings
-                    activity.showFailureTime(msg.obj as Long)
+                    activity.showFailureTime(msg.obj as TimeMillis)
                     activity.showRestoredTime(settings.restoredTime)
                 }
 
                 MSG_RESTORED -> {
                     val settings = activity.settings
                     activity.showFailureTime(settings.failureTime)
-                    activity.showRestoredTime(msg.obj as Long)
+                    activity.showRestoredTime(msg.obj as TimeMillis)
                 }
 
                 MSG_SETTINGS -> activity.startActivity(
-                    Intent(
-                        activity,
-                        PowerPreferenceActivity::class.java
-                    )
+                    Intent(activity, PowerPreferenceActivity::class.java)
                 )
 
                 MSG_TEST -> {
@@ -403,7 +406,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private fun showFailureTime(timeMillis: Long) {
+    private fun showFailureTime(timeMillis: TimeMillis) {
         val context: Context = this
         val timeView = binding.failedOn
         if (timeMillis > PowerPreferences.NEVER) {
@@ -419,7 +422,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private fun showRestoredTime(timeMillis: Long) {
+    private fun showRestoredTime(timeMillis: TimeMillis) {
         val context: Context = this
         val timeView = binding.restoredOn
         if (timeMillis > PowerPreferences.NEVER) {

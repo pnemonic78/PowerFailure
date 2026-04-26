@@ -22,6 +22,8 @@ import com.github.media.RingtoneManager
 import com.github.preference.SimplePreferences
 import net.sf.power.monitor.R
 import androidx.core.net.toUri
+import net.sf.power.monitor.TimeMillis
+import androidx.core.content.edit
 
 /**
  * Application settings.
@@ -66,13 +68,13 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      *
      * @return the time in milliseconds.
      */
-    val failureDelay: Long
+    val failureDelay: TimeMillis
         get() = try {
             preferences.getInt(
                 KEY_FAILURE_DELAY,
                 context.resources.getInteger(R.integer.delay_defaultValue)
             ).toLong() * DateUtils.SECOND_IN_MILLIS
-        } catch (e: ClassCastException) {
+        } catch (_: ClassCastException) {
             preferences.getString(
                 KEY_FAILURE_DELAY,
                 context.resources.getInteger(R.integer.delay_defaultValue).toString()
@@ -84,11 +86,11 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      *
      * @return the time in milliseconds.
      */
-    var failureTime: Long = NEVER
+    var failureTime: TimeMillis = NEVER
         get() = preferences.getLong(KEY_FAILURE_TIME, field)
         set(value) {
             field = value
-            preferences.edit().putLong(KEY_FAILURE_TIME, value).apply()
+            preferences.edit { putLong(KEY_FAILURE_TIME, value) }
         }
 
     /**
@@ -96,10 +98,10 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      *
      * @return the time in milliseconds.
      */
-    var restoredTime: Long
+    var restoredTime: TimeMillis
         get() = preferences.getLong(KEY_RESTORED_TIME, NEVER)
         set(value) {
-            preferences.edit().putLong(KEY_RESTORED_TIME, value).apply()
+            preferences.edit { putLong(KEY_RESTORED_TIME, value) }
         }
 
     /**
@@ -110,7 +112,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     var isSmsEnabled: Boolean
         get() = preferences.getBoolean(KEY_SMS_ENABLED, false)
         set(value) {
-            preferences.edit().putBoolean(KEY_SMS_ENABLED, value).apply()
+            preferences.edit { putBoolean(KEY_SMS_ENABLED, value) }
         }
 
     /**
@@ -121,7 +123,7 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
     var smsRecipient: String
         get() = preferences.getString(KEY_SMS_RECIPIENT, "") ?: ""
         set(value) {
-            preferences.edit().putString(KEY_SMS_RECIPIENT, value).apply()
+            preferences.edit { putString(KEY_SMS_RECIPIENT, value) }
         }
 
     companion object {
@@ -166,6 +168,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
          */
         const val ACTION_PREFERENCES_CHANGED = "net.sf.power.monitor.action.PREFERENCES_CHANGED"
 
-        const val NEVER = 0L
+        const val NEVER: TimeMillis = 0L
     }
 }

@@ -5,10 +5,11 @@ import android.os.Build
 import android.telephony.SmsManager
 import android.text.format.DateUtils
 import net.sf.power.monitor.R
+import net.sf.power.monitor.TimeMillis
 import timber.log.Timber
 
 class NotifySms(private val context: Context) {
-    fun send(timeInMillis: Long, destination: String) {
+    fun send(timeInMillis: TimeMillis, destination: String) {
         if (destination.isEmpty()) return
         val context: Context = context
 
