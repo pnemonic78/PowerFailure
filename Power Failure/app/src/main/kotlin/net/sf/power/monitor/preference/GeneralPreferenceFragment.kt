@@ -16,20 +16,18 @@
 package net.sf.power.monitor.preference
 
 import android.Manifest
-import android.content.Context
-import android.os.Build
 import android.os.Bundle
 import android.text.format.DateUtils
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
-import androidx.core.content.PermissionChecker
 import androidx.fragment.app.DialogFragment
 import androidx.preference.Preference
 import androidx.preference.SwitchPreference
 import com.github.preference.PermitRingtonePreference
 import net.sf.power.monitor.BuildConfig
 import net.sf.power.monitor.R
+import net.sf.power.monitor.preference.PowerPreferences.Companion.KEY_RINGTONE_TONE
 
 /**
  * This fragment shows the preferences for the General header.
@@ -38,40 +36,41 @@ import net.sf.power.monitor.R
 @Keep
 class GeneralPreferenceFragment : PowerPreferenceFragment() {
 
-    private var reminderRingtonePreference: PermitRingtonePreference? = null
+    private var ringtonePreference: PermitRingtonePreference? = null
     private var smsPreference: SwitchPreference? = null
     private var recipientPreference: RecipientPreference? = null
 
-    private var requestPermissionLauncher: ActivityResultLauncher<String>? = null
+    private var requestSmsPermissionLauncher: ActivityResultLauncher<String>? = null
 
     override val preferencesXml = R.xml.general_preferences
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         super.onCreatePreferences(savedInstanceState, rootKey)
 
-        reminderRingtonePreference = initRingtone<PermitRingtonePreference>(PowerPreferences.KEY_RINGTONE_TONE)!!.apply {
-            setRequestPermissionsCode(this@GeneralPreferenceFragment, REQUEST_PERMISSIONS)
+        ringtonePreference = initRingtone<PermitRingtonePreference>(KEY_RINGTONE_TONE)!!.apply {
+            markRequestPermissions(this@GeneralPreferenceFragment)
         }
         smsPreference = initSmsFeature()
         recipientPreference = initSmsRecipient()
 
-        this.requestPermissionLauncher =
-            registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
-                if (isGranted) {
-                    smsPreference?.isEnabled = true
-                } else if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS)) {
-                    smsPreference?.isEnabled = false
-                    // TODO explain that we need this permission to send SMS to a contact.
-                } else {
-                    smsPreference?.isEnabled = false
-                }
+        requestSmsPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            if (isGranted) {
+                smsPreference?.isEnabled = true
+            } else if (shouldShowRequestPermissionRationale(Manifest.permission.SEND_SMS)) {
+                smsPreference?.isEnabled = false
+                // TODO explain that we need this permission to send SMS to a contact.
+            } else {
+                smsPreference?.isEnabled = false
             }
+        }
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         if (preference === smsPreference) {
             if (newValue == true) {
-                checkPermissions(preference.context)
+                checkPermissions()
             }
         }
         return super.onPreferenceChange(preference, newValue)
@@ -112,14 +111,8 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         return preference
     }
 
-    private fun checkPermissions(context: Context) {
-        if (PermissionChecker.checkSelfPermission(
-                context,
-                Manifest.permission.SEND_SMS
-            ) != PermissionChecker.PERMISSION_GRANTED
-        ) {
-            requestPermissionLauncher?.launch(Manifest.permission.SEND_SMS)
-        }
+    private fun checkPermissions() {
+        requestSmsPermissionLauncher?.launch(Manifest.permission.SEND_SMS)
     }
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
@@ -137,20 +130,5 @@ class GeneralPreferenceFragment : PowerPreferenceFragment() {
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == REQUEST_PERMISSIONS) {
-            reminderRingtonePreference?.onRequestPermissionsResult(permissions, grantResults)
-        }
-    }
-
-    companion object {
-        private const val REQUEST_PERMISSIONS = 0x702E // TONE
     }
 }

@@ -43,6 +43,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import com.github.preference.PermitRingtonePreference
 import net.sf.power.monitor.compose.AppTheme
 import net.sf.power.monitor.databinding.ActivityMainBinding
 import net.sf.power.monitor.menu.ActionsMenuCollapsed
@@ -126,7 +127,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             initNotificationPermissions()
         }
-        //TODO init tone permission
+        PermitRingtonePreference.askPermission(this)
     }
 
     private fun initView(binding: ActivityMainBinding) {

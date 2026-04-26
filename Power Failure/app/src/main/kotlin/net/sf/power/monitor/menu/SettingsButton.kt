@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import net.sf.power.monitor.VoidCallback
+import com.github.lang.VoidCallback
 import net.sf.power.monitor.compose.AppTheme
 import net.sf.power.monitor.compose.colorButton
 import net.sf.power.monitor.compose.modifierButton
