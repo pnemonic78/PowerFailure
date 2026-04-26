@@ -65,12 +65,12 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     private lateinit var binding: ActivityMainBinding
     private var isPolling by mutableStateOf(false)
 
-    private lateinit var handler: Handler
+    private val handler: Handler = MainHandler(this)
 
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    private lateinit var messenger: Messenger
+    private val messenger: Messenger = Messenger(handler)
 
     /**
      * Messenger for communicating with service.
@@ -119,11 +119,6 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         setContentView(binding.root)
         initView(binding)
 
-        handler = MainHandler(this)
-        messenger = Messenger(handler)
-
-        onBatteryPlugged(BatteryUtils.getPlugged(context))
-
         settings = PowerPreferences(context)
         showFailureTime(settings.failureTime)
         showRestoredTime(settings.restoredTime)
@@ -131,9 +126,11 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             initNotificationPermissions()
         }
+        //TODO init tone permission
     }
 
     private fun initView(binding: ActivityMainBinding) {
+        val context: Context = binding.root.context
         val mainView = binding.main
         val mainBackground = mainView.background
         mainBackground.level = LEVEL_UNKNOWN
@@ -172,6 +169,8 @@ class MainActivity : AppCompatActivity(), BatteryListener {
                 }
             }
         }
+
+        onBatteryPlugged(BatteryUtils.getPlugged(context))
     }
 
     override fun onStart() {
@@ -341,14 +340,14 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         val context: Context = this
         val intent = Intent(context, PowerConnectionService::class.java)
 
-        //This will keep service running even after activity destroyed.
+        // This will keep the service running even after activity destroyed.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(intent)
         } else {
             startService(intent)
         }
 
-        bindService(intent, connection, BIND_AUTO_CREATE)
+        bindService(intent, connection, BIND_AUTO_CREATE or BIND_ADJUST_WITH_ACTIVITY)
         serviceIsBound = true
     }
 

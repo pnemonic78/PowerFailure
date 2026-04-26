@@ -40,12 +40,12 @@ import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
 import androidx.core.graphics.drawable.toBitmap
-import java.lang.ref.WeakReference
 import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
 import net.sf.power.monitor.notify.NotifyVibrate
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
+import java.lang.ref.WeakReference
 
 /**
  * Power connection events service.
@@ -57,21 +57,24 @@ import timber.log.Timber
  */
 class PowerConnectionService : Service(), BatteryListener {
 
-    private lateinit var context: Context
-    private lateinit var handler: Handler
+    private val handler: Handler = PowerConnectionHandler(this)
 
     /**
      * Target we publish for clients to send messages to IncomingHandler.
      */
-    private lateinit var messenger: Messenger
+    private val messenger: Messenger = Messenger(handler)
 
     /**
      * Keeps track of all current registered clients.
      */
     private val clients = ArrayList<Messenger>()
     private lateinit var notificationManager: NotificationManager
-    @StringRes private var notificationTextId: Int = 0
-    @DrawableRes private var notificationIconId: Int = 0
+
+    @StringRes
+    private var notificationTextId: Int = 0
+
+    @DrawableRes
+    private var notificationIconId: Int = 0
     private var powerSince: Long = NEVER
     private var powerFailureSince: Long = NEVER
     private var isLogging: Boolean = false
@@ -101,10 +104,8 @@ class PowerConnectionService : Service(), BatteryListener {
 
     override fun onCreate() {
         super.onCreate()
-        context = this
+        val context: Context = this
 
-        handler = PowerConnectionHandler(this)
-        messenger = Messenger(handler)
         notificationManager = getNotificationManager()
         settings = PowerPreferences(context)
 
@@ -119,6 +120,7 @@ class PowerConnectionService : Service(), BatteryListener {
         onPreferencesChanged()
 
         stopAlarm()
+        hideNotification()
         // Display a notification about us starting. We put an icon in the status bar.
         showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
         checkBatteryStatus()
@@ -140,7 +142,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun startPolling() {
         Timber.v("start polling")
-        val context: Context = context
+        val context: Context = this
         printBatteryStatus(context)
         if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
             pollBattery()
@@ -156,7 +158,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun checkBatteryStatus() {
-        val context: Context = context
+        val context: Context = this
         printBatteryStatus(context)
 
         val plugged = BatteryUtils.getPlugged(context)
@@ -258,7 +260,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun playAlarm() {
         Timber.v("play alarm")
-        val context: Context = context
+        val context: Context = this
         playSound(context)
         vibrate(context, prefVibrate)
     }
@@ -279,7 +281,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun stopAlarm() {
         Timber.v("stop alarm")
-        val context: Context = context
+        val context: Context = this
         stopSound()
         vibrate(context, false)
     }
@@ -303,7 +305,7 @@ class PowerConnectionService : Service(), BatteryListener {
         this.notificationTextId = textId
         this.notificationIconId = largeIconId
 
-        val context: Context = context
+        val context: Context = this
         val res = context.resources
 
         val title = res.getText(R.string.title_service)
@@ -336,7 +338,7 @@ class PowerConnectionService : Service(), BatteryListener {
             .setContentTitle(title)  // the label of the entry
             .setContentText(text)  // the contents of the entry
             .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-            .setLights(Color.RED, secondMs, secondMs)
+            .setLights(Color.RED, SECOND_MS, SECOND_MS)
             .build()
 
         // Send the notification.
@@ -375,8 +377,8 @@ class PowerConnectionService : Service(), BatteryListener {
      */
     private fun hideNotification() {
         notificationManager.cancel(ID_NOTIFY)
-        this.notificationTextId = 0
-        this.notificationIconId = 0
+        notificationTextId = 0
+        notificationIconId = 0
     }
 
     private fun registerClient(client: Messenger) {
@@ -465,7 +467,7 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun sendSMS(timeMillis: Long) {
         if (!prefSmsEnabled) return
-        val context: Context = context
+        val context: Context = this
         notifySms = notifySms ?: NotifySms(context)
         notifySms?.send(timeMillis, prefSmsRecipient)
     }
@@ -558,7 +560,7 @@ class PowerConnectionService : Service(), BatteryListener {
         private const val CHANNEL_ID = "power-failure"
         private const val TAG_POWER = "power:lock"
 
-        private const val secondMs = DateUtils.SECOND_IN_MILLIS.toInt()
+        private const val SECOND_MS = DateUtils.SECOND_IN_MILLIS.toInt()
         private const val NEVER = 0L
     }
 }

@@ -111,7 +111,7 @@ object BatteryUtils {
                 else -> plugged.toString()
             }
 
-            val present = extras.getBoolean(BatteryManager.EXTRA_PRESENT, false)
+            val hasBattery = extras.getBoolean(BatteryManager.EXTRA_PRESENT, false)
             val status = extras.getInt(BatteryManager.EXTRA_STATUS, -1)
             val statusLabel = when (status) {
                 BATTERY_STATUS_CHARGING -> "CHARGING"
@@ -121,7 +121,7 @@ object BatteryUtils {
                 BATTERY_STATUS_UNKNOWN -> "UNKNOWN"
                 else -> status.toString()
             }
-            Timber.i("{plugged:$pluggedLabel, present:$present, status:$statusLabel}")
+            Timber.i("{plugged:$pluggedLabel, hasBattery:$hasBattery, status:$statusLabel}")
         }
     }
 }
