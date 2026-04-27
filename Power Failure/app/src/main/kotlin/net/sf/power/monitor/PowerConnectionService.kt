@@ -160,11 +160,10 @@ class PowerConnectionService : Service(), BatteryListener {
 
     private fun checkBatteryStatus() {
         val context: Context = this
-        val state = BatteryUtils.getState(context)
+        val state: BatteryState = BatteryUtils.getState(context)
         printBatteryStatus(state)
 
-        val plugged = state.plugged
-        Message.obtain(handler, MSG_BATTERY_CHANGED, plugged.source, 0).sendToTarget()
+        Message.obtain(handler, MSG_BATTERY_CHANGED, state).sendToTarget()
 
         pollBattery()
     }
@@ -193,19 +192,20 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_STOP_MONITOR -> service.stopLogging()
                 MSG_GET_STATUS_MONITOR -> service.notifyClients(
                     MSG_SET_STATUS_MONITOR,
-                    if (service.isLogging) 1 else 0
+                    if (service.isLogging) TRUE else FALSE
                 )
 
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
-                MSG_BATTERY_CHANGED -> service.onBatteryPlugged(Plugged.of(msg.arg1))
+                MSG_BATTERY_CHANGED -> service.onBatteryState(msg.obj as BatteryState)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_FAILED -> service.handleFailure(Plugged.of(msg.arg1,), msg.obj as TimeMillis)
+                MSG_FAILED -> service.handleFailure(Plugged.of(msg.arg1), msg.obj as TimeMillis)
                 else -> super.handleMessage(msg)
             }
         }
     }
 
-    override fun onBatteryPlugged(plugged: Plugged) {
+    override fun onBatteryState(state: BatteryState) {
+        val plugged = state.plugged
         val now = System.currentTimeMillis()
 
         if (plugged != Plugged.None) {
@@ -257,7 +257,7 @@ class PowerConnectionService : Service(), BatteryListener {
             else -> showNotification(R.string.plugged_unknown, R.drawable.plug_unknown)
         }
 
-        notifyClients(MSG_BATTERY_CHANGED, plugged.source)
+        notifyClients(MSG_BATTERY_CHANGED, arg3 = state)
     }
 
     private fun playAlarm() {
@@ -387,7 +387,7 @@ class PowerConnectionService : Service(), BatteryListener {
         if (!clients.contains(client)) {
             clients.add(client)
         }
-        notifyClients(MSG_SET_STATUS_MONITOR, if (isLogging) 1 else 0)
+        notifyClients(MSG_SET_STATUS_MONITOR, if (isLogging) TRUE else FALSE)
         startPolling()
     }
 
@@ -398,7 +398,7 @@ class PowerConnectionService : Service(), BatteryListener {
         }
     }
 
-    private fun notifyClients(command: Int, arg1: Int, arg2: Int = 0, arg3: Any? = null) {
+    private fun notifyClients(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
         var msg: Message
         for (i in clients.indices.reversed()) {
             try {
@@ -415,21 +415,23 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun startLogging() {
-        Timber.v("start logging")
+        Timber.v("start logging ($isLogging)")
         if (!isLogging) {
             isLogging = true
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher)
             acquireWakeLock()
             //TODO Write logs.
+            notifyClients(MSG_SET_STATUS_MONITOR, TRUE)
         }
     }
 
     private fun stopLogging() {
-        Timber.v("stop logging")
+        Timber.v("stop logging ($isLogging)")
         if (isLogging) {
             isLogging = false
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
             //TODO Write logs.
+            notifyClients(MSG_SET_STATUS_MONITOR, FALSE)
         }
         releaseWakeLock()
     }
@@ -564,5 +566,8 @@ class PowerConnectionService : Service(), BatteryListener {
 
         private const val SECOND_MS = DateUtils.SECOND_IN_MILLIS.toInt()
         private const val NEVER = 0L
+
+        private const val FALSE = 0
+        private const val TRUE = 1
     }
 }

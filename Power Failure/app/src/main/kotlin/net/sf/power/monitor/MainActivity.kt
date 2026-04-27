@@ -18,32 +18,26 @@ package net.sf.power.monitor
 import android.Manifest
 import android.annotation.TargetApi
 import android.app.NotificationManager
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
-import android.content.ServiceConnection
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
-import android.os.Message
-import android.os.Messenger
-import android.os.RemoteException
 import android.text.format.DateUtils
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.annotation.DrawableRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import com.github.preference.PermitRingtonePreference
+import kotlinx.coroutines.launch
 import net.sf.power.monitor.compose.AppTheme
 import net.sf.power.monitor.databinding.ActivityMainBinding
 import net.sf.power.monitor.menu.ActionsMenuCollapsed
@@ -51,93 +45,67 @@ import net.sf.power.monitor.menu.SettingsButton
 import net.sf.power.monitor.menu.StartButton
 import net.sf.power.monitor.menu.StopButton
 import net.sf.power.monitor.menu.TestButton
-import net.sf.power.monitor.model.BatteryListener
+import net.sf.power.monitor.model.BatteryState
+import net.sf.power.monitor.model.Command
 import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
-import java.lang.ref.WeakReference
 
 /**
  * Main activity.
  *
  * @author Moshe Waisberg
  */
-class MainActivity : AppCompatActivity(), BatteryListener {
+class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
 
+    private val viewModel by viewModels<MonitorViewModel>()
     private lateinit var binding: ActivityMainBinding
-    private var isPolling by mutableStateOf(false)
-
-    private val handler: Handler = MainHandler(this)
-
-    /**
-     * Target we publish for clients to send messages to IncomingHandler.
-     */
-    private val messenger: Messenger = Messenger(handler)
-
-    /**
-     * Messenger for communicating with service.
-     */
-    private var service: Messenger? = null
-
-    /**
-     * Flag indicating whether we have called bind on the service.
-     */
-    private var serviceIsBound: Boolean = false
-
-    private lateinit var settings: PowerPreferences
-
-    /**
-     * Class for interacting with the main interface of the service.
-     */
-    private val connection = object : ServiceConnection {
-
-        override fun onServiceConnected(className: ComponentName, binder: IBinder) {
-            // This is called when the connection with the service has been
-            // established, giving us the service object we can use to
-            // interact with the service.  We are communicating with our
-            // service through an IDL interface, so get a client-side
-            // representation of that from the raw service object.
-            service = Messenger(binder)
-            Timber.i("Service connected.")
-
-            registerClient()
-        }
-
-        override fun onServiceDisconnected(className: ComponentName) {
-            // This is called when the connection with the service has been
-            // unexpectedly disconnected -- that is, its process crashed.
-            service = null
-            Timber.i("Service disconnected.")
-        }
-    }
+    private val binder = PowerConnectionBinder(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        val context: Context = this
 
         val binding = ActivityMainBinding.inflate(layoutInflater)
         this.binding = binding
         setContentView(binding.root)
         initView(binding)
 
-        settings = PowerPreferences(context)
-        showFailureTime(settings.failureTime)
-        showRestoredTime(settings.restoredTime)
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             initNotificationPermissions()
         }
         PermitRingtonePreference.askPermission(this)
+
+        lifecycleScope.launch {
+            viewModel.command.collect {
+                onCommand(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.state.collect {
+                setBatteryState(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.isPolling.collect {
+                onMonitorStatus(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.failedTime.collect {
+                showFailureTime(it)
+            }
+        }
+        lifecycleScope.launch {
+            viewModel.restoredTime.collect {
+                showRestoredTime(it)
+            }
+        }
     }
 
     private fun initView(binding: ActivityMainBinding) {
-        val context: Context = binding.root.context
         val mainView = binding.main
-        val mainBackground = mainView.background
-        mainBackground.level = LEVEL_UNKNOWN
-        binding.plugged.setImageLevel(LEVEL_UNKNOWN)
 
         ViewCompat.setOnApplyWindowInsetsListener(mainView) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -148,87 +116,59 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         val actionBar = binding.actionBar
         actionBar.setContent {
             AppTheme {
+                val polling by viewModel.isPolling.collectAsState(false)
+
                 ActionsMenuCollapsed { spacing ->
                     if (BuildConfig.DEBUG) {
                         TestButton(onClick = {
-                            handler.sendEmptyMessage(MainHandler.MSG_TEST)
+                            viewModel.onTestClick()
                         })
                         Spacer(modifier = Modifier.width(spacing))
                     }
-                    if (isPolling) {
+                    if (polling) {
                         StopButton(onClick = {
-                            handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
+                            viewModel.onStopClick()
                         })
                         Spacer(modifier = Modifier.width(spacing))
                     } else {
                         StartButton(onClick = {
-                            handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
+                            viewModel.onStartClick()
                         })
                         Spacer(modifier = Modifier.width(spacing))
                     }
                     SettingsButton(onClick = {
-                        handler.sendEmptyMessage(MainHandler.MSG_SETTINGS)
+                        viewModel.onSettingsClick()
                     })
                 }
             }
         }
 
-        onBatteryPlugged(BatteryUtils.getPlugged(context))
+        val actionButton = binding.floatingActionButton
+        actionButton.setOnClickListener { viewModel.onActionButtonClick() }
     }
 
     override fun onStart() {
         super.onStart()
-        bindService()
+        binder.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        unbindService()
+        binder.onStop()
     }
 
     override fun onResume() {
         super.onResume()
-
-        try {
-            notifyService(PowerConnectionService.MSG_GET_STATUS_MONITOR)
-        } catch (_: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
+        binder.fetchState()
     }
 
-    private fun startMonitor() {
-        // We want to monitor the service for as long as we are connected to it.
-        try {
-            notifyService(PowerConnectionService.MSG_START_MONITOR)
-            setMonitorStatus(true)
-        } catch (_: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
-    }
+    override val context: Context
+        get() = this
 
-    private fun stopMonitor() {
-        try {
-            notifyService(PowerConnectionService.MSG_STOP_MONITOR)
-            setMonitorStatus(false)
-        } catch (_: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
-    }
-
-    private fun setMonitorStatus(polling: Boolean) {
-        this.isPolling = polling
+    override fun onMonitorStatus(polling: Boolean) {
+        Timber.v("polling $polling")
         val mainView = binding.main
         val mainBackground = mainView.background
-
         mainBackground.level = LEVEL_UNKNOWN
         binding.plugged.setImageLevel(LEVEL_UNKNOWN)
 
@@ -236,11 +176,16 @@ class MainActivity : AppCompatActivity(), BatteryListener {
             if (polling) android.R.drawable.ic_media_pause else android.R.drawable.ic_media_play
         val actionButton = binding.floatingActionButton
         actionButton.setImageResource(iconId)
-        actionButton.setOnClickListener { onClickActionButton(polling) }
-        onBatteryPlugged(BatteryUtils.getPlugged(this))
+        onBatteryState(viewModel.state.value)
     }
 
-    override fun onBatteryPlugged(plugged: Plugged) {
+    override fun onBatteryState(state: BatteryState) {
+        viewModel.onBatteryState(state)
+    }
+
+    private fun setBatteryState(state: BatteryState) {
+        Timber.v("state $state")
+        val plugged = state.plugged
         val mainView = binding.main
         val mainBackground = mainView.background
         val pluggedView = binding.plugged
@@ -284,129 +229,31 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private class MainHandler(activity: MainActivity) : Handler(Looper.getMainLooper()) {
-
-        private val activity: WeakReference<MainActivity> = WeakReference(activity)
-
-        override fun handleMessage(msg: Message) {
-            val activity = this.activity.get() ?: return
-
-            when (msg.what) {
-                MSG_STATUS_CHANGED -> activity.onBatteryPlugged(Plugged.of(msg.arg1))
-
-                MSG_START_MONITOR -> activity.startMonitor()
-
-                MSG_STOP_MONITOR -> activity.stopMonitor()
-
-                MSG_SET_STATUS_MONITOR -> activity.setMonitorStatus(msg.arg1 != 0)
-
-                MSG_FAILED -> {
-                    val settings = activity.settings
-                    activity.showFailureTime(msg.obj as TimeMillis)
-                    activity.showRestoredTime(settings.restoredTime)
-                }
-
-                MSG_RESTORED -> {
-                    val settings = activity.settings
-                    activity.showFailureTime(settings.failureTime)
-                    activity.showRestoredTime(msg.obj as TimeMillis)
-                }
-
-                MSG_SETTINGS -> activity.startActivity(
-                    Intent(activity, PowerPreferenceActivity::class.java)
-                )
-
-                MSG_TEST -> {
-                    activity.notifyService(MSG_FAILED, 0, 0, System.currentTimeMillis())
-                }
-
-                else -> super.handleMessage(msg)
-            }
-        }
-
-        companion object {
-            const val MSG_FAILED = PowerConnectionService.MSG_FAILED
-            const val MSG_RESTORED = PowerConnectionService.MSG_RESTORED
-            const val MSG_SETTINGS = 1000
-            const val MSG_TEST = 1001
-            const val MSG_SET_STATUS_MONITOR = PowerConnectionService.MSG_SET_STATUS_MONITOR
-            const val MSG_START_MONITOR = PowerConnectionService.MSG_START_MONITOR
-            const val MSG_STATUS_CHANGED = PowerConnectionService.MSG_BATTERY_CHANGED
-            const val MSG_STOP_MONITOR = PowerConnectionService.MSG_STOP_MONITOR
-        }
+    override fun onPowerFailed(timeMillis: TimeMillis) {
+        viewModel.onPowerFailed(timeMillis)
     }
 
-    private fun bindService() {
-        Timber.i("Service binding.")
-        // Establish a connection with the service.  We use an explicit
-        // class name because there is no reason to be able to let other
-        // applications replace our component.
-        val context: Context = this
-        val intent = Intent(context, PowerConnectionService::class.java)
-
-        // This will keep the service running even after activity destroyed.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
-
-        bindService(intent, connection, BIND_AUTO_CREATE or BIND_ADJUST_WITH_ACTIVITY)
-        serviceIsBound = true
+    override fun onPowerRestored(timeMillis: TimeMillis) {
+        viewModel.onPowerRestored(timeMillis)
     }
 
-    private fun unbindService() {
-        if (serviceIsBound) {
-            Timber.i("Service unbinding.")
-            // If we have received the service, and hence registered with
-            // it, then now is the time to unregister.
-            unregisterClient()
+    private fun onCommand(command: Command) {
+        Timber.v("command $command")
+        when (command) {
+            Command.Settings -> startActivity(
+                Intent(this, PowerPreferenceActivity::class.java)
+            )
 
-            // Detach our existing connection.
-            unbindService(connection)
-            serviceIsBound = false
-        }
-    }
+            Command.StartMonitor -> binder.startMonitor()
 
-    /**
-     * Register this client with the service to receive commands.
-     */
-    private fun registerClient() {
-        // We want to monitor the service for as long as we are connected to it.
-        try {
-            notifyService(PowerConnectionService.MSG_REGISTER_CLIENT)
-            Timber.i("Registered with service.")
-        } catch (_: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
-    }
+            Command.StopMonitor -> binder.stopMonitor()
 
-    /**
-     * Unregister this client from the service to stop receiving commands.
-     */
-    private fun unregisterClient() {
-        try {
-            notifyService(PowerConnectionService.MSG_UNREGISTER_CLIENT)
-            Timber.i("Unregistered from service.")
-        } catch (_: RemoteException) {
-            // There is nothing special we need to do if the service has crashed.
-        }
-    }
-
-    @Throws(RemoteException::class)
-    private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
-        val service = this.service ?: return
-        if (serviceIsBound) {
-            val msg = Message.obtain(null, command, arg1, arg2, arg3)
-            msg.replyTo = messenger
-            service.send(msg)
+            Command.Test -> binder.fail()
         }
     }
 
     private fun showFailureTime(timeMillis: TimeMillis) {
+        Timber.v("failure $timeMillis")
         val context: Context = this
         val timeView = binding.failedOn
         if (timeMillis > PowerPreferences.NEVER) {
@@ -423,6 +270,7 @@ class MainActivity : AppCompatActivity(), BatteryListener {
     }
 
     private fun showRestoredTime(timeMillis: TimeMillis) {
+        Timber.v("restore $timeMillis")
         val context: Context = this
         val timeView = binding.restoredOn
         if (timeMillis > PowerPreferences.NEVER) {
@@ -438,16 +286,8 @@ class MainActivity : AppCompatActivity(), BatteryListener {
         }
     }
 
-    private fun onClickActionButton(polling: Boolean) {
-        if (polling) {
-            handler.sendEmptyMessage(MainHandler.MSG_STOP_MONITOR)
-        } else {
-            handler.sendEmptyMessage(MainHandler.MSG_START_MONITOR)
-        }
-    }
-
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    fun checkNotificationPermissions(activity: AppCompatActivity) {
+    private fun checkNotificationPermissions(activity: AppCompatActivity) {
         val nm = getNotificationManager()
         if (nm.areNotificationsEnabled()) return
         activity.requestPermissions(PERMISSIONS, ACTIVITY_PERMISSIONS)

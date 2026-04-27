@@ -10,7 +10,7 @@ interface BatteryListener {
     /**
      * Notification that the battery is being been charged.
      *
-     * @param plugged the type of plugged-in device.
+     * @param state the battery state.
      */
-    fun onBatteryPlugged(plugged: Plugged)
+    fun onBatteryState(state: BatteryState)
 }

@@ -86,10 +86,9 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      *
      * @return the time in milliseconds.
      */
-    var failureTime: TimeMillis = NEVER
-        get() = preferences.getLong(KEY_FAILURE_TIME, field)
+    var failureTime: TimeMillis
+        get() = preferences.getLong(KEY_FAILURE_TIME, NEVER)
         set(value) {
-            field = value
             preferences.edit { putLong(KEY_FAILURE_TIME, value) }
         }
 
