@@ -1,12 +1,10 @@
 package net.sf.power.monitor
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -16,7 +14,7 @@ import net.sf.power.monitor.model.Command
 import net.sf.power.monitor.preference.PowerPreferences
 import net.sf.power.monitor.preference.PowerPreferences.Companion.NEVER
 
-class MonitorViewModel(application: Application) : AndroidViewModel(application), BatteryListener {
+class MonitorViewModel(private val settings: PowerPreferences) : ViewModel(), BatteryListener {
     private val _state = MutableStateFlow(BatteryState())
     val state: StateFlow<BatteryState> = _state
 
@@ -31,8 +29,6 @@ class MonitorViewModel(application: Application) : AndroidViewModel(application)
 
     private val _restoredTime = MutableStateFlow(NEVER)
     val restoredTime: Flow<TimeMillis> = _restoredTime
-
-    private val settings: PowerPreferences = PowerPreferences(application)
 
     init {
         viewModelScope.launch {

@@ -5,14 +5,8 @@
     <color name="yellow">#ffff00</color>
     <color name="white">@android:color/white</color>
 
-    <color name="plugged_start">@color/yellow</color>
-    <color name="plugged_end">#00a000</color>
     <color name="plugged_border">#008000</color>
-    <color name="unplugged_start">@color/white</color>
-    <color name="unplugged_end">#a00000</color>
     <color name="unplugged_border">#800000</color>
-    <color name="unknown_start">@color/white</color>
-    <color name="unknown_end">#888888</color>
     <color name="unknown_border">#444444</color>
 
     <color name="icon_tint">?android:attr/textColorPrimary</color>
