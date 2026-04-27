@@ -21,14 +21,14 @@ import androidx.compose.ui.unit.dp
 import net.sf.power.monitor.model.Plugged
 
 @Composable
-fun PlugBackground(plugged: Plugged) {
+fun PlugBackground(plugged: Plugged, isLandscape: Boolean = false) {
     when (plugged) {
-        Plugged.AC -> PlugBackgroundPlugged()
-        Plugged.Dock -> PlugBackgroundPlugged()
-        Plugged.None -> PlugBackgroundUnplugged()
-        Plugged.USB -> PlugBackgroundPlugged()
-        Plugged.Unknown -> PlugBackgroundUnknown()
-        Plugged.Wireless -> PlugBackgroundPlugged()
+        Plugged.AC -> PlugBackgroundPlugged(isLandscape)
+        Plugged.Dock -> PlugBackgroundPlugged(isLandscape)
+        Plugged.None -> PlugBackgroundUnplugged(isLandscape)
+        Plugged.USB -> PlugBackgroundPlugged(isLandscape)
+        Plugged.Unknown -> PlugBackgroundUnknown(isLandscape)
+        Plugged.Wireless -> PlugBackgroundPlugged(isLandscape)
     }
 }
 
@@ -36,11 +36,16 @@ private val radiusSize = 350.dp
 
 @Composable
 @Suppress("AssignedValueIsNeverRead")
-private fun PlugBackgroundUnknown() {
+private fun PlugBackgroundUnknown(isLandscape: Boolean = false) {
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val center = if (isLandscape) {
+        Offset(size.width * 0.3f, size.height * 0.5f)
+    } else {
+        Offset(size.width * 0.5f, size.height * 0.3f)
+    }
     val gradientBrush = Brush.radialGradient(
         colors = listOf(White, Gray),
-        center = Offset(size.width * 0.5f, size.height * 0.3f),
+        center = center,
         radius = radiusSize.toPx()
     )
 
@@ -54,11 +59,16 @@ private fun PlugBackgroundUnknown() {
 
 @Composable
 @Suppress("AssignedValueIsNeverRead")
-private fun PlugBackgroundUnplugged() {
+private fun PlugBackgroundUnplugged(isLandscape: Boolean = false) {
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val center = if (isLandscape) {
+        Offset(size.width * 0.3f, size.height * 0.5f)
+    } else {
+        Offset(size.width * 0.5f, size.height * 0.3f)
+    }
     val gradientBrush = Brush.radialGradient(
         colors = listOf(White, Color(0xffa00000)),
-        center = Offset(size.width * 0.5f, size.height * 0.3f),
+        center = center,
         radius = radiusSize.toPx()
     )
 
@@ -72,11 +82,16 @@ private fun PlugBackgroundUnplugged() {
 
 @Composable
 @Suppress("AssignedValueIsNeverRead")
-private fun PlugBackgroundPlugged() {
+private fun PlugBackgroundPlugged(isLandscape: Boolean = false) {
     var size by remember { mutableStateOf(IntSize.Zero) }
+    val center = if (isLandscape) {
+        Offset(size.width * 0.3f, size.height * 0.5f)
+    } else {
+        Offset(size.width * 0.5f, size.height * 0.3f)
+    }
     val gradientBrush = Brush.radialGradient(
         colors = listOf(White, Color(0xff00a000)),
-        center = Offset(size.width * 0.5f, size.height * 0.3f),
+        center = center,
         radius = radiusSize.toPx()
     )
 
