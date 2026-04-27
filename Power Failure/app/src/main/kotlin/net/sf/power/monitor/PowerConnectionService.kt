@@ -70,8 +70,13 @@ class PowerConnectionService : Service(), BatteryListener {
     /**
      * Keeps track of all current registered clients.
      */
-    private val clients = ArrayList<Messenger>()
-    private lateinit var notificationManager: NotificationManager
+    private val clients = mutableListOf<Messenger>()
+    private val notificationManager: NotificationManager by lazy {
+        getSystemService(NotificationManager::class.java)
+    }
+    private val powerManager: PowerManager by lazy {
+        getSystemService(PowerManager::class.java)
+    }
 
     @StringRes
     private var notificationTextId: Int = 0
@@ -81,7 +86,7 @@ class PowerConnectionService : Service(), BatteryListener {
     private var powerSince: TimeMillis = NEVER
     private var powerFailureSince: TimeMillis = NEVER
     private var isLogging: Boolean = false
-    private lateinit var settings: PowerPreferences
+    private val settings: PowerPreferences by lazy { PowerPreferences(this) }
     private var notifyAlarm: NotifyAlarm? = null
     private var notifySms: NotifySms? = null
     private var notifyVibrate: NotifyVibrate? = null
@@ -107,10 +112,11 @@ class PowerConnectionService : Service(), BatteryListener {
 
     override fun onCreate() {
         super.onCreate()
-        val context: Context = this
+        Timber.i("create service")
 
-        notificationManager = getNotificationManager()
-        settings = PowerPreferences(context)
+        hideNotification()
+        // Display a notification about us starting. We put an icon in the status bar.
+        showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
 
         val filter = IntentFilter()
         filter.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
@@ -123,13 +129,11 @@ class PowerConnectionService : Service(), BatteryListener {
         onPreferencesChanged()
 
         stopAlarm()
-        hideNotification()
-        // Display a notification about us starting. We put an icon in the status bar.
-        showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
         checkBatteryStatus()
     }
 
     override fun onDestroy() {
+        Timber.i("destroy service")
         super.onDestroy()
 
         stopLogging()
@@ -137,10 +141,6 @@ class PowerConnectionService : Service(), BatteryListener {
         stopAlarm()
         hideNotification()
         unregisterReceiver(receiver)
-    }
-
-    private fun getNotificationManager(): NotificationManager {
-        return getSystemService(NotificationManager::class.java)
     }
 
     private fun startPolling() {
@@ -480,17 +480,12 @@ class PowerConnectionService : Service(), BatteryListener {
     private fun acquireWakeLock() {
         var wakeLock = this.wakeLock
         if (wakeLock == null) {
-            val powerManager = getPowerManager()
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG_POWER)
             wakeLock.acquire()
             this.wakeLock = wakeLock
         } else {
             wakeLock.acquire()
         }
-    }
-
-    private fun getPowerManager(): PowerManager {
-        return getSystemService(PowerManager::class.java)
     }
 
     private fun releaseWakeLock() {
