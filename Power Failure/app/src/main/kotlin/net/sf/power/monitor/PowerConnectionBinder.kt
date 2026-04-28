@@ -1,5 +1,6 @@
 package net.sf.power.monitor
 
+import android.app.ForegroundServiceStartNotAllowedException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Context.BIND_ADJUST_WITH_ACTIVITY
@@ -17,10 +18,9 @@ import net.sf.power.monitor.model.BatteryState
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class PowerConnectionBinder(private val caller: BinderListener) {
+class PowerConnectionBinder(caller: BinderListener) {
 
     interface BinderListener {
-        val context: Context
         fun onBatteryState(state: BatteryState)
         fun onMonitorStatus(polling: Boolean)
         fun onPowerFailed(timeMillis: TimeMillis)
@@ -70,12 +70,12 @@ class PowerConnectionBinder(private val caller: BinderListener) {
         }
     }
 
-    private fun bindService() {
+    @Throws(ForegroundServiceStartNotAllowedException::class)
+    private fun bindService(context: Context) {
         Timber.i("Service binding.")
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
-        val context: Context = caller.context
         val intent = Intent(context, PowerConnectionService::class.java)
 
         // This will keep the service running even after activity destroyed.
@@ -89,12 +89,11 @@ class PowerConnectionBinder(private val caller: BinderListener) {
         serviceIsBound = true
     }
 
-    private fun unbindService() {
+    private fun unbindService(context: Context) {
         if (serviceIsBound) {
             Timber.i("Service unbinding.")
             // If we have received the service, and hence registered with
             // it, then now is the time to unregister.
-            val context: Context = caller.context
             unregisterClient()
 
             // Detach our existing connection.
@@ -175,12 +174,13 @@ class PowerConnectionBinder(private val caller: BinderListener) {
         }
     }
 
-    fun onStart() {
-        bindService()
+    @Throws(ForegroundServiceStartNotAllowedException::class)
+    fun onStart(context: Context) {
+        bindService(context)
     }
 
-    fun onStop() {
-        unbindService()
+    fun onStop(context: Context) {
+        unbindService(context)
     }
 
     fun fail() {

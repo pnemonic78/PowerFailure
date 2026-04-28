@@ -20,11 +20,14 @@ import android.annotation.TargetApi
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -46,9 +49,13 @@ import timber.log.Timber
  */
 class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
 
-    private val settings by lazy { PowerPreferences(context) }
+    private val settings by lazy {
+        val context: Context = this
+        PowerPreferences(context)
+    }
     private val viewModel by viewModels<MonitorViewModel> {
         object : ViewModelProvider.Factory {
+            @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return MonitorViewModel(settings) as T
             }
@@ -78,23 +85,24 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        binder.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        binder.onStop()
-    }
-
     override fun onResume() {
         super.onResume()
-        binder.fetchState()
+        bind()
     }
 
-    override val context: Context
-        get() = this
+    private fun bind() {
+        try {
+            binder.onStart(this)
+        } catch (e: Exception) {
+            Timber.e(e)
+            showForegroundWarning()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binder.onStop(this)
+    }
 
     override fun onMonitorStatus(polling: Boolean) {
         Timber.v("onMonitorStatus $polling")
@@ -142,6 +150,32 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
     @TargetApi(Build.VERSION_CODES.TIRAMISU)
     private fun initNotificationPermissions() {
         checkNotificationPermissions(this)
+    }
+
+    private fun showForegroundWarning() {
+        val context: Context = this
+
+        AlertDialog.Builder(context)
+            .setTitle(R.string.title_activity_main)
+            .setMessage(R.string.monitor_stopped)
+            .setCancelable(false)
+            .setNeutralButton(com.github.lib.R.string.menu_settings, { _, _ ->
+                showAppPermissions()
+            })
+            .setNegativeButton(com.github.lib.R.string.cancel, { _, _ ->
+                finish()
+            })
+            .setPositiveButton(com.github.lib.R.string.retry, { _, _ ->
+                bind()
+            })
+            .show()
+    }
+
+    private fun showAppPermissions() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", packageName, "permissions")
+        }
+        startActivity(intent)
     }
 
     companion object {
