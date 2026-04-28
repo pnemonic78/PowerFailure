@@ -3,11 +3,11 @@ import org.jetbrains.kotlin.gradle.plugin.extraProperties
 import java.util.Locale
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.crashlytics)
-    alias(libs.plugins.google.services)
+    alias(alibs.plugins.android.application)
+    alias(alibs.plugins.kotlin.android)
+    alias(alibs.plugins.compose.compiler)
+    alias(alibs.plugins.crashlytics)
+    alias(alibs.plugins.google.services)
 }
 
 val versionMajor = project.properties["APP_VERSION_MAJOR"].toString().toInt()
@@ -15,12 +15,12 @@ val versionMinor = project.properties["APP_VERSION_MINOR"].toString().toInt()
 
 android {
     namespace = "net.sf.power.monitor"
-    compileSdk = libs.versions.android.compileSdk.get().toInt()
+    compileSdk = alibs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "net.sf.power.monitor"
-        minSdk = libs.versions.android.minSdk.get().toInt()
-        targetSdk = libs.versions.android.compileSdk.get().toInt()
+        minSdk = alibs.versions.android.minSdk.get().toInt()
+        targetSdk = alibs.versions.android.compileSdk.get().toInt()
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         versionCode = (versionMajor * 100) + versionMinor
         versionName = "${versionMajor}.${versionMinor}"
@@ -140,14 +140,14 @@ android {
 
 dependencies {
     implementation(project(":android-lib:lib"))
-    implementation(libs.material)
-    implementation(libs.log.timber)
+    implementation(alibs.material)
+    implementation(alibs.log.timber)
 
-    implementation(libs.bundles.compose)
+    implementation(alibs.bundles.compose)
 
-    testImplementation(libs.bundles.test)
-    androidTestImplementation(libs.bundles.test.android)
-    implementation(libs.crashlytics)
+    testImplementation(alibs.bundles.test)
+    androidTestImplementation(alibs.bundles.test.android)
+    implementation(alibs.crashlytics)
 }
 
 // Disable Google Services plugin for some flavors.
