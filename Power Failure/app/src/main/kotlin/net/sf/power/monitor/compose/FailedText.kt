@@ -29,10 +29,11 @@ fun FailedText(timeMillis: TimeMillis, modifier: Modifier = Modifier) {
         DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
     )
     val text = stringResource(R.string.power_failed_on, dateTime)
+    val shape = MaterialTheme.shapes.medium
     Text(
         modifier = modifier
-            .background(Red_x40, shape = MaterialTheme.shapes.medium)
-            .border(1.dp, Red, shape = MaterialTheme.shapes.medium)
+            .background(DarkRed, shape = shape)
+            .border(1.dp, Red, shape = shape)
             .padding(16.dp),
         text = text,
         fontSize = 22.sp,

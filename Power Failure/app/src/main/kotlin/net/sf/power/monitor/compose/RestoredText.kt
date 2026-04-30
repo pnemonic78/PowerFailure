@@ -9,6 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color.Companion.Black
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -28,14 +30,15 @@ fun RestoredText(timeMillis: TimeMillis, modifier: Modifier = Modifier) {
         DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME
     )
     val text = stringResource(R.string.power_restored_on, dateTime)
+    val shape = MaterialTheme.shapes.medium
     Text(
         modifier = modifier
-            .background(Green_x40, shape = MaterialTheme.shapes.medium)
-            .border(1.dp, DarkGreen, shape = MaterialTheme.shapes.medium)
+            .background(DarkGreen, shape = shape)
+            .border(1.dp, Green, shape = shape)
             .padding(16.dp),
         text = text,
         fontSize = 22.sp,
-        color = Black
+        color = White
     )
 }
 

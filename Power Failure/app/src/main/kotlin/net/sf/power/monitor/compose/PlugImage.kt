@@ -6,10 +6,14 @@ import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -20,9 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import net.sf.power.monitor.R
 import net.sf.power.monitor.model.Plugged
-
-private val borderWidth = 3.dp
-private val borderShape = CircleShape
 
 @Composable
 fun PlugImage(plugged: Plugged, modifier: Modifier = Modifier) {
@@ -38,15 +39,24 @@ fun PlugImage(plugged: Plugged, modifier: Modifier = Modifier) {
     }
 }
 
+private val borderWidth = 3.dp
+private val borderShape = CircleShape
+private val sizeImageMin = 100.dp
+private val sizeImageMax = 250.dp
+
 @Composable
-private fun PluggedImageAndBorder(
+private fun BoxScope.PluggedImageAndBorder(
     @DrawableRes imageId: Int,
     @StringRes descriptionId: Int,
     @ColorRes ringColor: Int
 ) {
     val painter = rememberVectorPainter(ImageVector.vectorResource(imageId))
     Box(
-        modifier = Modifier.aspectRatio(1f)
+        modifier = Modifier
+            .align(Alignment.Center)
+            .widthIn(min = sizeImageMin, max = sizeImageMax)
+            .heightIn(min = sizeImageMin, max = sizeImageMax)
+            .aspectRatio(1f)
     ) {
         Box(
             modifier = Modifier
@@ -62,17 +72,17 @@ private fun PluggedImageAndBorder(
 }
 
 @Composable
-private fun PluggedAC() {
+private fun BoxScope.PluggedAC() {
     PluggedImageAndBorder(R.drawable.plug_ac, R.string.plugged_ac, R.color.plugged_border)
 }
 
 @Composable
-private fun PluggedDock() {
+private fun BoxScope.PluggedDock() {
     PluggedImageAndBorder(R.drawable.plug_dock, R.string.plugged_dock, R.color.plugged_border)
 }
 
 @Composable
-private fun PluggedNone() {
+private fun BoxScope.PluggedNone() {
     PluggedImageAndBorder(
         R.drawable.plug_unplugged,
         R.string.plugged_unplugged,
@@ -81,17 +91,17 @@ private fun PluggedNone() {
 }
 
 @Composable
-private fun PluggedUSB() {
+private fun BoxScope.PluggedUSB() {
     PluggedImageAndBorder(R.drawable.plug_usb, R.string.plugged_usb, R.color.plugged_border)
 }
 
 @Composable
-private fun PluggedUnknown() {
+private fun BoxScope.PluggedUnknown() {
     PluggedImageAndBorder(R.drawable.plug_unknown, R.string.plugged_unknown, R.color.unknown_border)
 }
 
 @Composable
-private fun PluggedWireless() {
+private fun BoxScope.PluggedWireless() {
     PluggedImageAndBorder(
         R.drawable.plug_wireless,
         R.string.plugged_wireless,
@@ -100,7 +110,7 @@ private fun PluggedWireless() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_AC() {
     AppTheme {
         PlugImage(Plugged.AC)
@@ -108,7 +118,7 @@ private fun Preview_AC() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_Dock() {
     AppTheme {
         PlugImage(Plugged.Dock)
@@ -116,7 +126,7 @@ private fun Preview_Dock() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_None() {
     AppTheme {
         PlugImage(Plugged.None)
@@ -124,7 +134,7 @@ private fun Preview_None() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_Unknown() {
     AppTheme {
         PlugImage(Plugged.Unknown)
@@ -132,7 +142,7 @@ private fun Preview_Unknown() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_USB() {
     AppTheme {
         PlugImage(Plugged.USB)
@@ -140,7 +150,7 @@ private fun Preview_USB() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = previewWidthDp, heightDp = previewHeightDp)
 private fun Preview_Wireless() {
     AppTheme {
         PlugImage(Plugged.Wireless)

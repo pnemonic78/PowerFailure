@@ -2,24 +2,26 @@ package net.sf.power.monitor.compose
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,13 +43,16 @@ fun MainScreen(viewModel: MonitorViewModel) {
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
 
+    var pluggedPosition by remember { mutableStateOf(Rect.Zero) }
+    val onPluggedPositioned: PositionCallback = { pluggedPosition = it }
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             FloatingActionButton(isPolling) { viewModel.onActionButtonClick() }
         }
     ) { innerPadding ->
-        PlugBackground(plugged, isLandscape = isLandscape)
+        PlugBackground(plugged, imagePosition = pluggedPosition)
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -57,13 +62,15 @@ fun MainScreen(viewModel: MonitorViewModel) {
                 MainScreenLandscape(
                     plugged = plugged,
                     failedTime = failedTime,
-                    restoredTime = restoredTime
+                    restoredTime = restoredTime,
+                    onPluggedPositioned = onPluggedPositioned
                 )
             } else {
                 MainScreenPortrait(
                     plugged = plugged,
                     failedTime = failedTime,
-                    restoredTime = restoredTime
+                    restoredTime = restoredTime,
+                    onPluggedPositioned = onPluggedPositioned
                 )
             }
             MainMenu(
@@ -76,30 +83,35 @@ fun MainScreen(viewModel: MonitorViewModel) {
     }
 }
 
+private val margin = 16.dp
+
 @Composable
 private fun BoxScope.MainScreenPortrait(
     plugged: Plugged,
     failedTime: TimeMillis,
-    restoredTime: TimeMillis
+    restoredTime: TimeMillis,
+    onPluggedPositioned: PositionCallback
 ) {
+    PlugImage(
+        plugged,
+        modifier = Modifier
+            .align(BiasAlignment(0f, 0.6f))
+            .aspectRatio(1f)
+            .fillMaxSize()
+            .onGloballyPositioned { onPluggedPositioned(it.boundsInRoot()) }
+    )
     Column(
         modifier = Modifier
-            .align(BiasAlignment(0f, -0.6f))
+            .align(BiasAlignment(0f, -1f))
+            .padding(top = sizeButton + paddingButton + paddingPanel + margin)
     ) {
-        PlugImage(
-            plugged,
-            modifier = Modifier
-                .aspectRatio(1f)
-                .fillMaxSize()
-                .padding(20.dp)
-        )
         FailedText(
             failedTime,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp)
+            modifier = Modifier.padding(start = margin, end = margin)
         )
         RestoredText(
             restoredTime,
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
+            modifier = Modifier.padding(start = margin, end = margin, top = 16.dp)
         )
     }
 }
@@ -108,32 +120,30 @@ private fun BoxScope.MainScreenPortrait(
 private fun BoxScope.MainScreenLandscape(
     plugged: Plugged,
     failedTime: TimeMillis,
-    restoredTime: TimeMillis
+    restoredTime: TimeMillis,
+    onPluggedPositioned: PositionCallback
 ) {
-    Row(
+    PlugImage(
+        plugged,
         modifier = Modifier
-            .align(BiasAlignment(-0.7f, 0f))
+            .align(BiasAlignment(0.8f, 0f))
+            .aspectRatio(1f)
+            .fillMaxSize()
+            .onGloballyPositioned { onPluggedPositioned(it.boundsInRoot()) }
+    )
+    Column(
+        modifier = Modifier
+            .align(BiasAlignment(-1f, 0f))
+            .fillMaxWidth(0.5f)
     ) {
-        PlugImage(
-            plugged,
-            modifier = Modifier
-                .aspectRatio(1f)
-                .fillMaxSize()
-                .padding(20.dp)
+        FailedText(
+            failedTime,
+            modifier = Modifier.padding(start = margin, end = margin)
         )
-        Column(
-            modifier = Modifier.fillMaxHeight(),
-            verticalArrangement = Arrangement.Center
-        ) {
-            FailedText(
-                failedTime,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp)
-            )
-            RestoredText(
-                restoredTime,
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 16.dp)
-            )
-        }
+        RestoredText(
+            restoredTime,
+            modifier = Modifier.padding(start = margin, end = margin, top = 16.dp)
+        )
     }
 }
 

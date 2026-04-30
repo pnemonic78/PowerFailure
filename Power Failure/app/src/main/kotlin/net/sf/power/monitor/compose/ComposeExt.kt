@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.hapticfeedback.HapticFeedback
@@ -19,6 +20,7 @@ import androidx.compose.ui.unit.toSize
 
 typealias OnSizeCallback = (IntSize) -> Unit
 typealias OnTapCallback = (Offset) -> Unit
+typealias PositionCallback = (Rect) -> Unit
 
 @ReadOnlyComposable
 @Composable
