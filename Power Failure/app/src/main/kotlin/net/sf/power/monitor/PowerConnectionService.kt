@@ -39,6 +39,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.graphics.drawable.toBitmap
 import net.sf.power.monitor.model.BatteryListener
 import net.sf.power.monitor.model.BatteryState
@@ -134,13 +135,12 @@ class PowerConnectionService : Service(), BatteryListener {
 
     override fun onDestroy() {
         Timber.i("destroy service")
-        super.onDestroy()
-
         stopLogging()
         stopPolling()
         stopAlarm()
         hideNotification()
         unregisterReceiver(receiver)
+        super.onDestroy()
     }
 
     private fun startPolling() {
@@ -198,7 +198,7 @@ class PowerConnectionService : Service(), BatteryListener {
                 MSG_CHECK_BATTERY -> service.checkBatteryStatus()
                 MSG_BATTERY_CHANGED -> service.onBatteryState(msg.obj as BatteryState)
                 MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_FAILED -> service.handleFailure(Plugged.of(msg.arg1), msg.obj as TimeMillis)
+                MSG_FAILED -> service.handleFailure(System.currentTimeMillis())
                 else -> super.handleMessage(msg)
             }
         }
@@ -222,7 +222,7 @@ class PowerConnectionService : Service(), BatteryListener {
         } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
             if (powerFailureSince <= NEVER) {
                 powerFailureSince = now
-                handleFailure(plugged, now)
+                handleFailure(now)
             }
         } else {
             stopAlarm()
@@ -343,23 +343,18 @@ class PowerConnectionService : Service(), BatteryListener {
             .setLights(Color.RED, SECOND_MS, SECOND_MS)
             .build()
 
-        // Send the notification.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            startForeground(
-                ID_NOTIFY,
-                notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-            )
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            @Suppress("DEPRECATION")
-            startForeground(
-                ID_NOTIFY,
-                notification,
-                ServiceInfo.FOREGROUND_SERVICE_TYPE_NONE
-            )
+        // Show with the notification.
+        val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
         } else {
-            startForeground(ID_NOTIFY, notification)
+            0
         }
+        ServiceCompat.startForeground(
+            this,
+            ID_NOTIFY,
+            notification,
+            serviceType
+        )
     }
 
     private fun createActivityIntent(context: Context): PendingIntent? {
@@ -399,10 +394,9 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun notifyClients(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
-        var msg: Message
         for (i in clients.indices.reversed()) {
             try {
-                msg = Message.obtain(null, command, arg1, arg2, arg3)
+                val msg = Message.obtain(null, command, arg1, arg2, arg3)
                 clients[i].send(msg)
             } catch (e: RemoteException) {
                 Timber.e(e, "Failed to send status update")
@@ -426,7 +420,7 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun stopLogging() {
-        Timber.v("stop logging ($isLogging)")
+        Timber.v("stop logging")
         if (isLogging) {
             isLogging = false
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
@@ -455,10 +449,10 @@ class PowerConnectionService : Service(), BatteryListener {
         prefSmsRecipient = settings.smsRecipient
     }
 
-    private fun handleFailure(plugged: Plugged, timeMillis: TimeMillis) {
+    private fun handleFailure(timeMillis: TimeMillis) {
         settings.failureTime = timeMillis
         settings.restoredTime = PowerPreferences.NEVER
-        notifyClients(MSG_FAILED, plugged.source, 0, timeMillis)
+        notifyClients(MSG_FAILED, Plugged.None.source, 0, timeMillis)
         playAlarm()
         sendSMS(timeMillis)
     }

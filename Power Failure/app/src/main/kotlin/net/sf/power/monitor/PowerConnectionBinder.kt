@@ -18,17 +18,17 @@ import net.sf.power.monitor.model.BatteryState
 import timber.log.Timber
 import java.lang.ref.WeakReference
 
-class PowerConnectionBinder(caller: BinderListener) {
+class PowerConnectionBinder(private val context: Context, private val caller: BinderListener) {
 
     interface BinderListener {
+        fun onBindFailed(error: Exception)
         fun onBatteryState(state: BatteryState)
         fun onMonitorStatus(polling: Boolean)
         fun onPowerFailed(timeMillis: TimeMillis)
         fun onPowerRestored(timeMillis: TimeMillis)
-
     }
 
-    private val handler: Handler = MainHandler(caller)
+    private val handler: Handler = CallerHandler(caller)
 
     /**
      * Target we publish for clients to send messages to IncomingHandler.
@@ -43,7 +43,12 @@ class PowerConnectionBinder(caller: BinderListener) {
     /**
      * Flag indicating whether we have called bind on the service.
      */
-    private var serviceIsBound: Boolean = false
+    private var isServiceBound: Boolean = false
+
+    /**
+     * Flag indicating whether the service is running in the foreground.
+     */
+    private var isServiceStarted: Boolean = false
 
     /**
      * Class for interacting with the main interface of the service.
@@ -70,12 +75,24 @@ class PowerConnectionBinder(caller: BinderListener) {
         }
     }
 
-    @Throws(ForegroundServiceStartNotAllowedException::class)
     private fun bindService(context: Context) {
         Timber.i("Service binding.")
         // Establish a connection with the service.  We use an explicit
         // class name because there is no reason to be able to let other
         // applications replace our component.
+        val intent = Intent(context, PowerConnectionService::class.java)
+
+        try {
+            context.bindService(intent, connection, BIND_AUTO_CREATE or BIND_ADJUST_WITH_ACTIVITY)
+            isServiceBound = true
+        } catch (e: Exception) {
+            caller.onBindFailed(e)
+        }
+    }
+
+    @Throws(ForegroundServiceStartNotAllowedException::class)
+    private fun startService(context: Context) {
+        Timber.i("Service starting.")
         val intent = Intent(context, PowerConnectionService::class.java)
 
         // This will keep the service running even after activity destroyed.
@@ -84,13 +101,11 @@ class PowerConnectionBinder(caller: BinderListener) {
         } else {
             context.startService(intent)
         }
-
-        context.bindService(intent, connection, BIND_AUTO_CREATE or BIND_ADJUST_WITH_ACTIVITY)
-        serviceIsBound = true
+        isServiceStarted = true
     }
 
     private fun unbindService(context: Context) {
-        if (serviceIsBound) {
+        if (isServiceBound) {
             Timber.i("Service unbinding.")
             // If we have received the service, and hence registered with
             // it, then now is the time to unregister.
@@ -98,7 +113,7 @@ class PowerConnectionBinder(caller: BinderListener) {
 
             // Detach our existing connection.
             context.unbindService(connection)
-            serviceIsBound = false
+            isServiceBound = false
         }
     }
 
@@ -110,11 +125,13 @@ class PowerConnectionBinder(caller: BinderListener) {
         try {
             notifyService(PowerConnectionService.MSG_REGISTER_CLIENT)
             Timber.i("Registered with service.")
-        } catch (_: RemoteException) {
+        } catch (e: RemoteException) {
             // In this case the service has crashed before we could even
             // do anything with it; we can count on soon being
             // disconnected (and then reconnected if it can be restarted)
             // so there is no need to do anything here.
+
+            caller.onBindFailed(e)
         }
     }
 
@@ -133,7 +150,7 @@ class PowerConnectionBinder(caller: BinderListener) {
     @Throws(RemoteException::class)
     private fun notifyService(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
         val service = this.service ?: return
-        if (serviceIsBound) {
+        if (isServiceBound) {
             val msg = Message.obtain(null, command, arg1, arg2, arg3)
             msg.replyTo = messenger
             service.send(msg)
@@ -141,6 +158,11 @@ class PowerConnectionBinder(caller: BinderListener) {
     }
 
     fun startMonitor() {
+        Timber.i("Start monitor")
+        if (!isServiceStarted) {
+            startService(context)
+        }
+
         // We want to monitor the service for as long as we are connected to it.
         try {
             notifyService(PowerConnectionService.MSG_START_MONITOR)
@@ -153,6 +175,7 @@ class PowerConnectionBinder(caller: BinderListener) {
     }
 
     fun stopMonitor() {
+        Timber.i("Stop monitor")
         try {
             notifyService(PowerConnectionService.MSG_STOP_MONITOR)
         } catch (_: RemoteException) {
@@ -163,31 +186,19 @@ class PowerConnectionBinder(caller: BinderListener) {
         }
     }
 
-    fun fetchState() {
-        try {
-            notifyService(PowerConnectionService.MSG_GET_STATUS_MONITOR)
-        } catch (_: RemoteException) {
-            // In this case the service has crashed before we could even
-            // do anything with it; we can count on soon being
-            // disconnected (and then reconnected if it can be restarted)
-            // so there is no need to do anything here.
-        }
-    }
-
-    @Throws(ForegroundServiceStartNotAllowedException::class)
-    fun onStart(context: Context) {
+    fun start() {
         bindService(context)
     }
 
-    fun onStop(context: Context) {
+    fun stop() {
         unbindService(context)
     }
 
     fun fail() {
-        notifyService(PowerConnectionService.MSG_FAILED, 0, 0, System.currentTimeMillis())
+        notifyService(PowerConnectionService.MSG_FAILED)
     }
 
-    private class MainHandler(caller: BinderListener) : Handler(Looper.getMainLooper()) {
+    private class CallerHandler(caller: BinderListener) : Handler(Looper.getMainLooper()) {
 
         private val caller: WeakReference<BinderListener> = WeakReference(caller)
 

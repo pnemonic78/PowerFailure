@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
             }
         }
     }
-    private val binder = PowerConnectionBinder(this)
+    private val binder = PowerConnectionBinder(this, this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -85,23 +85,14 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        bind()
+    override fun onStart() {
+        super.onStart()
+        binder.start()
     }
 
-    private fun bind() {
-        try {
-            binder.onStart(this)
-        } catch (e: Exception) {
-            Timber.e(e)
-            showForegroundWarning()
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        binder.onStop(this)
+    override fun onStop() {
+        super.onStop()
+        binder.stop()
     }
 
     override fun onMonitorStatus(polling: Boolean) {
@@ -119,6 +110,11 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
 
     override fun onPowerRestored(timeMillis: TimeMillis) {
         viewModel.onPowerRestored(timeMillis)
+    }
+
+    override fun onBindFailed(error: Exception) {
+        Timber.e(error)
+        showForegroundWarning()
     }
 
     private fun onCommand(command: Command) {
@@ -159,15 +155,15 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
             .setTitle(R.string.title_activity_main)
             .setMessage(R.string.monitor_stopped)
             .setCancelable(false)
-            .setNeutralButton(com.github.lib.R.string.menu_settings, { _, _ ->
+            .setNeutralButton(com.github.lib.R.string.menu_settings) { _, _ ->
                 showAppPermissions()
-            })
-            .setNegativeButton(com.github.lib.R.string.cancel, { _, _ ->
+            }
+            .setNegativeButton(com.github.lib.R.string.cancel) { _, _ ->
                 finish()
-            })
-            .setPositiveButton(com.github.lib.R.string.retry, { _, _ ->
-                bind()
-            })
+            }
+            .setPositiveButton(com.github.lib.R.string.retry) { _, _ ->
+                binder.start()
+            }
             .show()
     }
 
