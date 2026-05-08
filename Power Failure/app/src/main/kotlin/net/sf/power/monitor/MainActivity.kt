@@ -16,14 +16,14 @@
 package net.sf.power.monitor
 
 import android.Manifest
-import android.annotation.TargetApi
-import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -62,6 +62,13 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
         }
     }
     private val binder = PowerConnectionBinder(this, this)
+    private val requestPermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        permissions.entries.forEach {
+            Timber.i("Permission ${it.key} granted: ${it.value}")
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
@@ -73,10 +80,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
             }
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            initNotificationPermissions()
-        }
-        PermitRingtonePreference.askPermission(this)
+        initPermissions()
 
         lifecycleScope.launch {
             viewModel.command.collect {
@@ -132,20 +136,13 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    private fun checkNotificationPermissions(activity: AppCompatActivity) {
-        val nm = getNotificationManager()
-        if (nm.areNotificationsEnabled()) return
-        activity.requestPermissions(PERMISSIONS, ACTIVITY_PERMISSIONS)
-    }
-
-    private fun getNotificationManager(): NotificationManager {
-        return getSystemService(NotificationManager::class.java)
-    }
-
-    @TargetApi(Build.VERSION_CODES.TIRAMISU)
-    private fun initNotificationPermissions() {
-        checkNotificationPermissions(this)
+    private fun initPermissions() {
+        val missing = PERMISSIONS.filter {
+            checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED
+        }
+        if (missing.isNotEmpty()) {
+            requestPermissionsLauncher.launch(missing.toTypedArray())
+        }
     }
 
     private fun showForegroundWarning() {
@@ -175,12 +172,17 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
     }
 
     companion object {
-        @TargetApi(Build.VERSION_CODES.TIRAMISU)
-        private val PERMISSIONS = arrayOf(Manifest.permission.POST_NOTIFICATIONS)
-
-        /**
-         * Activity id for requesting notification permissions.
-         */
-        private const val ACTIVITY_PERMISSIONS = 0x6057 // "POST"
+        private val PERMISSIONS = mutableListOf<String>().apply {
+            add(PermitRingtonePreference.PERMISSION_RINGTONE)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                add(Manifest.permission.POST_NOTIFICATIONS)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                add(Manifest.permission.FOREGROUND_SERVICE)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                add(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE)
+            }
+        }
     }
 }
