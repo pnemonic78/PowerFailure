@@ -173,7 +173,6 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
 
     companion object {
         private val PERMISSIONS = mutableListOf<String>().apply {
-            add(PermitRingtonePreference.PERMISSION_RINGTONE)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 add(Manifest.permission.POST_NOTIFICATIONS)
             }
@@ -183,6 +182,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                 add(Manifest.permission.FOREGROUND_SERVICE_SPECIAL_USE)
             }
+            add(PermitRingtonePreference.PERMISSION_RINGTONE)
         }
     }
 }

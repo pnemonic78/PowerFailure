@@ -16,7 +16,6 @@
 package net.sf.power.monitor
 
 import android.annotation.SuppressLint
-import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.BroadcastReceiver
@@ -38,7 +37,9 @@ import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.app.NotificationChannelCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.graphics.drawable.toBitmap
 import net.sf.power.monitor.model.BatteryListener
@@ -72,8 +73,8 @@ class PowerConnectionService : Service(), BatteryListener {
      * Keeps track of all current registered clients.
      */
     private val clients = mutableListOf<Messenger>()
-    private val notificationManager: NotificationManager by lazy {
-        getSystemService(NotificationManager::class.java)
+    private val notificationManager: NotificationManagerCompat by lazy {
+        NotificationManagerCompat.from(this@PowerConnectionService)
     }
     private val powerManager: PowerManager by lazy {
         getSystemService(PowerManager::class.java)
@@ -84,6 +85,8 @@ class PowerConnectionService : Service(), BatteryListener {
 
     @DrawableRes
     private var notificationIconId: Int = 0
+    private var notificationChannel: NotificationChannelCompat? = null
+    private var notificationBuilder: NotificationCompat.Builder? = null
     private var powerSince: TimeMillis = NEVER
     private var powerFailureSince: TimeMillis = NEVER
     private var isLogging: Boolean = false
@@ -308,47 +311,51 @@ class PowerConnectionService : Service(), BatteryListener {
         this.notificationIconId = largeIconId
 
         val context: Context = this
-        val res = context.resources
 
-        val title = res.getText(R.string.title_service)
-        val text = res.getText(textId)
-
-        // The PendingIntent to launch our activity if the user selects this notification.
-        val contentIntent = createActivityIntent(context)
+        val title = context.getText(R.string.title_service)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            var channel = notificationManager.getNotificationChannel(CHANNEL_ID)
+            var channel: NotificationChannelCompat? =
+                notificationChannel ?: notificationManager.getNotificationChannelCompat(CHANNEL_ID)
             if (channel == null) {
-                channel = android.app.NotificationChannel(
+                channel = NotificationChannelCompat.Builder(
                     CHANNEL_ID,
-                    res.getText(R.string.app_name),
-                    NotificationManager.IMPORTANCE_DEFAULT
+                    NotificationManagerCompat.IMPORTANCE_DEFAULT
                 )
+                    .setName(title)
+                    .build()
                 notificationManager.createNotificationChannel(channel)
+                this.notificationChannel = channel
             }
         }
 
         // Set the info for the views that show in the notification panel.
+        var builder = notificationBuilder
+        if (builder == null) {
+            // The PendingIntent to launch our activity if the user selects this notification.
+            val contentIntent = createActivityIntent(context)
+
+            builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setOngoing(true)
+                .setSilent(true)
+                .setSmallIcon(R.drawable.ic_launcher_mono)  // the status icon
+                .setContentTitle(title)  // the label of the entry
+                .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
+                .setLights(Color.RED, SECOND_MS, SECOND_MS)
+            this.notificationBuilder = builder
+        }
+
         val largeIcon = AppCompatResources.getDrawable(context, largeIconId)?.toBitmap()
-        val notification = NotificationCompat.Builder(context, CHANNEL_ID)
-            .setOngoing(true)
-            .setSilent(true)
+        val text = context.getText(textId)
+
+        val notification = builder
             .setLargeIcon(largeIcon)
-            .setSmallIcon(R.drawable.ic_launcher_mono)  // the status icon
             .setTicker(text)  // the status text
             .setWhen(System.currentTimeMillis())  // the time stamp
-            .setContentTitle(title)  // the label of the entry
             .setContentText(text)  // the contents of the entry
-            .setContentIntent(contentIntent)  // The intent to send when the entry is clicked
-            .setLights(Color.RED, SECOND_MS, SECOND_MS)
             .build()
 
         // Show with the notification.
-        val serviceType = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
-        } else {
-            0
-        }
         ServiceCompat.startForeground(
             this,
             ID_NOTIFY,
@@ -558,5 +565,12 @@ class PowerConnectionService : Service(), BatteryListener {
 
         private const val FALSE = 0
         private const val TRUE = 1
+
+        private val serviceType =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_SPECIAL_USE
+            } else {
+                0
+            }
     }
 }
