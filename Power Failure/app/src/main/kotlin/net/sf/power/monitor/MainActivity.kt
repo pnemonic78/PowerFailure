@@ -73,6 +73,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        Timber.i("activity created")
 
         setContent {
             AppTheme {
@@ -91,11 +92,13 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
 
     override fun onStart() {
         super.onStart()
+        Timber.i("start activity")
         binder.start()
     }
 
     override fun onStop() {
         super.onStop()
+        Timber.i("stop activity")
         binder.stop()
     }
 
@@ -122,7 +125,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
     }
 
     private fun onCommand(command: Command) {
-        Timber.v("command $command")
+        Timber.i("command $command")
         when (command) {
             Command.Settings -> startActivity(
                 Intent(this, PowerPreferenceActivity::class.java)

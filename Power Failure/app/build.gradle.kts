@@ -147,7 +147,11 @@ dependencies {
 
     testImplementation(alibs.bundles.test)
     androidTestImplementation(alibs.bundles.test.android)
+
+    // Logging
     implementation(alibs.crashlytics)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
 }
 
 // Disable Google Services plugin for some flavors.
