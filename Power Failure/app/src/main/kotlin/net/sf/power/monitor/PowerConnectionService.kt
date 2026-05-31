@@ -275,7 +275,10 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
             ringtoneUri = prefRingtone
         }
         if (ringtoneUri != null) {
-            notifyAlarm?.play(ringtoneUri)
+            ringtoneUri = RingtoneManager.resolveUri(context, ringtoneUri)
+            if (ringtoneUri != null) {
+                notifyAlarm?.play(ringtoneUri)
+            }
         }
     }
 
@@ -457,6 +460,7 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
     }
 
     private fun handleFailure(timeMillis: TimeMillis) {
+        println("~!@ handleFailure $timeMillis isLogging=$isLogging")
         if (!isLogging) return
         playAlarm()
         sendSMS(timeMillis)
