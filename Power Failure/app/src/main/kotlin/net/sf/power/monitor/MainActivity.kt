@@ -19,15 +19,12 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -36,7 +33,6 @@ import com.github.preference.PermitRingtonePreference
 import kotlinx.coroutines.launch
 import net.sf.power.monitor.compose.AppTheme
 import net.sf.power.monitor.compose.MainScreen
-import net.sf.power.monitor.model.BatteryState
 import net.sf.power.monitor.model.Command
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
@@ -47,7 +43,7 @@ import timber.log.Timber
  *
  * @author Moshe Waisberg
  */
-class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
+class MainActivity : AppCompatActivity(), ServiceBinder.BinderListener {
 
     private val settings by lazy {
         val context: Context = this
@@ -61,7 +57,7 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
             }
         }
     }
-    private val binder = PowerConnectionBinder(this, this)
+    private val binder = ServiceBinder(this, this)
     private val requestPermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { permissions ->
@@ -93,35 +89,26 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
     override fun onStart() {
         super.onStart()
         Timber.i("start activity")
-        binder.start()
+        val app = application as PowerMonitorApplication
+        viewModel.setPoller(app.poll)
+        viewModel.start()
+        binder.onStart()
     }
 
     override fun onStop() {
-        super.onStop()
         Timber.i("stop activity")
-        binder.stop()
+        viewModel.stop()
+        binder.onStop()
+        super.onStop()
     }
 
     override fun onMonitorStatus(polling: Boolean) {
-        Timber.v("onMonitorStatus $polling")
+        Timber.v("onMonitorStatus polling=$polling")
         viewModel.setMonitorStatus(polling)
     }
 
-    override fun onBatteryState(state: BatteryState) {
-        viewModel.onBatteryState(state)
-    }
-
-    override fun onPowerFailed(timeMillis: TimeMillis) {
-        viewModel.onPowerFailed(timeMillis)
-    }
-
-    override fun onPowerRestored(timeMillis: TimeMillis) {
-        viewModel.onPowerRestored(timeMillis)
-    }
-
-    override fun onBindFailed(error: Exception) {
-        Timber.e(error)
-        showForegroundWarning()
+    override fun onClientRegistered(registered: Boolean) {
+        Timber.v("onClientRegistered registered=$registered")
     }
 
     private fun onCommand(command: Command) {
@@ -131,9 +118,9 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
                 Intent(this, PowerPreferenceActivity::class.java)
             )
 
-            Command.StartMonitor -> binder.startMonitor()
+            Command.StartMonitor -> binder.start()
 
-            Command.StopMonitor -> binder.stopMonitor()
+            Command.StopMonitor -> binder.stop()
 
             Command.Test -> binder.fail()
         }
@@ -146,32 +133,6 @@ class MainActivity : AppCompatActivity(), PowerConnectionBinder.BinderListener {
         if (missing.isNotEmpty()) {
             requestPermissionsLauncher.launch(missing.toTypedArray())
         }
-    }
-
-    private fun showForegroundWarning() {
-        val context: Context = this
-
-        AlertDialog.Builder(context)
-            .setTitle(R.string.title_activity_main)
-            .setMessage(R.string.monitor_stopped)
-            .setCancelable(false)
-            .setNeutralButton(com.github.lib.R.string.menu_settings) { _, _ ->
-                showAppPermissions()
-            }
-            .setNegativeButton(com.github.lib.R.string.cancel) { _, _ ->
-                finish()
-            }
-            .setPositiveButton(com.github.lib.R.string.retry) { _, _ ->
-                binder.start()
-            }
-            .show()
-    }
-
-    private fun showAppPermissions() {
-        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", packageName, "permissions")
-        }
-        startActivity(intent)
     }
 
     companion object {

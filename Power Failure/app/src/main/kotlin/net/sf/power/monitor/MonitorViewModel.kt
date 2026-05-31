@@ -8,32 +8,50 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import net.sf.power.monitor.model.BatteryListener
 import net.sf.power.monitor.model.BatteryState
 import net.sf.power.monitor.model.Command
 import net.sf.power.monitor.preference.PowerPreferences
-import net.sf.power.monitor.preference.PowerPreferences.Companion.NEVER
 
-class MonitorViewModel(private val settings: PowerPreferences) : ViewModel(), BatteryListener {
+class MonitorViewModel(private val settings: PowerPreferences) : ViewModel() {
+    private lateinit var poll: ChargerPoll
     private val _state = MutableStateFlow(BatteryState())
     val state: StateFlow<BatteryState> = _state
 
     private val _command = MutableSharedFlow<Command>(1)
     val command: Flow<Command> = _command
 
-    private val _polling = MutableStateFlow(false)
-    var isPolling: StateFlow<Boolean> = _polling
+    private val _monitoring = MutableStateFlow(false)
+    var isMonitoring: StateFlow<Boolean> = _monitoring
 
     private val _failedTime = MutableStateFlow(NEVER)
-    val failedTime: Flow<TimeMillis> = _failedTime
+    val failedTime: StateFlow<TimeMillis> = _failedTime
 
     private val _restoredTime = MutableStateFlow(NEVER)
-    val restoredTime: Flow<TimeMillis> = _restoredTime
+    val restoredTime: StateFlow<TimeMillis> = _restoredTime
 
     init {
         viewModelScope.launch {
             _failedTime.update { settings.failureTime }
             _restoredTime.update { settings.restoredTime }
+        }
+    }
+
+    fun setPoller(poll: ChargerPoll) {
+        this.poll = poll
+        viewModelScope.launch {
+            poll.state.collect {
+                onBatteryState(it)
+            }
+        }
+        viewModelScope.launch {
+            poll.failedTime.collect {
+                onPowerFailed(it)
+            }
+        }
+        viewModelScope.launch {
+            poll.restoredTime.collect {
+                onPowerRestored(it)
+            }
         }
     }
 
@@ -54,19 +72,19 @@ class MonitorViewModel(private val settings: PowerPreferences) : ViewModel(), Ba
     }
 
     fun onActionButtonClick() {
-        if (isPolling.value) {
-            stop()
+        if (isMonitoring.value) {
+            sendCommand(Command.StopMonitor)
         } else {
-            start()
+            sendCommand(Command.StartMonitor)
         }
     }
 
     fun start() {
-        sendCommand(Command.StartMonitor)
+        poll.start(this, settings)
     }
 
     fun stop() {
-        sendCommand(Command.StopMonitor)
+        poll.stop(this)
     }
 
     private fun sendCommand(command: Command) {
@@ -75,25 +93,23 @@ class MonitorViewModel(private val settings: PowerPreferences) : ViewModel(), Ba
         }
     }
 
-    override fun onBatteryState(state: BatteryState) {
+    fun setMonitorStatus(polling: Boolean) {
+        _monitoring.update { polling }
+    }
+
+    private fun onBatteryState(state: BatteryState) {
         viewModelScope.launch {
             _state.update { state }
         }
     }
 
-    fun setMonitorStatus(polling: Boolean) {
-        _polling.update { polling }
-    }
-
-    fun onPowerFailed(timeMillis: TimeMillis) {
-        settings.failureTime = timeMillis
+    private fun onPowerFailed(timeMillis: TimeMillis) {
         viewModelScope.launch {
             _failedTime.update { timeMillis }
         }
     }
 
-    fun onPowerRestored(timeMillis: TimeMillis) {
-        settings.restoredTime = timeMillis
+    private fun onPowerRestored(timeMillis: TimeMillis) {
         viewModelScope.launch {
             _restoredTime.update { timeMillis }
         }

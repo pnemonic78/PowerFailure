@@ -16,7 +16,7 @@ import net.sf.power.monitor.menu.TestButton
 
 @Composable
 fun MainMenu(modifier: Modifier = Modifier, viewModel: MonitorViewModel) {
-    val polling by viewModel.isPolling.collectAsState(false)
+    val isMonitoring by viewModel.isMonitoring.collectAsState(false)
 
     ActionsMenuCollapsed(modifier = modifier) { spacing ->
         if (BuildConfig.DEBUG) {
@@ -25,7 +25,7 @@ fun MainMenu(modifier: Modifier = Modifier, viewModel: MonitorViewModel) {
             })
             Spacer(modifier = Modifier.width(spacing))
         }
-        if (polling) {
+        if (isMonitoring) {
             StopButton(onClick = {
                 viewModel.onStopClick()
             })

@@ -6,9 +6,9 @@ import android.os.Bundle
 data class BatteryState(
     val plugged: Plugged,
     /** Get the battery status. */
-    val status: BatteryStatus = BatteryStatus.Unknown,
+    val status: BatteryStatus,
     /** Check whether the hardware has a battery. */
-    val isPresent: Boolean,
+    val isPresent: Boolean
 ) {
     constructor() : this(Plugged.Unknown, BatteryStatus.Unknown, false)
 

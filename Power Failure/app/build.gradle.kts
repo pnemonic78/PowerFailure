@@ -144,6 +144,7 @@ dependencies {
     implementation(alibs.log.timber)
 
     implementation(alibs.bundles.compose)
+    implementation(alibs.lifecycle.service)
 
     testImplementation(alibs.bundles.test)
     androidTestImplementation(alibs.bundles.test.android)

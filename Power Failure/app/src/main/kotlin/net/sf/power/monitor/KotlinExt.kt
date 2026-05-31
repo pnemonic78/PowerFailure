@@ -4,3 +4,5 @@ import androidx.compose.runtime.Composable
 
 typealias ComposeCallback = @Composable () -> Unit
 typealias TimeMillis = Long
+
+const val NEVER: TimeMillis = 0L

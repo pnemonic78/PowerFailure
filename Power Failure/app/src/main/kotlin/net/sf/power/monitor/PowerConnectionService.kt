@@ -17,8 +17,8 @@ package net.sf.power.monitor
 
 import android.annotation.SuppressLint
 import android.app.PendingIntent
-import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -26,13 +26,7 @@ import android.content.pm.ServiceInfo
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
-import android.os.Handler
-import android.os.IBinder
-import android.os.Looper
-import android.os.Message
-import android.os.Messenger
 import android.os.PowerManager
-import android.os.RemoteException
 import android.text.format.DateUtils
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -42,6 +36,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.ServiceCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.github.media.RingtoneManager
+import kotlinx.coroutines.launch
 import net.sf.power.monitor.model.BatteryListener
 import net.sf.power.monitor.model.BatteryState
 import net.sf.power.monitor.model.Plugged
@@ -50,7 +49,7 @@ import net.sf.power.monitor.notify.NotifySms
 import net.sf.power.monitor.notify.NotifyVibrate
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
-import java.lang.ref.WeakReference
+import java.util.concurrent.CopyOnWriteArraySet
 
 /**
  * Power connection events service.
@@ -60,19 +59,17 @@ import java.lang.ref.WeakReference
  *
  * @author Moshe Waisberg
  */
-class PowerConnectionService : Service(), BatteryListener {
+class PowerConnectionService : LifecycleService(), BatteryListener {
 
-    private val handler: Handler = PowerConnectionHandler(this)
-
-    /**
-     * Target we publish for clients to send messages to IncomingHandler.
-     */
-    private val messenger: Messenger = Messenger(handler)
+    private val messenger: LocalBroadcastManager by lazy {
+        val context: Context = this@PowerConnectionService
+        LocalBroadcastManager.getInstance(context)
+    }
 
     /**
      * Keeps track of all current registered clients.
      */
-    private val clients = mutableListOf<Messenger>()
+    private val clients = CopyOnWriteArraySet<String>()
     private val notificationManager: NotificationManagerCompat by lazy {
         NotificationManagerCompat.from(this@PowerConnectionService)
     }
@@ -87,8 +84,6 @@ class PowerConnectionService : Service(), BatteryListener {
     private var notificationIconId: Int = 0
     private var notificationChannel: NotificationChannelCompat? = null
     private var notificationBuilder: NotificationCompat.Builder? = null
-    private var powerSince: TimeMillis = NEVER
-    private var powerFailureSince: TimeMillis = NEVER
     private var isLogging: Boolean = false
     private val settings: PowerPreferences by lazy { PowerPreferences(this) }
     private var notifyAlarm: NotifyAlarm? = null
@@ -100,136 +95,138 @@ class PowerConnectionService : Service(), BatteryListener {
     private var prefSmsEnabled: Boolean = false
     private var prefSmsRecipient: String = ""
     private var wakeLock: PowerManager.WakeLock? = null
+    private lateinit var poll: ChargerPoll
 
     private val receiver = object : BroadcastReceiver() {
+
+        private val service: PowerConnectionService = this@PowerConnectionService
+        private val target by lazy {
+            val context: Context = this@PowerConnectionService
+            ComponentName(context, PowerConnectionService::class.java)
+        }
+
         override fun onReceive(context: Context, intent: Intent) {
+            if (intent.component != target) return
+            Timber.d("onReceive $intent")
             val action = intent.action
-            if (PowerPreferences.ACTION_PREFERENCES_CHANGED == action) {
-                Message.obtain(handler, MSG_PREFERENCES_CHANGED).sendToTarget()
+            //val arg1 = intent.getIntExtra(EXTRA_ARG1, 0)
+            val clientId = intent.getStringExtra(EXTRA_CLIENT)!!
+
+            when (action) {
+                ACTION_REGISTER_CLIENT -> service.registerClient(clientId)
+
+                ACTION_UNREGISTER_CLIENT -> service.unregisterClient(clientId)
+
+                ACTION_START_MONITOR -> {
+                    service.registerClient(clientId)
+                    service.startLogging()
+                }
+
+                ACTION_STOP_MONITOR -> {
+                    service.stopLogging()
+                    service.unregisterClient(clientId)
+                }
+
+                ACTION_GET_STATUS_MONITOR -> service.notifyClients(
+                    ACTION_SET_STATUS_MONITOR,
+                    if (service.isLogging) TRUE else FALSE
+                )
+
+                ACTION_PREFERENCES_CHANGED -> service.onPreferencesChanged()
+
+                ACTION_FAILED -> service.poll.fail()
             }
         }
     }
 
-    override fun onBind(intent: Intent): IBinder? {
-        return messenger.binder
-    }
-
     override fun onCreate() {
         super.onCreate()
-        Timber.i("create service")
+        Timber.i("Service create")
 
         hideNotification()
         // Display a notification about us starting. We put an icon in the status bar.
         showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
 
-        val filter = IntentFilter()
-        filter.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(receiver, filter, RECEIVER_NOT_EXPORTED)
-        } else {
-            @SuppressLint("UnspecifiedRegisterReceiverFlag")
-            registerReceiver(receiver, filter, null, handler)
-        }
+        registerMessenger()
         onPreferencesChanged()
-
         stopAlarm()
-        checkBatteryStatus()
+
+        this.poll = (application as PowerMonitorApplication).poll
+        lifecycleScope.launch {
+            poll.state.collect {
+                onBatteryState(it)
+            }
+        }
+        lifecycleScope.launch {
+            poll.failedTime.collect {
+                handleFailure(it)
+            }
+        }
+        lifecycleScope.launch {
+            poll.restoredTime.collect {
+                handleRestore()
+            }
+        }
+        startPolling()
     }
 
     override fun onDestroy() {
-        Timber.i("destroy service")
+        Timber.i("Service destroy")
         stopLogging()
         stopPolling()
         stopAlarm()
         hideNotification()
         unregisterReceiver(receiver)
+        messenger.unregisterReceiver(receiver)
         super.onDestroy()
+    }
+
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Timber.v("onStartCommand $intent")
+        if (intent != null) {
+            receiver.onReceive(this, intent)
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun registerMessenger() {
+        val intentFilter = IntentFilter(Intent.ACTION_DEFAULT).apply {
+            addAction(ACTION_FAILED)
+            addAction(ACTION_GET_STATUS_MONITOR)
+            addAction(ACTION_PREFERENCES_CHANGED)
+            addAction(ACTION_REGISTER_CLIENT)
+            addAction(ACTION_SET_STATUS_MONITOR)
+            addAction(ACTION_START_MONITOR)
+            addAction(ACTION_STOP_MONITOR)
+            addAction(ACTION_UNREGISTER_CLIENT)
+        }
+        messenger.registerReceiver(receiver, intentFilter)
+
+        val intentFilterPrefs = IntentFilter()
+        intentFilterPrefs.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, intentFilterPrefs, RECEIVER_NOT_EXPORTED)
+        } else {
+            @SuppressLint("UnspecifiedRegisterReceiverFlag")
+            registerReceiver(receiver, intentFilterPrefs)
+        }
     }
 
     private fun startPolling() {
         Timber.v("start polling")
-        if (!handler.hasMessages(MSG_CHECK_BATTERY)) {
-            pollBattery()
-        }
+        poll.start(this, settings)
     }
 
     private fun stopPolling() {
         Timber.v("stop polling")
-        handler.removeMessages(MSG_CHECK_BATTERY)
+        poll.stop(this)
         if (clients.isEmpty()) {
             stopSelf()
         }
     }
 
-    private fun checkBatteryStatus() {
-        val context: Context = this
-        val state: BatteryState = BatteryUtils.getState(context)
-        printBatteryStatus(state)
-
-        Message.obtain(handler, MSG_BATTERY_CHANGED, state).sendToTarget()
-
-        pollBattery()
-    }
-
-    private fun pollBattery() {
-        handler.sendEmptyMessageDelayed(MSG_CHECK_BATTERY, POLL_RATE)
-    }
-
-    private fun printBatteryStatus(state: BatteryState) {
-        Timber.i("$state")
-    }
-
-    private class PowerConnectionHandler(service: PowerConnectionService) :
-        Handler(Looper.getMainLooper()) {
-
-        private val service: WeakReference<PowerConnectionService> = WeakReference(service)
-
-        override fun handleMessage(msg: Message) {
-            val service = this.service.get() ?: return
-            val client = msg.replyTo
-
-            when (msg.what) {
-                MSG_REGISTER_CLIENT -> service.registerClient(client)
-                MSG_UNREGISTER_CLIENT -> service.unregisterClient(client)
-                MSG_START_MONITOR -> service.startLogging()
-                MSG_STOP_MONITOR -> service.stopLogging()
-                MSG_GET_STATUS_MONITOR -> service.notifyClients(
-                    MSG_SET_STATUS_MONITOR,
-                    if (service.isLogging) TRUE else FALSE
-                )
-
-                MSG_CHECK_BATTERY -> service.checkBatteryStatus()
-                MSG_BATTERY_CHANGED -> service.onBatteryState(msg.obj as BatteryState)
-                MSG_PREFERENCES_CHANGED -> service.onPreferencesChanged()
-                MSG_FAILED -> service.handleFailure(System.currentTimeMillis())
-                else -> super.handleMessage(msg)
-            }
-        }
-    }
-
     override fun onBatteryState(state: BatteryState) {
         val plugged = state.plugged
-        val now = System.currentTimeMillis()
-
-        if (plugged != Plugged.None) {
-            powerSince = now
-            if (isLogging && (powerFailureSince > NEVER)) {
-                if (now >= powerFailureSince + prefTimeDelay) {
-                    powerFailureSince = NEVER
-                    handleRestore(plugged, now)
-                }
-            } else {
-                powerFailureSince = NEVER
-                stopAlarm()
-            }
-        } else if (isLogging && (now >= powerSince + prefTimeDelay)) {
-            if (powerFailureSince <= NEVER) {
-                powerFailureSince = now
-                handleFailure(now)
-            }
-        } else {
-            stopAlarm()
-        }
 
         when (plugged) {
             Plugged.None -> showNotification(
@@ -259,8 +256,6 @@ class PowerConnectionService : Service(), BatteryListener {
 
             else -> showNotification(R.string.plugged_unknown, R.drawable.plug_unknown)
         }
-
-        notifyClients(MSG_BATTERY_CHANGED, arg3 = state)
     }
 
     private fun playAlarm() {
@@ -385,34 +380,39 @@ class PowerConnectionService : Service(), BatteryListener {
         notificationIconId = 0
     }
 
-    private fun registerClient(client: Messenger) {
+    private fun registerClient(client: String) {
+        Timber.v("register client $client isLogging=$isLogging")
         if (!clients.contains(client)) {
             clients.add(client)
         }
-        notifyClients(MSG_SET_STATUS_MONITOR, if (isLogging) TRUE else FALSE)
-        startPolling()
+        notifyClient(ACTION_REGISTER_CLIENT, client, TRUE)
+        notifyClients(ACTION_SET_STATUS_MONITOR, if (isLogging) TRUE else FALSE)
     }
 
-    private fun unregisterClient(client: Messenger) {
+    private fun unregisterClient(client: String) {
+        Timber.v("unregister client $client")
         clients.remove(client)
         if (clients.isEmpty() && !isLogging) {
             stopSelf()
         }
     }
 
-    private fun notifyClients(command: Int, arg1: Int = 0, arg2: Int = 0, arg3: Any? = null) {
-        for (i in clients.indices.reversed()) {
-            try {
-                val msg = Message.obtain(null, command, arg1, arg2, arg3)
-                clients[i].send(msg)
-            } catch (e: RemoteException) {
-                Timber.e(e, "Failed to send status update")
-                // The client is dead.  Remove it from the list;
-                // we are going through the list from back to front
-                // so this is safe to do inside the loop.
-                clients.removeAt(i)
-            }
+    private fun notifyClients(action: String, arg1: Int = 0, arg2: Int = 0) {
+        for (client in clients) {
+            val intent = Intent(action)
+                .putExtra(EXTRA_ARG1, arg1)
+                .putExtra(EXTRA_ARG2, arg2)
+                .putExtra(EXTRA_CLIENT, client)
+            messenger.sendBroadcastSync(intent)
         }
+    }
+
+    private fun notifyClient(action: String, client: String, arg1: Int = 0, arg2: Int = 0) {
+        val intent = Intent(action)
+            .putExtra(EXTRA_ARG1, arg1)
+            .putExtra(EXTRA_ARG2, arg2)
+            .putExtra(EXTRA_CLIENT, client)
+        messenger.sendBroadcastSync(intent)
     }
 
     private fun startLogging() {
@@ -422,17 +422,17 @@ class PowerConnectionService : Service(), BatteryListener {
             showNotification(R.string.monitor_started, R.mipmap.ic_launcher)
             acquireWakeLock()
             //TODO Write logs.
-            notifyClients(MSG_SET_STATUS_MONITOR, TRUE)
+            notifyClients(ACTION_SET_STATUS_MONITOR, TRUE)
         }
     }
 
     private fun stopLogging() {
-        Timber.v("stop logging")
+        Timber.v("stop logging ($isLogging)")
         if (isLogging) {
             isLogging = false
             showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
             //TODO Write logs.
-            notifyClients(MSG_SET_STATUS_MONITOR, FALSE)
+            notifyClients(ACTION_SET_STATUS_MONITOR, FALSE)
         }
         releaseWakeLock()
     }
@@ -457,16 +457,13 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     private fun handleFailure(timeMillis: TimeMillis) {
-        settings.failureTime = timeMillis
-        settings.restoredTime = PowerPreferences.NEVER
-        notifyClients(MSG_FAILED, Plugged.None.source, 0, timeMillis)
+        if (!isLogging) return
         playAlarm()
         sendSMS(timeMillis)
     }
 
-    private fun handleRestore(plugged: Plugged, timeMillis: TimeMillis) {
-        settings.restoredTime = timeMillis
-        notifyClients(MSG_RESTORED, plugged.source, 0, timeMillis)
+    private fun handleRestore() {
+        if (!isLogging) return
         stopAlarm()
     }
 
@@ -495,73 +492,59 @@ class PowerConnectionService : Service(), BatteryListener {
     }
 
     companion object {
-
         /**
          * Command to the service to register a client, receiving callbacks
          * from the service.  The Message's replyTo field must be a Messenger of
          * the client where callbacks should be sent.
          */
-        const val MSG_REGISTER_CLIENT = 1
+        const val ACTION_REGISTER_CLIENT = "register_client"
 
         /**
          * Command to the service to unregister a client, ot stop receiving callbacks
          * from the service.  The Message's replyTo field must be a Messenger of
-         * the client as previously given with MSG_REGISTER_CLIENT.
+         * the client as previously given with `ACTION_REGISTER_CLIENT`.
          */
-        const val MSG_UNREGISTER_CLIENT = 2
+        const val ACTION_UNREGISTER_CLIENT = "unregister_client"
 
         /**
          * Command to the service to start monitoring.
          */
-        const val MSG_START_MONITOR = 3
+        const val ACTION_START_MONITOR = "start_monitor"
 
         /**
          * Command to the service to stop monitoring.
          */
-        const val MSG_STOP_MONITOR = 4
+        const val ACTION_STOP_MONITOR = "stop_monitor"
 
         /**
          * Command to the service to query the monitoring status.
          */
-        const val MSG_GET_STATUS_MONITOR = 5
+        const val ACTION_GET_STATUS_MONITOR = "get_status_monitor"
 
         /**
          * Command to the clients about the monitoring status.
          */
-        const val MSG_SET_STATUS_MONITOR = 6
-
-        /**
-         * Command to check the battery status.
-         */
-        const val MSG_CHECK_BATTERY = 10
-
-        /**
-         * Command to the clients that the battery status has been changed.
-         */
-        const val MSG_BATTERY_CHANGED = 11
+        const val ACTION_SET_STATUS_MONITOR = "set_status_monitor"
 
         /**
          * Command to the clients that the power failed.
          */
-        const val MSG_FAILED = 12
-
-        /**
-         * Command to the clients that the power was restored.
-         */
-        const val MSG_RESTORED = 13
+        const val ACTION_FAILED = "failed"
 
         /**
          * Command to the service that the shared preferences have changed.
          */
-        const val MSG_PREFERENCES_CHANGED = 20
+        const val ACTION_PREFERENCES_CHANGED = "preferences_changed"
 
-        private const val POLL_RATE = DateUtils.SECOND_IN_MILLIS
+        const val EXTRA_ARG1 = "arg1"
+        const val EXTRA_ARG2 = "arg2"
+        const val EXTRA_CLIENT = "client_id"
+
         private const val ID_NOTIFY = 1
         private const val CHANNEL_ID = "power-failure"
         private const val TAG_POWER = "power:lock"
 
         private const val SECOND_MS = DateUtils.SECOND_IN_MILLIS.toInt()
-        private const val NEVER = 0L
 
         private const val FALSE = 0
         private const val TRUE = 1

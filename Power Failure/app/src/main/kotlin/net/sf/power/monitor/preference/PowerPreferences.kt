@@ -24,6 +24,7 @@ import net.sf.power.monitor.R
 import androidx.core.net.toUri
 import net.sf.power.monitor.TimeMillis
 import androidx.core.content.edit
+import net.sf.power.monitor.NEVER
 
 /**
  * Application settings.
@@ -166,7 +167,5 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
          * Action that the shared preferences have changed.
          */
         const val ACTION_PREFERENCES_CHANGED = "net.sf.power.monitor.action.PREFERENCES_CHANGED"
-
-        const val NEVER: TimeMillis = 0L
     }
 }

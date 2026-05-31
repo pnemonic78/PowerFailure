@@ -30,15 +30,14 @@ import net.sf.power.monitor.MonitorViewModel
 import net.sf.power.monitor.TimeMillis
 import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.preference.PowerPreferences
-import net.sf.power.monitor.preference.PowerPreferences.Companion.NEVER
 
 @Composable
 fun MainScreen(viewModel: MonitorViewModel) {
     val state = viewModel.state.collectAsState()
     val plugged = state.value.plugged
-    val isPolling by viewModel.isPolling.collectAsState()
-    val failedTime by viewModel.failedTime.collectAsState(NEVER)
-    val restoredTime by viewModel.restoredTime.collectAsState(NEVER)
+    val isMonitoring by viewModel.isMonitoring.collectAsState()
+    val failedTime by viewModel.failedTime.collectAsState()
+    val restoredTime by viewModel.restoredTime.collectAsState()
 
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -49,7 +48,7 @@ fun MainScreen(viewModel: MonitorViewModel) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
-            FloatingActionButton(isPolling) { viewModel.onActionButtonClick() }
+            FloatingActionButton(isMonitoring) { viewModel.onActionButtonClick() }
         }
     ) { innerPadding ->
         PlugBackground(plugged, imagePosition = pluggedPosition)

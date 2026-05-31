@@ -15,13 +15,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import net.sf.power.monitor.NEVER
 import net.sf.power.monitor.R
 import net.sf.power.monitor.TimeMillis
 import net.sf.power.monitor.preference.PowerPreferences
 
 @Composable
 fun FailedText(timeMillis: TimeMillis, modifier: Modifier = Modifier) {
-    if (timeMillis <= PowerPreferences.NEVER) return
+    if (timeMillis <= NEVER) return
     val context = LocalContext.current
     val dateTime = DateUtils.formatDateTime(
         context,
