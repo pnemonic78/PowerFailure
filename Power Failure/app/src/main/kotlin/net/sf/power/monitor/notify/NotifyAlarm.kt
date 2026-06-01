@@ -13,8 +13,9 @@ import java.io.IOException
 
 class NotifyAlarm(private val context: Context) {
 
-    private var ringtoneUri: Uri? = null
     private var ringtone: MediaPlayer? = null
+
+    val isPlaying: Boolean get() = ringtone?.isPlaying == true
 
     fun play(ringtoneUri: Uri) {
         val context = createAttributionContext(context, "media")
@@ -42,9 +43,6 @@ class NotifyAlarm(private val context: Context) {
     }
 
     private fun getRingtone(context: Context, uri: Uri): MediaPlayer? {
-        if (uri != this.ringtoneUri) {
-            this.ringtone = null
-        }
         var ringtone = this.ringtone
         if (ringtone == null) {
             try {
@@ -66,7 +64,7 @@ class NotifyAlarm(private val context: Context) {
                     prepare()
                 }
             } catch (e: IOException) {
-                Timber.e(e, "error preparing ringtone: %s for %s", e.message, uri)
+                Timber.e(e, "error preparing ringtone: %s", uri)
             }
             this.ringtone = ringtone
         }

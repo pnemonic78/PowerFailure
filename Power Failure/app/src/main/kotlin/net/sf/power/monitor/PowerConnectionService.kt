@@ -110,21 +110,21 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
             Timber.d("onReceive $intent")
             val action = intent.action
             //val arg1 = intent.getIntExtra(EXTRA_ARG1, 0)
-            val clientId = intent.getStringExtra(EXTRA_CLIENT)!!
+            val clientId = intent.getStringExtra(EXTRA_CLIENT)
 
             when (action) {
-                ACTION_REGISTER_CLIENT -> service.registerClient(clientId)
+                ACTION_REGISTER_CLIENT -> service.registerClient(clientId!!)
 
-                ACTION_UNREGISTER_CLIENT -> service.unregisterClient(clientId)
+                ACTION_UNREGISTER_CLIENT -> service.unregisterClient(clientId!!)
 
                 ACTION_START_MONITOR -> {
-                    service.registerClient(clientId)
+                    service.registerClient(clientId!!)
                     service.startLogging()
                 }
 
                 ACTION_STOP_MONITOR -> {
                     service.stopLogging()
-                    service.unregisterClient(clientId)
+                    service.unregisterClient(clientId!!)
                 }
 
                 ACTION_GET_STATUS_MONITOR -> service.notifyClients(
@@ -148,7 +148,6 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
         showNotification(R.string.monitor_stopped, R.mipmap.ic_launcher)
 
         registerMessenger()
-        onPreferencesChanged()
         stopAlarm()
 
         this.poll = (application as PowerMonitorApplication).poll
@@ -167,7 +166,9 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
                 handleRestore()
             }
         }
-        startPolling()
+
+        // Also starts polling.
+        onPreferencesChanged()
     }
 
     override fun onDestroy() {
@@ -176,7 +177,6 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
         stopPolling()
         stopAlarm()
         hideNotification()
-        unregisterReceiver(receiver)
         messenger.unregisterReceiver(receiver)
         super.onDestroy()
     }
@@ -201,15 +201,6 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
             addAction(ACTION_UNREGISTER_CLIENT)
         }
         messenger.registerReceiver(receiver, intentFilter)
-
-        val intentFilterPrefs = IntentFilter()
-        intentFilterPrefs.addAction(PowerPreferences.ACTION_PREFERENCES_CHANGED)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(receiver, intentFilterPrefs, RECEIVER_NOT_EXPORTED)
-        } else {
-            @SuppressLint("UnspecifiedRegisterReceiverFlag")
-            registerReceiver(receiver, intentFilterPrefs)
-        }
     }
 
     private fun startPolling() {
@@ -457,10 +448,22 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
         prefVibrate = settings.isVibrate
         prefSmsEnabled = settings.isSmsEnabled
         prefSmsRecipient = settings.smsRecipient
+
+        val alarm = notifyAlarm
+        if (alarm != null) {
+            val isPlaying = alarm.isPlaying
+            stopSound()
+            notifyAlarm = null
+            if (isPlaying) {
+                playSound(this)
+            }
+        }
+
+        // Update the poller settings.
+        startPolling()
     }
 
     private fun handleFailure(timeMillis: TimeMillis) {
-        println("~!@ handleFailure $timeMillis isLogging=$isLogging")
         if (!isLogging) return
         playAlarm()
         sendSMS(timeMillis)
@@ -535,10 +538,7 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
          */
         const val ACTION_FAILED = "failed"
 
-        /**
-         * Command to the service that the shared preferences have changed.
-         */
-        const val ACTION_PREFERENCES_CHANGED = "preferences_changed"
+        const val ACTION_PREFERENCES_CHANGED = PowerPreferences.ACTION_PREFERENCES_CHANGED
 
         const val EXTRA_ARG1 = "arg1"
         const val EXTRA_ARG2 = "arg2"

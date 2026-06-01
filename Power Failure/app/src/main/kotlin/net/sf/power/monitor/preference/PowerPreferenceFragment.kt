@@ -15,10 +15,13 @@
  */
 package net.sf.power.monitor.preference
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.preference.Preference
 import com.github.preference.AbstractPreferenceFragment
+import net.sf.power.monitor.PowerConnectionService
 
 /**
  * This fragment shows the preferences for a header.
@@ -29,6 +32,11 @@ abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
 
     protected lateinit var settings: PowerPreferences
 
+    private val target by lazy {
+        val context: Context = requireContext()
+        ComponentName(context, PowerConnectionService::class.java)
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         settings = PowerPreferences(context)
@@ -37,10 +45,16 @@ abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
         val result = super.onPreferenceChange(preference, newValue)
 
-        // Notify the service.
-        val intent = Intent(PowerPreferences.ACTION_PREFERENCES_CHANGED)
-        context?.sendBroadcast(intent)
+        val context: Context = preference.context
+        notifyService(context)
 
         return result
+    }
+
+    // Notify the service.
+    private fun notifyService(context: Context) {
+        val intent = Intent(PowerPreferences.ACTION_PREFERENCES_CHANGED)
+            .setComponent(target)
+        LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
     }
 }
