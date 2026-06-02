@@ -36,6 +36,7 @@ import net.sf.power.monitor.compose.MainScreen
 import net.sf.power.monitor.model.Command
 import net.sf.power.monitor.preference.PowerPreferenceActivity
 import net.sf.power.monitor.preference.PowerPreferences
+import net.sf.power.monitor.preference.SimplePowerPreferences
 import timber.log.Timber
 
 /**
@@ -45,15 +46,16 @@ import timber.log.Timber
  */
 class MainActivity : AppCompatActivity(), ServiceBinder.BinderListener {
 
-    private val settings by lazy {
+    private val settings: PowerPreferences by lazy {
         val context: Context = this
-        PowerPreferences(context)
+        SimplePowerPreferences(context)
     }
     private val viewModel by viewModels<MonitorViewModel> {
         object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return MonitorViewModel(settings) as T
+                val app = application as PowerMonitorApplication
+                return MonitorViewModel(app.poll, settings) as T
             }
         }
     }
@@ -89,8 +91,6 @@ class MainActivity : AppCompatActivity(), ServiceBinder.BinderListener {
     override fun onStart() {
         super.onStart()
         Timber.i("start activity")
-        val app = application as PowerMonitorApplication
-        viewModel.setPoller(app.poll)
         viewModel.start()
         binder.onStart()
     }

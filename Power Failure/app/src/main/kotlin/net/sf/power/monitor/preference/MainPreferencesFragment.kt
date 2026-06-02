@@ -27,7 +27,9 @@ import androidx.preference.SwitchPreference
 import com.github.preference.PermitRingtonePreference
 import net.sf.power.monitor.BuildConfig
 import net.sf.power.monitor.R
-import net.sf.power.monitor.preference.PowerPreferences.Companion.KEY_RINGTONE_TONE
+import net.sf.power.monitor.preference.SimplePowerPreferences.Companion.KEY_RINGTONE_TONE
+import net.sf.power.monitor.preference.SimplePowerPreferences.Companion.KEY_SMS_ENABLED
+import net.sf.power.monitor.preference.SimplePowerPreferences.Companion.KEY_SMS_RECIPIENT
 
 class MainPreferencesFragment : PowerPreferenceFragment() {
 
@@ -85,8 +87,7 @@ class MainPreferencesFragment : PowerPreferenceFragment() {
     }
 
     private fun initSmsFeature(): SwitchPreference? {
-        val preference =
-            findPreference<SwitchPreference>(PowerPreferences.KEY_SMS_ENABLED) ?: return null
+        val preference = findPreference<SwitchPreference>(KEY_SMS_ENABLED) ?: return null
         if (BuildConfig.FEATURE_SMS) {
             preference.onPreferenceChangeListener = this
             preference.summaryProvider = Preference.SummaryProvider<SwitchPreference> {
@@ -105,8 +106,7 @@ class MainPreferencesFragment : PowerPreferenceFragment() {
     }
 
     private fun initSmsRecipient(): RecipientPreference? {
-        val preference =
-            findPreference<RecipientPreference>(PowerPreferences.KEY_SMS_RECIPIENT) ?: return null
+        val preference = findPreference<RecipientPreference>(KEY_SMS_RECIPIENT) ?: return null
         if (BuildConfig.FEATURE_SMS) {
             preference.setHost(this)
             preference.summaryProvider = Preference.SummaryProvider<RecipientPreference> {

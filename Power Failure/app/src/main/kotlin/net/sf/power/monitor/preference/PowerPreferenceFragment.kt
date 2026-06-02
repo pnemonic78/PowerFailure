@@ -39,7 +39,7 @@ abstract class PowerPreferenceFragment : AbstractPreferenceFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        settings = PowerPreferences(context)
+        settings = SimplePowerPreferences(context)
     }
 
     override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {

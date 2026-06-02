@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import net.sf.power.monitor.model.BatteryState
-import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.preference.PowerPreferences
 import timber.log.Timber
 import java.util.concurrent.CopyOnWriteArraySet
@@ -22,11 +21,9 @@ class ChargerPoll(
     private val _state = MutableStateFlow(BatteryState())
     val state: StateFlow<BatteryState> = _state
 
-    private val _failedTime = MutableStateFlow(NEVER)
-    val failedTime: StateFlow<TimeMillis> = _failedTime
-
-    private val _restoredTime = MutableStateFlow(NEVER)
-    val restoredTime: StateFlow<TimeMillis> = _restoredTime
+    private val stateMachine = ChargerStateMachine()
+    val failedTime: StateFlow<TimeMillis> = stateMachine.failedTime
+    val restoredTime: StateFlow<TimeMillis> = stateMachine.restoredTime
 
     private var pollingJob: Job? = null
     val isPolling: Boolean get() = pollingJob != null && pollingJob?.isCancelled == false
@@ -34,20 +31,28 @@ class ChargerPoll(
     private val owners = CopyOnWriteArraySet<Any>()
     private lateinit var settings: PowerPreferences
 
-    private var powerFailureSince: TimeMillis = NEVER
-    private var powerSince: TimeMillis = NEVER
-    private var failureDelay: TimeMillis = 10
+    init {
+        lifecycleScope.launch {
+            failedTime.collect {
+                handleFailure(it)
+            }
+        }
+        lifecycleScope.launch {
+            restoredTime.collect {
+                handleRestore(it)
+            }
+        }
+    }
 
     fun start(owner: Any, settings: PowerPreferences) {
-        this.settings = settings
-        failureDelay = settings.failureDelay
-        powerSince = NEVER
-        powerFailureSince = NEVER
-
-        if (owners.contains(owner)) {
-            return
+        if (!owners.contains(owner)) {
+            owners.add(owner)
         }
-        owners.add(owner)
+
+        this.settings = settings
+
+        stateMachine.reset()
+        stateMachine.applySettings(settings)
 
         pollingJob?.cancel()
         pollingJob = lifecycleScope.launch {
@@ -84,39 +89,22 @@ class ChargerPoll(
     private fun handleBatteryState(state: BatteryState) {
         Timber.i("$state")
         _state.update { state }
-
-        val plugged = state.plugged
-        val now = System.currentTimeMillis()
-
-        if (plugged != Plugged.None) {
-            powerSince = now
-            if (powerFailureSince > NEVER) {
-                if (now >= powerFailureSince + failureDelay) {
-                    powerFailureSince = NEVER
-                    handleRestore(now)
-                }
-            } else {
-                powerFailureSince = NEVER
-            }
-        } else if (now >= powerSince + failureDelay) {
-            if (powerFailureSince <= NEVER) {
-                powerFailureSince = now
-                handleFailure(now)
-            }
-        }
+        stateMachine.next(state)
     }
 
     private fun handleFailure(timestamp: TimeMillis) {
         Timber.i("power failed $timestamp")
-        _failedTime.update { timestamp }
-        settings.failureTime = timestamp
-        settings.restoredTime = NEVER
+        if (::settings.isInitialized) {
+            settings.failureTime = timestamp
+            settings.restoredTime = NEVER
+        }
     }
 
     private fun handleRestore(timestamp: TimeMillis) {
         Timber.i("power restored $timestamp")
-        _restoredTime.update { timestamp }
-        settings.restoredTime = timestamp
+        if (::settings.isInitialized) {
+            settings.restoredTime = timestamp
+        }
     }
 
     internal fun fail() {

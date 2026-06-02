@@ -48,6 +48,7 @@ import net.sf.power.monitor.notify.NotifyAlarm
 import net.sf.power.monitor.notify.NotifySms
 import net.sf.power.monitor.notify.NotifyVibrate
 import net.sf.power.monitor.preference.PowerPreferences
+import net.sf.power.monitor.preference.SimplePowerPreferences
 import timber.log.Timber
 import java.util.concurrent.CopyOnWriteArraySet
 
@@ -85,7 +86,7 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
     private var notificationChannel: NotificationChannelCompat? = null
     private var notificationBuilder: NotificationCompat.Builder? = null
     private var isLogging: Boolean = false
-    private val settings: PowerPreferences by lazy { PowerPreferences(this) }
+    private val settings: PowerPreferences by lazy { SimplePowerPreferences(this) }
     private var notifyAlarm: NotifyAlarm? = null
     private var notifySms: NotifySms? = null
     private var notifyVibrate: NotifyVibrate? = null

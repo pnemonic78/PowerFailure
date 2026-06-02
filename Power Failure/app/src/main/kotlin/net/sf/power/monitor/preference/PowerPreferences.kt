@@ -15,23 +15,15 @@
  */
 package net.sf.power.monitor.preference
 
-import android.content.Context
 import android.net.Uri
-import android.text.format.DateUtils
-import com.github.media.RingtoneManager
-import com.github.preference.SimplePreferences
-import net.sf.power.monitor.R
-import androidx.core.net.toUri
 import net.sf.power.monitor.TimeMillis
-import androidx.core.content.edit
-import net.sf.power.monitor.NEVER
 
 /**
  * Application settings.
  *
  * @author Moshe Waisberg
  */
-class PowerPreferences(context: Context) : SimplePreferences(context) {
+interface PowerPreferences {
     /**
      * Get the ringtone.
      *
@@ -39,19 +31,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @see [android.media.RingtoneManager.getDefaultUri]
      */
     val ringtone: Uri?
-        get() {
-            val type = RingtoneManager.TYPE_ALARM
-            var path = preferences.getString(KEY_RINGTONE_TONE, RingtoneManager.DEFAULT_PATH)
-            if (path == RingtoneManager.DEFAULT_PATH) {
-                path = android.media.RingtoneManager.getDefaultUri(type).toString()
-            }
-            val ringtoneManager = RingtoneManager(context)
-            ringtoneManager.setType(type)
-            if (!ringtoneManager.isIncludeExternal) {
-                path = ringtoneManager.filterInternal(path)
-            }
-            return if (path.isNullOrEmpty()) null else path.toUri()
-        }
 
     /**
      * Vibrate the device when power disconnected?
@@ -59,10 +38,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return `true` to vibrate.
      */
     val isVibrate: Boolean
-        get() = preferences.getBoolean(
-            KEY_VIBRATE,
-            context.resources.getBoolean(R.bool.vibrate_defaultValue)
-        )
 
     /**
      * Get the time delay after the power is disconnected to when to notify about the failure.
@@ -70,17 +45,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return the time in milliseconds.
      */
     val failureDelay: TimeMillis
-        get() = try {
-            preferences.getInt(
-                KEY_FAILURE_DELAY,
-                context.resources.getInteger(R.integer.delay_defaultValue)
-            ).toLong() * DateUtils.SECOND_IN_MILLIS
-        } catch (_: ClassCastException) {
-            preferences.getString(
-                KEY_FAILURE_DELAY,
-                context.resources.getInteger(R.integer.delay_defaultValue).toString()
-            )!!.toLong() * DateUtils.SECOND_IN_MILLIS
-        }
 
     /**
      * Get the time when the power failed.
@@ -88,10 +52,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return the time in milliseconds.
      */
     var failureTime: TimeMillis
-        get() = preferences.getLong(KEY_FAILURE_TIME, NEVER)
-        set(value) {
-            preferences.edit { putLong(KEY_FAILURE_TIME, value) }
-        }
 
     /**
      * Get the time when the power was restored.
@@ -99,10 +59,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return the time in milliseconds.
      */
     var restoredTime: TimeMillis
-        get() = preferences.getLong(KEY_RESTORED_TIME, NEVER)
-        set(value) {
-            preferences.edit { putLong(KEY_RESTORED_TIME, value) }
-        }
 
     /**
      * Is sending an SMS enabled?
@@ -110,10 +66,6 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return `true` if enabled.
      */
     var isSmsEnabled: Boolean
-        get() = preferences.getBoolean(KEY_SMS_ENABLED, false)
-        set(value) {
-            preferences.edit { putBoolean(KEY_SMS_ENABLED, value) }
-        }
 
     /**
      * Get the SMS recipient.
@@ -121,48 +73,8 @@ class PowerPreferences(context: Context) : SimplePreferences(context) {
      * @return A contact number.
      */
     var smsRecipient: String
-        get() = preferences.getString(KEY_SMS_RECIPIENT, "") ?: ""
-        set(value) {
-            preferences.edit { putString(KEY_SMS_RECIPIENT, value) }
-        }
 
     companion object {
-
-        /**
-         * Preference name for the reminder ringtone.
-         */
-        const val KEY_RINGTONE_TONE = "ringtone.tone"
-
-        /**
-         * Preference name for vibration.
-         */
-        const val KEY_VIBRATE = "vibrate"
-
-        /**
-         * Preference name for delay (seconds).
-         */
-        const val KEY_FAILURE_DELAY = "delay"
-
-        /**
-         * Preference name for the when was the last significant power failure.
-         */
-        const val KEY_FAILURE_TIME = "failure.time"
-
-        /**
-         * Preference name for when was the last significant power restoration.
-         */
-        const val KEY_RESTORED_TIME = "restored.time"
-
-        /**
-         * Preference name for enabling sending an SMS.
-         */
-        const val KEY_SMS_ENABLED = "sms.enabled"
-
-        /**
-         * Preference name for the SMS recipient number.
-         */
-        const val KEY_SMS_RECIPIENT = "sms.recipient"
-
         /**
          * Action that the shared preferences have changed.
          */

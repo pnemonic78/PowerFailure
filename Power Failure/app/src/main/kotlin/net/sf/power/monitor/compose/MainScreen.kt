@@ -2,6 +2,7 @@ package net.sf.power.monitor.compose
 
 import android.annotation.SuppressLint
 import android.content.res.Configuration
+import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.BiasAlignment
@@ -26,7 +28,9 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import net.sf.power.monitor.ChargerPoll
 import net.sf.power.monitor.MonitorViewModel
+import net.sf.power.monitor.NEVER
 import net.sf.power.monitor.TimeMillis
 import net.sf.power.monitor.model.Plugged
 import net.sf.power.monitor.preference.PowerPreferences
@@ -151,8 +155,18 @@ private fun BoxScope.MainScreenLandscape(
 @Preview
 private fun Preview() {
     val context = LocalContext.current
-    val settings = PowerPreferences(context)
-    val viewModel = MonitorViewModel(settings)
+    val scope = rememberCoroutineScope()
+    val poll = ChargerPoll(context, scope)
+    val settings = object : PowerPreferences {
+        override val ringtone: Uri? = null
+        override val isVibrate: Boolean = false
+        override val failureDelay: TimeMillis = 0
+        override var failureTime: TimeMillis = NEVER
+        override var restoredTime: TimeMillis = NEVER
+        override var isSmsEnabled: Boolean = false
+        override var smsRecipient: String = ""
+    }
+    val viewModel = MonitorViewModel(poll, settings)
 
     AppTheme {
         MainScreen(viewModel)
