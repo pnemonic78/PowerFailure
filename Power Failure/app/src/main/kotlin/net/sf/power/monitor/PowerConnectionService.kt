@@ -164,7 +164,7 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
         }
         lifecycleScope.launch {
             poll.restoredTime.collect {
-                handleRestore()
+                handleRestore(it)
             }
         }
 
@@ -465,12 +465,14 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
     }
 
     private fun handleFailure(timeMillis: TimeMillis) {
+        if (timeMillis <= NEVER) return
         if (!isLogging) return
         playAlarm()
         sendSMS(timeMillis)
     }
 
-    private fun handleRestore() {
+    private fun handleRestore(timeMillis: TimeMillis) {
+        if (timeMillis <= NEVER) return
         if (!isLogging) return
         stopAlarm()
     }
