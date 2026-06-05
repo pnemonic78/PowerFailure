@@ -39,7 +39,6 @@ import androidx.core.graphics.drawable.toBitmap
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.github.media.RingtoneManager
 import kotlinx.coroutines.launch
 import net.sf.power.monitor.model.BatteryListener
 import net.sf.power.monitor.model.BatteryState
@@ -267,10 +266,7 @@ class PowerConnectionService : LifecycleService(), BatteryListener {
             ringtoneUri = prefRingtone
         }
         if (ringtoneUri != null) {
-            ringtoneUri = RingtoneManager.resolveUri(context, ringtoneUri)
-            if (ringtoneUri != null) {
-                notifyAlarm?.play(ringtoneUri)
-            }
+            notifyAlarm?.play(ringtoneUri)
         }
     }
 

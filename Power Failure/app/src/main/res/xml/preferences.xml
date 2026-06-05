@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <PreferenceCategory
         android:icon="@drawable/ic_settings_general"
@@ -12,13 +13,15 @@
             android:title="@string/delay_title"
             app:useSimpleSummaryProvider="true" />
         <com.github.preference.PermitRingtonePreference
+            android:attributionTags="media"
             android:defaultValue="@string/ringtone_tone_defaultValue"
             android:icon="@drawable/ic_settings_tone"
             android:key="ringtone.tone"
             android:ringtoneType="alarm"
             android:showDefault="true"
             android:showSilent="true"
-            android:title="@string/ringtone_tone" />
+            android:title="@string/ringtone_tone"
+            tools:targetApi="31" />
         <SwitchPreference
             android:defaultValue="@bool/vibrate_defaultValue"
             android:icon="@drawable/ic_settings_vibrate"
