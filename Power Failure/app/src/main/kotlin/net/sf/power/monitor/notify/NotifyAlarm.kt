@@ -40,7 +40,7 @@ class NotifyAlarm(private val context: Context) {
         var ringtone = this.ringtone
         if (ringtone == null) {
             try {
-                ringtone = RingtoneManager.getRingtone(context, "media", uri).apply {
+                ringtone = RingtoneManager.getRingtone(context, "media", uri)?.apply {
                     val audioAttributes = AudioAttributes.Builder()
                         .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                         .setLegacyStreamType(AudioManager.STREAM_ALARM)
